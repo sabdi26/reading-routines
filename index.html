@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading Routines</title>
+<meta name="description" content="Free Parent Archetype Quiz + $7 Reading Snapshot diagnostic. Scripted reading routines for parents of struggling readers of struggling readers.">
+<meta name="theme-color" content="#0B1D2A">
+<link id="manifest-link" rel="manifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dark:#0B1D2A; --dark2:#132433;
+  --teal:#0891B2; --teal-dk:#0C6A8A; --teal-md:#67C4DC; --teal-lt:#EEF9FC; --teal-bdr:#C4E8F4;
+  --bg:#F7FAFB; --white:#FFFFFF;
+  --tx-hvy:#0F172A; --tx-mid:#475569; --tx-sft:#94A3B8;
+  --bdr:#E1EDF2; --red:#EF4444;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'DM Sans','Segoe UI',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);font-family:var(--sans);-webkit-font-smoothing:antialiased;color:var(--tx-hvy)}
+button{cursor:pointer;font-family:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes wordIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes blink{0%,80%,100%{opacity:.15;transform:scaleY(.5)}40%{opacity:1;transform:scaleY(1)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.fade-up{animation:fadeUp .45s cubic-bezier(.22,1,.36,1) both}
+.word-in{animation:wordIn .38s cubic-bezier(.22,1,.36,1) both}
+
+/* VIEWS */
+.view{display:none}
+.view.active{display:block}
+#view-landing{display:block}
+#view-snapshot{display:none}
+
+/* ═══ NAV ═══ */
+#main-nav{
+  background:var(--dark);border-bottom:1px solid rgba(255,255,255,.08);
+  padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100
+}
+#snap-nav{
+  background:var(--white);border-bottom:1px solid var(--bdr);
+  padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;display:none
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:18px;height:18px;display:flex;flex-direction:column;gap:3px;justify-content:center}
+.logo-bar{height:3px;border-radius:2px;background:var(--teal)}
+.logo-bar:nth-child(2){width:70%;background:var(--teal-md)}
+.logo-text{display:flex;flex-direction:column;line-height:1}
+.logo-main{font-size:13px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.logo-sub{font-size:9px;font-weight:400;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.logo-main-dark{color:var(--tx-hvy)}
+.logo-sub-dark{color:var(--tx-sft)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-snap-label{font-size:11px;color:var(--tx-sft);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+#btn-add-phone{
+  padding:7px 14px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);
+  border-radius:20px;font-size:12px;font-weight:500;transition:all .15s
+}
+#btn-add-phone:hover{background:rgba(255,255,255,.18)}
+.nav-cta{
+  padding:8px 18px;background:var(--teal);color:#fff;border:none;border-radius:6px;
+  font-size:13px;font-weight:600;transition:background .15s
+}
+.nav-cta:hover{background:var(--teal-dk)}
+
+/* ═══ PWA BANNER ═══ */
+#pwa-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:#1C2B38;border-top:1px solid rgba(255,255,255,.1);
+  border-radius:20px 20px 0 0;
+  padding:0;display:none;
+  animation:slideUp .4s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 -8px 40px rgba(0,0,0,.4)
+}
+#pwa-banner.visible{display:block}
+.pwa-banner-inner{padding:24px 20px 32px}
+.pwa-banner-top{margin-bottom:20px}
+.pwa-banner-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.pwa-title{font-size:17px;font-weight:700;color:#fff;margin-bottom:4px}
+.pwa-subtitle{font-size:13px;color:rgba(255,255,255,.5)}
+#btn-pwa-dismiss{background:none;border:none;color:rgba(255,255,255,.35);font-size:20px;line-height:1;padding:4px;flex-shrink:0}
+.pwa-install-btn{width:100%;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;font-family:inherit;transition:background .15s;margin-top:4px}
+.pwa-install-btn:hover{background:var(--teal-dk)}
+.pwa-step{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.pwa-step:last-child{border-bottom:none}
+.pwa-step-num{width:28px;height:28px;border-radius:50%;background:#3B4FD4;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pwa-step span{font-size:14px;color:rgba(255,255,255,.65);line-height:1.45}
+.pwa-step span strong{color:rgba(255,255,255,.9);font-weight:500}
+
+/* ═══ HERO ═══ */
+.hero{
+  background:var(--dark);
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 1px,transparent 0);
+  background-size:36px 36px;
+  padding:96px 24px 104px;text-align:center;position:relative;overflow:hidden
+}
+.hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(8,145,178,.4),transparent)
+}
+.hero-eyebrow{font-size:11px;font-weight:600;color:var(--teal-md);letter-spacing:.14em;text-transform:uppercase;margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-size:clamp(32px,6vw,58px);font-weight:700;color:#fff;line-height:1.1;max-width:700px;margin:0 auto 24px}
+.hero h1 em{color:var(--teal-md);font-style:normal}
+.hero-sub{font-size:clamp(15px,2.5vw,18px);color:rgba(255,255,255,.6);line-height:1.75;max-width:520px;margin:0 auto 44px;font-weight:300}
+.hero-actions{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px}
+.hero-actions .btn-hero-primary{
+  padding:16px 40px;background:var(--teal);color:#fff;border:none;border-radius:8px;
+  font-size:16px;font-weight:600;letter-spacing:.01em;transition:all .15s;
+  animation:pulse 3s ease-in-out infinite
+}
+.hero-actions .btn-hero-primary:hover{background:var(--teal-dk);transform:translateY(-1px)}
+.hero-actions .btn-hero-secondary{
+  padding:14px 32px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);
+  border:1px solid rgba(255,255,255,.15);border-radius:8px;font-size:14px;font-weight:500;transition:all .15s
+}
+.hero-actions .btn-hero-secondary:hover{background:rgba(255,255,255,.12)}
+.hero-tag{font-size:12px;color:rgba(255,255,255,.3);margin-top:8px;letter-spacing:.04em}
+.hero-curiosity{font-size:13px;color:rgba(255,255,255,.45);margin-top:10px;font-style:italic;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.6}
+.hero-bridge{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:20px;font-weight:400}
+.sor-badges{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;margin-top:36px;padding-top:32px;border-top:1px solid rgba(255,255,255,.08)}
+.sor-badge{display:flex;align-items:center;gap:8px;padding:0 24px;font-size:11px;font-weight:500;color:rgba(255,255,255,.45);letter-spacing:.05em;text-transform:uppercase}
+.sor-icon{font-size:8px;color:var(--teal-md)}
+.sor-divider{width:1px;height:20px;background:rgba(255,255,255,.1)}
+@media(max-width:600px){.sor-badge{padding:8px 12px}.sor-divider{display:none}.sor-badges{gap:4px;border-top:none;margin-top:24px}}
+
+/* ═══ SECTIONS ═══ */
+section{padding:80px 24px}
+.section-inner{max-width:960px;margin:0 auto}
+.section-inner.narrow{max-width:640px}
+.section-eyebrow{font-size:11px;font-weight:600;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.section-title{font-family:var(--serif);font-size:clamp(26px,4vw,38px);font-weight:700;color:var(--tx-hvy);line-height:1.18;margin-bottom:16px}
+.section-body{font-size:15px;color:var(--tx-mid);line-height:1.85;font-weight:300}
+
+/* ═══ PROBLEM CARDS ═══ */
+.problems{background:var(--white)}
+.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px;margin-top:48px}
+.problem-card{
+  background:var(--bg);border:1px solid var(--bdr);border-radius:12px;
+  padding:28px 24px;border-top:3px solid var(--teal);transition:transform .2s
+}
+.problem-card:hover{transform:translateY(-3px)}
+.problem-card h3{font-size:14px;font-weight:700;color:var(--tx-hvy);margin-bottom:10px;letter-spacing:-.01em}
+.problem-card p{font-size:13px;color:var(--tx-mid);line-height:1.7;font-weight:300}
+
+/* ═══ SCIENCE STRIP ═══ */
+.science-strip{background:var(--dark);padding:72px 24px}
+.science-strip blockquote{
+  max-width:720px;margin:0 auto;text-align:center;
+  font-family:var(--serif);font-size:clamp(18px,3vw,24px);font-weight:600;
+  color:rgba(255,255,255,.92);line-height:1.65
+}
+.science-strip blockquote em{color:var(--teal-md);font-style:normal}
+.science-strip cite{display:block;margin-top:20px;font-size:12px;font-style:normal;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase}
+
+/* ═══ QUIZ CTA ═══ */
+.quiz-cta-section{background:var(--bg)}
+.quiz-card-outer{
+  background:var(--white);border:1px solid var(--bdr);border-radius:16px;
+  padding:48px;text-align:center;margin-top:44px;
+  box-shadow:0 4px 24px rgba(0,0,0,.06)
+}
+.quiz-card-outer h3{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--tx-hvy);margin-bottom:12px}
+.quiz-card-outer p{font-size:15px;color:var(--tx-mid);line-height:1.8;margin-bottom:32px;font-weight:300;max-width:480px;margin-left:auto;margin-right:auto}
+.free-badge{display:inline-block;background:var(--teal-lt);color:var(--teal-dk);border:1px solid var(--teal-bdr);border-radius:20px;padding:5px 16px;font-size:12px;font-weight:600;letter-spacing:.04em;margin-bottom:20px}
+/* Problem cards */
+.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px;margin-top:40px}
+.problem-card{background:var(--white);border:1px solid var(--bdr);border-radius:12px;padding:28px 24px;border-top:3px solid var(--teal);transition:transform .2s}
+.problem-card:hover{transform:translateY(-3px)}
+.problem-card h3{font-size:14px;font-weight:700;color:var(--tx-hvy);margin-bottom:10px;letter-spacing:-.01em}
+.problem-card p{font-size:13px;color:var(--tx-mid);line-height:1.7;font-weight:300}
+.familiar-close{font-size:15px;color:var(--tx-mid);font-style:italic;margin-top:36px;text-align:center;font-weight:300}
+/* Authority told list */
+.told-list{display:flex;flex-direction:column;gap:10px;margin:32px 0;max-width:400px}
+.told-item{padding:14px 20px;background:var(--bg);border:1px solid var(--bdr);border-radius:8px;font-size:15px;color:var(--tx-mid);font-style:italic;font-weight:300;border-left:3px solid var(--teal-bdr);text-align:left}
+.authority-body{margin-top:32px;max-width:580px}
+.authority-body p{font-size:15px;color:var(--tx-mid);line-height:1.85;font-weight:300;margin-bottom:16px}
+.authority-body p:last-child{margin-bottom:0}
+.authority-body strong{color:var(--tx-hvy);font-weight:600}
+/* Quiz reveals card */
+.quiz-reveals-card{background:var(--white);border:1px solid var(--bdr);border-radius:16px;padding:44px 40px;text-align:left;margin-top:40px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.quiz-reveals-label{font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+.quiz-reveals-list{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.quiz-reveal-item{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:var(--tx-hvy);font-weight:400;line-height:1.5}
+.reveal-check{color:var(--teal);font-size:14px;font-weight:700;flex-shrink:0;margin-top:2px}
+.quiz-no-judge{font-size:13px;color:var(--tx-sft);margin-bottom:28px;font-style:italic}
+.btn-hint-lp{font-size:12px;color:var(--tx-sft);text-align:center;margin-top:14px;margin-bottom:0}
+.quiz-seed{font-size:13px;color:var(--tx-sft);line-height:1.7;margin-bottom:24px;font-style:italic;border-top:1px solid var(--bdr);padding-top:20px;margin-top:4px}
+@media(max-width:600px){.quiz-reveals-card{padding:28px 24px}}
+
+/* ═══ TESTIMONIALS ═══ */
+.testimonials{background:var(--white)}
+.testimonial-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:48px}
+.testimonial-card{background:var(--bg);border:1px solid var(--bdr);border-radius:12px;padding:28px}
+.testimonial-card blockquote{font-size:14px;color:var(--tx-mid);line-height:1.8;margin-bottom:20px;font-style:italic;font-weight:300}
+.testimonial-card cite{font-size:12px;font-weight:600;color:var(--tx-hvy);font-style:normal;letter-spacing:.02em}
+.testimonial-card cite span{color:var(--tx-sft);font-weight:400}
+.stars{color:var(--teal);font-size:13px;margin-bottom:12px;letter-spacing:2px}
+
+/* ═══ FAQ ═══ */
+.faq-section{background:var(--bg)}
+.faq-list{margin-top:44px;border:1px solid var(--bdr);border-radius:12px;overflow:hidden;background:var(--white)}
+.faq-item{border-bottom:1px solid var(--bdr)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{
+  width:100%;padding:20px 24px;background:none;border:none;text-align:left;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  font-size:14px;font-weight:600;color:var(--tx-hvy);transition:color .15s
+}
+.faq-q:hover{color:var(--teal)}
+.faq-icon{font-size:18px;color:var(--teal-md);flex-shrink:0;transition:transform .25s;line-height:1}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{font-size:13px;color:var(--tx-mid);line-height:1.8;padding:0 24px 20px;display:none;font-weight:300}
+.faq-item.open .faq-a{display:block}
+
+/* ═══ FINAL CTA ═══ */
+.final-cta{background:var(--teal);padding:80px 24px;text-align:center}
+.final-cta h2{font-family:var(--serif);font-size:clamp(26px,4vw,38px);color:#fff;margin-bottom:16px;line-height:1.2}
+.final-cta p{font-size:15px;color:rgba(255,255,255,.75);max-width:480px;margin:0 auto 36px;line-height:1.8;font-weight:300}
+.btn-final{padding:16px 40px;background:#fff;color:var(--teal-dk);border:none;border-radius:8px;font-size:15px;font-weight:700;transition:all .15s}
+.btn-final:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--dark);padding:40px 24px;text-align:center;border-top:1px solid rgba(255,255,255,.06)}
+footer p{font-size:12px;color:rgba(255,255,255,.3);line-height:1.8}
+footer strong{color:rgba(255,255,255,.6);font-weight:500}
+
+/* ═══ QUIZ VIEW ═══ */
+#view-quiz{background:var(--bg);min-height:100vh}
+.quiz-shell{max-width:560px;margin:0 auto;padding:48px 24px 80px}
+.quiz-progress{display:flex;gap:6px;margin-bottom:48px}
+.quiz-dot{height:3px;flex:1;border-radius:2px;background:var(--bdr);transition:background .3s}
+.quiz-dot.done{background:var(--teal)}
+.quiz-dot.active{background:var(--teal-md)}
+.quiz-q-num{font-size:11px;font-weight:600;color:var(--tx-sft);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.quiz-q-text{font-family:var(--serif);font-size:clamp(18px,3vw,24px);color:var(--tx-hvy);line-height:1.45;margin-bottom:32px}
+.quiz-options{display:flex;flex-direction:column;gap:10px}
+.quiz-option{
+  width:100%;padding:16px 20px;background:var(--white);border:1.5px solid var(--bdr);
+  border-radius:10px;text-align:left;font-size:14px;color:var(--tx-mid);
+  line-height:1.55;transition:all .15s;font-family:inherit
+}
+.quiz-option:hover{border-color:var(--teal-md);background:var(--teal-lt);color:var(--tx-hvy)}
+.quiz-option.selected{border-color:var(--teal);background:var(--teal-lt);color:var(--tx-hvy);font-weight:500}
+.quiz-option .opt-key{font-weight:700;color:var(--teal);margin-right:10px;font-size:13px}
+
+/* ═══ RESULTS VIEW ═══ */
+#view-quiz-results{background:var(--white);min-height:100vh}
+.results-shell{max-width:600px;margin:0 auto;padding:56px 24px 80px}
+.archetype-badge{
+  display:inline-block;background:var(--teal-lt);border:1px solid var(--teal-bdr);
+  border-radius:8px;padding:10px 20px;margin-bottom:28px;
+  font-size:11px;font-weight:700;color:var(--teal-dk);letter-spacing:.1em;text-transform:uppercase
+}
+.results-shell h1{font-family:var(--serif);font-size:clamp(26px,5vw,36px);color:var(--tx-hvy);line-height:1.18;margin-bottom:8px}
+.archetype-sub{font-size:13px;color:var(--tx-sft);margin-bottom:36px}
+.result-block{margin-bottom:28px}
+.result-block-label{font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.result-block p{font-size:15px;color:var(--tx-mid);line-height:1.85;font-weight:300}
+.pivot-card{background:var(--teal-lt);border:1px solid var(--teal-bdr);border-radius:10px;padding:22px 24px;margin-bottom:44px}
+.pivot-card .result-block-label{margin-bottom:10px}
+.pivot-card p{font-size:14px;color:var(--tx-hvy);line-height:1.85}
+.results-divider{height:1px;background:var(--bdr);margin:44px 0}
+.upsell-block{background:var(--dark);border-radius:14px;padding:36px;text-align:center}
+.upsell-block .eyebrow{font-size:11px;color:var(--teal-md);letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:12px}
+.upsell-block h3{font-family:var(--serif);font-size:22px;color:#fff;margin-bottom:10px;line-height:1.3}
+.upsell-block p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.75;margin-bottom:24px;font-weight:300}
+.share-row{display:flex;gap:10px;justify-content:center;margin-top:20px}
+.btn-share{padding:10px 22px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);border-radius:6px;font-size:13px;font-weight:500;transition:all .15s}
+.btn-share:hover{background:rgba(255,255,255,.15)}
+.snap-includes-card{
+  background:var(--white);border:1px solid var(--bdr);border-radius:12px;
+  padding:28px;margin-bottom:8px
+}
+.snap-includes-label{font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
+.snap-includes-list{display:flex;flex-direction:column;margin-bottom:24px}
+.snap-include-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bdr);font-size:14px;color:var(--tx-mid);line-height:1.55;font-weight:300}
+.snap-include-item:last-child{border-bottom:none}
+.snap-include-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:6px}
+.snap-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:20px;padding-top:4px}
+.snap-price-amount{font-family:var(--serif);font-size:36px;font-weight:700;color:var(--tx-hvy)}
+.snap-price-label{font-size:12px;color:var(--tx-sft);font-weight:300}
+.snap-social-proof{font-size:12px;color:var(--tx-sft);text-align:center;margin-top:14px;font-style:italic;line-height:1.65}
+.btn-snapshot-cta{
+  width:100%;padding:16px 24px;background:#063D50;color:#fff;border:none;border-radius:8px;
+  font-size:15px;font-weight:600;letter-spacing:.01em;transition:background .15s;
+  font-family:inherit;margin-top:4px
+}
+.btn-snapshot-cta:hover{background:#042C3A}
+.btn-back-landing{background:none;border:none;color:var(--tx-sft);font-size:13px;margin-top:24px;display:block;text-align:center;transition:color .15s}
+.btn-back-landing:hover{color:var(--teal)}
+.results-bridge{margin-bottom:32px}
+.results-bridge p{font-size:15px;color:var(--tx-mid);line-height:1.85;font-weight:300;margin-bottom:12px}
+.results-bridge-headline{font-family:var(--serif);font-size:20px !important;font-weight:700 !important;color:var(--tx-hvy) !important;margin-bottom:20px !important}
+.results-bridge p:first-child{font-size:17px;font-weight:600;color:var(--tx-hvy);margin-bottom:16px}
+.upsell-gaps{display:flex;flex-direction:column;gap:10px;text-align:left;margin-bottom:24px}
+.upsell-gap-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,.65);line-height:1.5}
+.upsell-gap-dot{width:5px;height:5px;border-radius:50%;background:var(--teal-md);flex-shrink:0;margin-top:6px}
+.upsell-gap-item strong{color:rgba(255,255,255,.9);font-weight:500}
+.upsell-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;justify-content:center}
+.upsell-amount{font-family:var(--serif);font-size:38px;font-weight:700;color:#fff}
+.upsell-price-label{font-size:12px;color:rgba(255,255,255,.4);line-height:1.5}
+.upsell-social-proof{font-size:12px;color:rgba(255,255,255,.35);margin-top:16px;line-height:1.65;font-style:italic}
+
+/* ═══ SNAPSHOT VIEW ═══ */
+#view-snapshot{min-height:100vh;background:var(--white)}
+.snap-page{display:none;max-width:520px;margin:0 auto;padding:48px 24px 80px}
+.snap-page.wide{max-width:600px}
+.snap-page.center{max-width:460px;text-align:center}
+.snap-page.active{display:block}
+#snap-processing{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;gap:22px}
+#snap-processing.active{display:flex}
+.eyebrow-teal{font-size:11px;font-weight:600;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.serif-title{font-family:var(--serif);font-size:clamp(26px,5vw,34px);font-weight:700;color:var(--tx-hvy);line-height:1.15;margin-bottom:32px}
+.quote-left{border-left:2px solid var(--teal-bdr);padding-left:20px;margin-bottom:20px}
+.quote-left p{font-size:15px;color:var(--tx-mid);line-height:1.85;font-weight:300}
+.quote-left em{color:var(--tx-hvy);font-style:italic;font-weight:400}
+.lead-bold{font-size:15px;color:var(--tx-hvy);font-weight:500;line-height:1.75;margin-bottom:44px}
+.field-divider{height:1px;background:var(--bdr);margin-bottom:36px}
+.field-label{display:block;font-size:11px;font-weight:600;color:var(--tx-mid);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.field-group{margin-bottom:28px}
+.snap-input{width:100%;padding:13px 16px;font-size:15px;border:1.5px solid var(--bdr);border-radius:8px;color:var(--tx-hvy);background:var(--white);font-family:inherit;transition:border-color .15s;outline:none}
+.snap-input:focus{border-color:var(--teal)}
+.snap-input.error{border-color:var(--red)}
+.snap-input[type="email"]{text-align:center}
+.err-msg{font-size:12px;color:var(--red);margin-top:8px;display:none}
+.err-msg.show{display:block}
+.grade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:40px}
+.grade-btn{padding:13px 16px;border:1.5px solid var(--bdr);border-radius:8px;background:var(--white);color:var(--tx-mid);font-size:14px;font-weight:400;text-align:left;transition:all .15s}
+.grade-btn:hover{border-color:var(--teal-md);background:var(--teal-lt)}
+.grade-btn.selected{border-color:var(--teal);background:var(--teal-lt);color:var(--teal-dk);font-weight:600}
+.btn-primary{width:100%;padding:15px 24px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:.01em;transition:background .15s}
+.btn-primary:hover{background:var(--teal-dk)}
+.btn-secondary-outline{padding:13px 28px;background:var(--white);color:var(--teal);border:1.5px solid var(--teal-bdr);border-radius:8px;font-size:14px;font-weight:600;transition:all .15s}
+.btn-secondary-outline:hover{background:var(--teal-lt);color:var(--teal-dk)}
+.btn-hint-text{font-size:12px;color:var(--tx-sft);text-align:center;margin-top:14px}
+.progress-track{height:2px;background:var(--bdr);border-radius:1px;overflow:hidden;margin-bottom:44px}
+.progress-fill{height:100%;background:var(--teal);border-radius:1px;transition:width .45s cubic-bezier(.4,0,.2,1);width:0}
+.progress-full{height:2px;background:var(--teal);border-radius:1px;margin-bottom:44px}
+.instruction-text{font-size:13px;color:var(--tx-sft);line-height:1.75;text-align:center;max-width:360px;margin:0 auto 52px}
+#word-display{text-align:center;margin-bottom:56px}
+#word-display span{font-family:var(--serif);font-size:clamp(52px,10vw,72px);font-weight:700;color:var(--tx-hvy);letter-spacing:.02em;line-height:1;display:block}
+.resp-list{display:flex;flex-direction:column;gap:10px}
+.resp-btn{width:100%;padding:14px 18px;background:var(--white);border:1.5px solid var(--bdr);border-radius:8px;text-align:left;display:flex;align-items:center;gap:12px;transition:all .15s;font-family:inherit}
+.resp-btn:hover{border-color:var(--teal-md);background:var(--teal-lt)}
+.resp-label{font-weight:600;color:var(--tx-hvy);font-size:14px;min-width:140px;flex-shrink:0}
+.resp-sub{font-size:12px;color:var(--tx-sft);line-height:1.5}
+.sentence-card{background:var(--teal-lt);border:1px solid var(--teal-bdr);border-radius:10px;padding:32px 28px;text-align:center;margin-bottom:44px}
+.sentence-card span{font-family:var(--serif);font-size:clamp(18px,3vw,22px);font-weight:600;color:var(--tx-hvy);line-height:1.55}
+.blink-bars{display:flex;gap:8px;align-items:center}
+.blink-bar{width:5px;height:22px;background:var(--teal);border-radius:3px}
+.blink-bar:nth-child(1){animation:blink 1.2s ease-in-out 0s infinite}
+.blink-bar:nth-child(2){animation:blink 1.2s ease-in-out .18s infinite}
+.blink-bar:nth-child(3){animation:blink 1.2s ease-in-out .36s infinite}
+.processing-label{font-size:13px;color:var(--tx-sft);letter-spacing:.06em}
+.gap-pill{display:inline-block;background:var(--teal);border-radius:6px;padding:10px 22px;margin-bottom:32px}
+.gap-pill span{font-size:15px;font-weight:600;color:#fff;letter-spacing:.01em}
+.result-summary{font-size:16px;color:var(--tx-hvy);font-weight:500;line-height:1.8;margin-bottom:24px}
+.result-body-block{border-left:2px solid var(--teal-bdr);padding-left:22px;margin-bottom:32px}
+.result-body-block p{font-size:14px;color:var(--tx-mid);line-height:1.9;font-weight:300}
+.focus-card{background:var(--teal-lt);border:1px solid var(--teal-bdr);border-radius:10px;padding:22px 24px;margin-bottom:44px}
+.focus-label-sm{font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.focus-card p{font-size:14px;color:var(--tx-hvy);line-height:1.85}
+.check-circle{width:52px;height:52px;border-radius:50%;background:var(--teal-lt);border:1.5px solid var(--teal-bdr);display:flex;align-items:center;justify-content:center;margin:0 auto 28px}
+.waitlist-body-text{font-size:14px;color:var(--tx-mid);line-height:1.85;margin-bottom:36px;font-weight:300}
+.no-spam-text{font-size:12px;color:var(--tx-sft)}
+.snap-phase{font-size:13px;color:var(--tx-sft);margin-bottom:32px}
+
+/* MOBILE */
+@media(max-width:600px){
+  section{padding:60px 20px}
+  .hero{padding:72px 20px 80px}
+  .quiz-card-outer{padding:32px 24px}
+  .snapshot-cta-card{padding:36px 24px}
+  .upsell-block{padding:28px 20px}
+  .grade-grid{grid-template-columns:1fr}
+  #word-display span{font-size:52px}
+}
+</style>
+</head>
+<body>
+
+<!-- PWA BANNER -->
+<div id="pwa-banner">
+  <div class="pwa-banner-inner">
+    <div class="pwa-banner-top">
+      <div class="pwa-banner-title-row">
+        <div>
+          <p class="pwa-title">Add to Home Screen</p>
+          <p class="pwa-subtitle">Access your tools anytime &mdash; even offline.</p>
+        </div>
+        <button id="btn-pwa-dismiss" aria-label="Dismiss">&#x2715;</button>
+      </div>
+    </div>
+    <!-- Android / Desktop: single install button -->
+    <div id="pwa-native" style="display:none">
+      <button id="btn-pwa-install" class="pwa-install-btn">Add to Home Screen</button>
+    </div>
+    <!-- iOS: numbered steps like SunnahFasts -->
+    <div id="pwa-ios-steps-list" style="display:none">
+      <div class="pwa-step"><div class="pwa-step-num">1</div><span>Tap the <strong>Share</strong> icon at the bottom of your browser</span></div>
+      <div class="pwa-step"><div class="pwa-step-num">2</div><span>Tap <strong>&ldquo;Add to Home Screen&rdquo;</strong></span></div>
+      <div class="pwa-step"><div class="pwa-step-num">3</div><span>Tap <strong>&ldquo;Add&rdquo;</strong> to confirm</span></div>
+      <div class="pwa-step"><div class="pwa-step-num">4</div><span>Open the app from your home screen</span></div>
+    </div>
+    <!-- Generic browser fallback -->
+    <div id="pwa-generic-steps" style="display:none">
+      <div class="pwa-step"><div class="pwa-step-num">1</div><span>Open your browser <strong>menu</strong> (three dots or share icon)</span></div>
+      <div class="pwa-step"><div class="pwa-step-num">2</div><span>Tap <strong>&ldquo;Add to Home Screen&rdquo;</strong> or <strong>&ldquo;Install App&rdquo;</strong></span></div>
+      <div class="pwa-step"><div class="pwa-step-num">3</div><span>Tap <strong>&ldquo;Add&rdquo;</strong> to confirm</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN NAV (landing + quiz) -->
+<nav id="main-nav">
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-bar" style="width:100%"></div>
+      <div class="logo-bar"></div>
+      <div class="logo-bar" style="width:80%"></div>
+    </div>
+    <div class="logo-text">
+      <span class="logo-main">Reading Routines</span>
+      <span class="logo-sub">for parents</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button id="btn-add-phone">Add to Home Screen</button>
+    <button class="nav-cta" onclick="scrollToQuiz()">Take the Quiz</button>
+  </div>
+</nav>
+
+<!-- SNAPSHOT NAV -->
+<nav id="snap-nav">
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-bar" style="width:100%;background:var(--teal)"></div>
+      <div class="logo-bar" style="background:var(--teal-md)"></div>
+      <div class="logo-bar" style="width:80%;background:var(--teal)"></div>
+    </div>
+    <div class="logo-text">
+      <span class="logo-main logo-main-dark">Reading Routines</span>
+      <span class="logo-sub logo-sub-dark">for parents</span>
+    </div>
+  </div>
+  <span class="nav-snap-label">Reading Snapshot</span>
+</nav>
+
+<!-- ═══ VIEW: LANDING ═══ -->
+<div id="view-landing">
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">Science of Reading &bull; For Parents</p>
+    <h1>Why is reading still so <em>hard for your child?</em></h1>
+    <p class="hero-sub">Most parents are working incredibly hard to help their child read &mdash; but no one ever showed them what actually works.<br><br>Take the 60-second Reading Coach Quiz to discover your coaching style and get a science-based strategy you can try tonight.</p>
+    <p class="hero-bridge">Let&rsquo;s figure out what&rsquo;s really happening during reading time.</p>
+    <div class="hero-actions">
+      <button class="btn-hero-primary" onclick="scrollToQuiz()">Start the Quiz &rarr;</button>
+    </div>
+    <p class="hero-tag">60 seconds &bull; Free &bull; No account required</p>
+    <p class="hero-curiosity">Parents usually discover the exact moment they are accidentally making reading harder &mdash; and how to fix it.</p>
+    <div class="sor-badges">
+      <div class="sor-badge"><span class="sor-icon">&#9670;</span><span>Based on Science of Reading</span></div>
+      <div class="sor-divider"></div>
+      <div class="sor-badge"><span class="sor-icon">&#9670;</span><span>Structured Literacy Aligned</span></div>
+      <div class="sor-divider"></div>
+      <div class="sor-badge"><span class="sor-icon">&#9670;</span><span>Orthographic Mapping Research</span></div>
+    </div>
+  </section>
+
+  <!-- SOUND FAMILIAR SECTION -->
+  <section class="problems">
+    <div class="section-inner">
+      <p class="section-eyebrow">Sound familiar?</p>
+      <h2 class="section-title">At your kitchen table&hellip;</h2>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <h3>The Choppy Robot</h3>
+          <p>They sound out every single letter &mdash; then forget the sentence by the time they reach the end.</p>
+        </div>
+        <div class="problem-card">
+          <h3>The Wild Guesser</h3>
+          <p>They read fast &mdash; but it&rsquo;s &ldquo;truck&rdquo; instead of &ldquo;train&rdquo; every single time.</p>
+        </div>
+        <div class="problem-card">
+          <h3>The Word Forgetter</h3>
+          <p>They knew that word perfectly yesterday. Today it&rsquo;s completely gone.</p>
+        </div>
+        <div class="problem-card">
+          <h3>The Shutdown</h3>
+          <p>They stare at the page and wait for you to do the heavy lifting.</p>
+        </div>
+      </div>
+      <p class="familiar-close">If you&rsquo;ve experienced one of these moments, you&rsquo;re not alone.</p>
+    </div>
+  </section>
+
+  <!-- SCIENCE SECTION -->
+  <section class="problems" style="background:var(--white);padding-top:0">
+    <div class="section-inner">
+      <p class="section-eyebrow">Why it happens</p>
+      <h2 class="section-title">Parents are usually told:</h2>
+      <div class="told-list">
+        <div class="told-item">&ldquo;Just read more.&rdquo;</div>
+        <div class="told-item">&ldquo;Practice sight words.&rdquo;</div>
+        <div class="told-item">&ldquo;It will click eventually.&rdquo;</div>
+      </div>
+      <div class="authority-body">
+        <p>But reading isn&rsquo;t natural.</p>
+        <p>The brain has to build a mental word dictionary where spelling, sound, and meaning are permanently connected. Researchers call this process <strong>orthographic mapping</strong>.</p>
+        <p>Until that happens, reading feels like cracking a code on every single word.</p>
+        <p>The good news: once you know what the brain actually needs, you know exactly where to focus.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCIENCE STRIP -->
+  <section class="science-strip">
+    <blockquote>
+      &ldquo;National data shows that for struggling readers, the gap only widens over time. But research also proves that reading for parents is essential to closing that gap. You are your child&rsquo;s most important reading coach &mdash; <em>you just need the right playbook.</em>&rdquo;
+    </blockquote>
+    <cite>Based on Science of Reading Research</cite>
+  </section>
+
+  <!-- FREE QUIZ -->
+  <section class="quiz-cta-section" id="quiz-anchor">
+    <div class="section-inner narrow" style="text-align:center">
+      <p class="section-eyebrow">The Reading Coach Quiz</p>
+      <h2 class="section-title">Discover your reading coach style in 60 seconds.</h2>
+      <div class="quiz-reveals-card">
+        <p class="quiz-reveals-label">This quick quiz reveals:</p>
+        <div class="quiz-reveals-list">
+          <div class="quiz-reveal-item"><span class="reveal-check">&#10003;</span><span>Your natural coaching style during reading time</span></div>
+          <div class="quiz-reveal-item"><span class="reveal-check">&#10003;</span><span>Small habits that may be helping &mdash; or making reading harder</span></div>
+          <div class="quiz-reveal-item"><span class="reveal-check">&#10003;</span><span>A science-based strategy you can try tonight</span></div>
+        </div>
+        <p class="quiz-no-judge">No judgment. Just clarity.</p>
+        <p class="quiz-seed">After the quiz, you&rsquo;ll also have the option to unlock your child&rsquo;s Reading Snapshot &mdash; which reveals exactly what may be holding them back.</p>
+        <button class="btn-primary" style="max-width:320px;margin:0 auto" onclick="startQuiz()">Start the 60-Second Quiz &rarr;</button>
+        <p class="btn-hint-lp">4 questions &bull; Free &bull; Instant results</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Snapshot CTA removed — upsell lives on quiz results page -->
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="section-inner">
+      <p class="section-eyebrow">From Parents</p>
+      <h2 class="section-title">What other parents are saying</h2>
+      <p class="section-body">Placeholder testimonials &mdash; replace with real quotes before launch.</p>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>&ldquo;I took the quiz expecting generic advice. Instead I got the exact script to use when my son gets stuck on a word. We had our first tear-free reading session the same night.&rdquo;</blockquote>
+          <cite>Sarah M. <span>&mdash; Mom of a 2nd grader</span></cite>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>&ldquo;The Reading Snapshot told me in 5 minutes what two parent-teacher conferences could not. My daughter has the Automaticity Gap &mdash; and now I know exactly what to practice.&rdquo;</blockquote>
+          <cite>Jessica T. <span>&mdash; Mom of a 1st grader</span></cite>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>&ldquo;I had no idea I was a &lsquo;Quick Rescuer.&rsquo; I thought I was helping. This completely changed how I sit with my son during reading time. He&rsquo;s already more confident.&rdquo;</blockquote>
+          <cite>Amanda K. <span>&mdash; Mom of a kindergartner</span></cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="section-inner narrow">
+      <p class="section-eyebrow">Questions</p>
+      <h2 class="section-title">Frequently asked</h2>
+      <div class="faq-list" id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">What is the Parent Archetype Quiz?<span class="faq-icon">+</span></button>
+          <p class="faq-a">A free, 60-second quiz that identifies your natural reading coaching style &mdash; and shows you how to pivot it using the Science of Reading. No email required to see your results.</p>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What is the Reading Snapshot?<span class="faq-icon">+</span></button>
+          <p class="faq-a">A $7 structured literacy diagnostic designed for parents of children in Kindergarten through 3rd Grade. You read words aloud with your child, log their responses, and receive a research-aligned result that identifies their specific decoding gap &mdash; with a focused strategy to address it.</p>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is this a medical or educational diagnosis?<span class="faq-icon">+</span></button>
+          <p class="faq-a">No. The Reading Snapshot is a structured literacy screening tool for parents, not a clinical evaluation. It is based on the Science of Reading research framework but does not replace a formal assessment by a qualified specialist. If you have concerns about a learning disability, please consult your child&rsquo;s school or a licensed professional.</p>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Why does it cost $7?<span class="faq-icon">+</span></button>
+          <p class="faq-a">The Reading Snapshot is a deliberately priced, low-barrier tool. The $7 reflects the research, curriculum alignment, and development behind it &mdash; and ensures that the families who use it are ready to engage with the results. It is not padded with upsells or subscriptions.</p>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Will my results be saved?<span class="faq-icon">+</span></button>
+          <p class="faq-a">Yes. Once you complete the Reading Snapshot, your results are saved locally on your device. You can return to them at any time without logging in or retaking the assessment. No data is sent to a server.</p>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What is the Science of Reading?<span class="faq-icon">+</span></button>
+          <p class="faq-a">The Science of Reading is a body of research &mdash; spanning cognitive science, linguistics, and education &mdash; that explains how the brain learns to decode written language. It supports structured literacy approaches, including explicit phonics instruction and fluency development, over older methods like whole-language or three-cueing systems.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="section-inner narrow">
+      <h2>You are your child&rsquo;s most important reading coach.</h2>
+      <p>Find out how you naturally show up during reading time &mdash; and get a strategy that works with your parenting style.</p>
+      <button class="btn-final" onclick="scrollToQuiz()">Start the 60-Second Quiz &rarr;</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p><strong>Reading Routines</strong></p>
+    <p style="margin-top:8px">Scripted reading routines for parents of struggling readers &bull; &copy; 2025</p>
+  </footer>
+
+</div><!-- end view-landing -->
+
+<!-- ═══ VIEW: QUIZ ═══ -->
+<div id="view-quiz" class="view">
+  <div class="quiz-shell fade-up">
+    <div class="quiz-progress" id="quiz-progress">
+      <div class="quiz-dot active"></div>
+      <div class="quiz-dot"></div>
+      <div class="quiz-dot"></div>
+      <div class="quiz-dot"></div>
+    </div>
+    <p class="quiz-q-num" id="quiz-q-num">Question 1 of 4</p>
+    <p class="quiz-q-text" id="quiz-q-text"></p>
+    <div class="quiz-options" id="quiz-options"></div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: QUIZ RESULTS ═══ -->
+<div id="view-quiz-results" class="view">
+  <div class="results-shell fade-up">
+
+    <!-- Badge + title -->
+    <div class="archetype-badge" id="r-badge"></div>
+    <h1 id="r-title"></h1>
+    <p class="archetype-sub">Your Parent Coaching Archetype &bull; Science of Reading</p>
+
+    <!-- 1. Emotional hook FIRST -->
+    <div class="result-block">
+      <p class="result-block-label">Your Coaching Style</p>
+      <p id="r-vibe"></p>
+    </div>
+
+    <!-- 2. Science AFTER emotional hook -->
+    <div class="result-block">
+      <p class="result-block-label">The Science</p>
+      <p id="r-science"></p>
+    </div>
+
+    <!-- 3. Pivot -->
+    <div class="pivot-card">
+      <p class="result-block-label">Try This Instead</p>
+      <p id="r-pivot"></p>
+    </div>
+
+    <!-- Share row — one CTA only -->
+    <div class="share-row">
+      <button class="btn-share" id="btn-share">&#8679; Share My Result</button>
+    </div>
+
+    <div class="results-divider"></div>
+
+    <!-- Bridge into upsell -->
+    <div class="results-bridge">
+      <p class="results-bridge-headline">Your Coaching Style Is Only Half the Picture</p>
+      <p>This quiz revealed how you naturally show up during reading time.</p>
+      <p>But there is another important question:</p>
+      <p><em>What is your child&rsquo;s brain currently struggling with when they read?</em></p>
+      <p>That&rsquo;s exactly what the Reading Snapshot reveals:</p>
+    </div>
+
+    <!-- Snapshot what's included card -->
+    <div class="snap-includes-card">
+      <p class="snap-includes-label">What&rsquo;s included</p>
+      <div class="snap-includes-list">
+        <div class="snap-include-item"><span class="snap-include-dot"></span><span>Science of Reading &ndash; aligned word assessment across Grades K&ndash;3</span></div>
+        <div class="snap-include-item"><span class="snap-include-dot"></span><span>One word at a time &mdash; you log exactly how your child responds</span></div>
+        <div class="snap-include-item"><span class="snap-include-dot"></span><span>Identifies the specific decoding gap: Accuracy, Automaticity, Multisyllabic, or Mixed</span></div>
+        <div class="snap-include-item"><span class="snap-include-dot"></span><span>Phase-based result with a clear, focused strategy</span></div>
+        <div class="snap-include-item"><span class="snap-include-dot"></span><span>Saved to your device &mdash; return anytime, no account needed</span></div>
+      </div>
+      <div class="snap-price-row">
+        <span class="snap-price-amount">$7</span>
+        <span class="snap-price-label">one-time &bull; no subscription &bull; no account required</span>
+      </div>
+      <button class="btn-snapshot-cta" onclick="goToStripe()">Unlock the Reading Snapshot &rarr;</button>
+      <p class="snap-social-proof">Most parents say the Reading Snapshot shows them more about their child&rsquo;s reading in five minutes than months of homework battles.</p>
+    </div>
+
+    <div style="text-align:center;margin-top:8px">
+      <button class="btn-back-landing" onclick="backToLanding()">&larr; Back to home</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: SNAPSHOT ═══ -->
+<div id="view-snapshot">
+
+  <div id="snap-intro" class="snap-page active fade-up">
+    <p class="eyebrow-teal">Science of Reading &bull; Grades K&ndash;3</p>
+    <h1 class="serif-title">Reading Snapshot</h1>
+    <div id="snap-prev-result" style="display:none;margin-bottom:24px">
+      <div style="background:var(--teal-lt);border:1px solid var(--teal-bdr);border-radius:8px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <p style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Previous Result</p>
+          <p id="snap-prev-gap" style="font-size:14px;font-weight:600;color:var(--tx-hvy)"></p>
+          <p id="snap-prev-date" style="font-size:12px;color:var(--tx-sft)"></p>
+        </div>
+        <button class="btn-secondary-outline" style="white-space:nowrap;font-size:12px;padding:8px 14px" onclick="viewPrevResult()">View Result</button>
+      </div>
+    </div>
+    <div class="quote-left">
+      <p>Reading is not a natural process. The brain learns to read by connecting a word&rsquo;s spelling, pronunciation, and meaning through a process called <em>orthographic mapping</em>. Until that connection is automatic, reading feels effortful.</p>
+    </div>
+    <p class="lead-bold">This 5-minute snapshot identifies what&rsquo;s holding your child back &mdash; so you know exactly where to focus.</p>
+    <div class="field-divider"></div>
+    <div class="field-group">
+      <label class="field-label" for="child-name">Child&rsquo;s first name</label>
+      <input type="text" id="child-name" class="snap-input" placeholder="First name" autocomplete="off">
+      <p class="err-msg" id="err-name">Please enter your child&rsquo;s name to continue.</p>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Current grade</label>
+      <div class="grade-grid" id="grade-grid">
+        <button class="grade-btn" data-grade="K">Kindergarten</button>
+        <button class="grade-btn" data-grade="1">1st Grade</button>
+        <button class="grade-btn" data-grade="2">2nd Grade</button>
+        <button class="grade-btn" data-grade="3">3rd Grade</button>
+      </div>
+      <p class="err-msg" id="err-grade">Please select a grade to continue.</p>
+    </div>
+    <button class="btn-primary" id="btn-start-snap">Begin Assessment</button>
+    <p class="btn-hint-text">Approximately 5 minutes &bull; Saved to this device</p>
+  </div>
+
+  <div id="snap-assessment" class="snap-page">
+    <div class="progress-track"><div class="progress-fill" id="snap-progress"></div></div>
+    <p class="instruction-text" id="snap-instruction"></p>
+    <div id="word-display"><span id="current-word"></span></div>
+    <div class="resp-list" id="word-responses"></div>
+  </div>
+
+  <div id="snap-fluency" class="snap-page fade-up">
+    <div class="progress-full"></div>
+    <p class="instruction-text" id="fluency-instruction"></p>
+    <div class="sentence-card"><span id="fluency-sentence"></span></div>
+    <div class="resp-list" id="fluency-responses"></div>
+  </div>
+
+  <div id="snap-processing">
+    <div class="blink-bars"><div class="blink-bar"></div><div class="blink-bar"></div><div class="blink-bar"></div></div>
+    <p class="processing-label">Analyzing reading patterns&hellip;</p>
+  </div>
+
+  <div id="snap-results" class="snap-page wide fade-up">
+    <p class="eyebrow-teal" id="snap-r-eyebrow"></p>
+    <h1 class="serif-title" id="snap-r-title"></h1>
+    <p class="snap-phase" id="snap-r-phase"></p>
+    <div class="gap-pill"><span id="snap-r-gap"></span></div><br style="margin-bottom:8px">
+    <p class="result-summary" id="snap-r-summary"></p>
+    <div class="result-body-block"><p id="snap-r-body"></p></div>
+    <div class="focus-card">
+      <p class="focus-label-sm">Where to Focus</p>
+      <p id="snap-r-focus"></p>
+    </div>
+    <button class="btn-primary" onclick="showSnapPage('snap-waitlist')">Start Your 10-Minute Plan</button>
+    <div style="margin-top:20px;text-align:center">
+      <button class="btn-back-landing" onclick="restartSnap()">Take assessment again</button>
+    </div>
+  </div>
+
+  <div id="snap-waitlist" class="snap-page center fade-up">
+    <div id="snap-wl-form">
+      <h2 style="font-family:var(--serif);font-size:26px;font-weight:700;color:var(--tx-hvy);line-height:1.2;margin-bottom:14px">Your 10-Minute Plan is coming.</h2>
+      <p class="waitlist-body-text" id="snap-wl-body"></p>
+      <input type="email" id="snap-wl-email" class="snap-input" placeholder="your@email.com">
+      <button class="btn-primary" id="btn-snap-notify" style="margin-top:14px">Notify Me</button>
+      <p class="no-spam-text" style="margin-top:14px">No spam. One email when it launches.</p>
+    </div>
+    <div id="snap-wl-confirmed" style="display:none">
+      <div class="check-circle">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="#0891B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h2 style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--tx-hvy);margin-bottom:14px">You&rsquo;re on the list.</h2>
+      <p class="waitlist-body-text" id="snap-wl-confirmed-body"></p>
+      <button class="btn-secondary-outline" onclick="restartSnap()">Run Another Snapshot</button>
+    </div>
+  </div>
+
+</div><!-- end view-snapshot -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG — Square payment link
+// ═══════════════════════════════════════════════════════
+var STRIPE_URL = 'https://square.link/u/ZPbwfZTd';
+var SITE_URL   = window.location.origin + window.location.pathname;
+
+// ═══════════════════════════════════════════════════════
+// QUIZ DATA
+// ═══════════════════════════════════════════════════════
+var QUIZ_QUESTIONS = [
+  {
+    q: 'Your child comes to a tricky word like "brilliant." What is your knee-jerk reaction?',
+    options: [
+      {key:'A', text:'I tell them, "Sound it out! Look at the letters!"'},
+      {key:'B', text:'I ask, "Look at the picture — what word would make sense there?"'},
+      {key:'C', text:'I pull out flashcards so we can just memorize it.'},
+      {key:'D', text:'I immediately tell them the word so they do not get frustrated and shut down.'}
+    ]
+  },
+  {
+    q: 'When your child reads a sentence, what does it usually sound like?',
+    options: [
+      {key:'A', text:'A choppy robot. They sound out every letter (/c/ /a/ /t/), but by the end they are exhausted.'},
+      {key:'B', text:'A racecar on ice. They read fast, but guess wildly from the first letter.'},
+      {key:'C', text:'A memory game. Fine with familiar books, but they freeze on any new word.'},
+      {key:'D', text:'A standoff. They stare at the page and wait for me to do the heavy lifting.'}
+    ]
+  },
+  {
+    q: 'How do you usually practice the weekly sight word list sent home from school?',
+    options: [
+      {key:'A', text:'We read them over and over until they sound them out faster.'},
+      {key:'B', text:'I tell them to use the context of the sentence to figure it out.'},
+      {key:'C', text:'Drilling with flashcards. We just have to memorize the shape of the word.'},
+      {key:'D', text:'We honestly skip them. It turns into a fight every single time.'}
+    ]
+  },
+  {
+    q: 'When the 20-minute reading timer goes off, what is your inner thought?',
+    options: [
+      {key:'A', text:'"Why is this still so slow and labored?"'},
+      {key:'B', text:'"I don\'t think they understood a single thing they just read."'},
+      {key:'C', text:'"Why did they know that word yesterday but completely forgot it today?"'},
+      {key:'D', text:'"I am terrified for 3rd grade. Am I not doing enough?"'}
+    ]
+  }
+];
+
+var QUIZ_RESULTS = {
+  A: {
+    badge: 'The Sound-It-Out Sergeant',
+    title: 'You Are a Sound-It-Out Sergeant',
+    vibe: 'You believe in phonics and want your child to look carefully at the letters on the page. When they get stuck, your instinct is to remind them to slow down and sound it out.\n\nYour focus on the print is a powerful instinct \u2014 it means you already understand that reading comes from the letters on the page, not just pictures or guessing.',
+    science: 'But something frustrating often happens.\n\nYour child may correctly sound out every letter\u2026\n\n/c/ \u2026 /l/ \u2026 /i/ \u2026 /p/\n\n\u2026and then reach the end of the sentence with no idea what they just read.\n\nThis happens because working memory gets overloaded. When every sound is separated by pauses, the brain struggles to hold the entire word together long enough to understand it.',
+    pivot: 'Instead of pausing between sounds, skilled readers blend sounds together continuously.\n\nThey keep their voice moving so the word stays intact in memory.\n\nOnce this shift happens, reading often becomes smoother and far less exhausting.'
+  },
+  B: {
+    badge: 'The Context Clue Detective',
+    title: 'You Are a Context Clue Detective',
+    vibe: 'You want reading to feel natural and meaningful.\n\nWhen your child gets stuck, you often guide them to look at the picture, the sentence, or the story context to help them figure out the word.\n\nYour goal is to help them keep the story flowing rather than getting stuck on a single word.',
+    science: 'For many years, schools encouraged this approach through something called the three-cueing system.\n\nBut modern reading research has discovered something surprising.\n\nSkilled readers do not rely on pictures or context to identify words. They look carefully at the letters in the word itself.\n\nWhen children rely heavily on guessing strategies, they may read quickly \u2014 but their accuracy becomes unstable. That\u2019s why \u201Ctrain\u201D can suddenly become \u201Ctruck.\u201D',
+    pivot: 'Strong readers learn to treat unfamiliar words like puzzles.\n\nInstead of guessing from context, they examine the letters and decode the sounds inside the word.\n\nOnce that habit forms, accuracy improves quickly.'
+  },
+  C: {
+    badge: 'The Flashcard Fanatic',
+    title: 'You Are a Flashcard Fanatic',
+    vibe: 'You are incredibly committed to helping your child succeed.\n\nYou\u2019ve gathered the workbooks, printed the word lists, and probably have sight-word flashcards somewhere in the house.\n\nYou believe repetition and practice will help the words finally stick.',
+    science: 'Here\u2019s the surprising part.\n\nThe brain does not store words by memorizing their visual shape.\n\nInstead, it builds a mental word dictionary by connecting three things:\n\u2022 the letters in the word\n\u2022 the sounds those letters represent\n\u2022 the meaning of the word\n\nResearchers call this process orthographic mapping.\n\nWhen those three pieces bond together, the word becomes instantly recognizable.\n\nBut if a word is memorized only visually \u2014 the way flashcards often teach it \u2014 the brain has no strong anchor to keep it stored long-term. That\u2019s why a word that was perfect yesterday can suddenly disappear today.',
+    pivot: 'Instead of memorizing the whole word visually, strong readers learn to connect the sounds in the word to the letters on the page.\n\nOnce that connection forms, the word sticks permanently.'
+  },
+  D: {
+    badge: 'The Quick Rescuer',
+    title: 'You Are a Quick Rescuer',
+    vibe: 'You are deeply empathetic.\n\nWhen your child gets stuck on a word and the silence stretches out, you can almost feel the frustration building.\n\nTo protect their confidence \u2014 and keep the reading moving \u2014 you often jump in and supply the word.\n\nYour instinct comes from a good place: you want reading to stay positive.',
+    science: 'You are absolutely right that long moments of frustration can damage reading confidence.\n\nBut something subtle can happen if help arrives too quickly.\n\nWhen the brain gets even a few seconds to struggle with a word, it begins forming the connections needed to remember it next time.\n\nIf the answer arrives immediately, that learning opportunity disappears.',
+    pivot: 'Strong reading coaches allow a brief moment of productive struggle before stepping in.\n\nThat small pause gives the brain a chance to process the word \u2014 without letting frustration take over.'
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// SNAPSHOT DATA
+// ═══════════════════════════════════════════════════════
+var WORD_LISTS = {
+  K:   {sections:[['cat','sun','mop','pig'],['hat','bed','bug','top']],sentence:'The dog ran.'},
+  '1': {sections:[['trip','clam','frog','step'],['chip','brush','math','duck'],['made','bike','rope','tune']],sentence:'The fish swam fast.'},
+  '2': {sections:[['rain','heat','coat','feet'],['park','bird','corn','hurt'],['rabbit','pencil','sunset','mitten']],sentence:'The brown bird sat in the green tree.'},
+  '3': {sections:[['flight','south','crawl','point'],['basket','garden','thunder','mistake'],['important','remember','discover','beginning']],sentence:'The children discovered a hidden path in the forest.'}
+};
+
+var WORD_RESPONSES = [
+  {key:'instant',label:'Instant',sub:'No hesitation \u2014 read immediately'},
+  {key:'heavy',label:'Heavy Lift',sub:'Sounded out \u2014 slow but correct'},
+  {key:'guess',label:'Guess / Incorrect',sub:'Wrong word or partial guess'},
+  {key:'wall',label:'Wall',sub:'Refused, froze, or showed distress'}
+];
+var FLUENCY_RESPONSES = [
+  {key:'smooth',label:'Smooth',sub:'Read the sentence without stopping'},
+  {key:'choppy',label:'Choppy / Effortful',sub:'Paused, sounded out, or lost the thread'},
+  {key:'refused',label:'Refused',sub:'Would not attempt'}
+];
+
+var SNAP_RESULTS = {
+  accuracy:{
+    gap:'The Accuracy Gap',phase:'Phase 1 \u00B7 Decoding Foundation',
+    summary:function(n){return n+"'s reading patterns indicate that foundational decoding is the primary area of need."},
+    body:'When a child substitutes words, guesses from the first letter, or relies on picture cues, the brain is bypassing the actual letters on the page. This is not a comprehension issue and it is not a reflection of intelligence. It signals that phonics patterns have not yet been fully mapped \u2014 the brain is reaching for familiar-looking words rather than processing the sound-symbol connections that make decoding reliable and automatic.',
+    focus:'Explicit, systematic phonics instruction \u2014 beginning with the patterns that are not yet secure. The goal is accuracy before speed. Every correct decoding attempt, however slow, is the mechanism through which reading becomes automatic.'
+  },
+  automaticity:{
+    gap:'The Automaticity Gap',phase:'Phase 2 \u00B7 Fluency Development',
+    summary:function(n){return n+"'s reading patterns indicate that decoding accuracy is in place, but word recognition has not yet become automatic."},
+    body:'When a child decodes correctly but slowly, the brain is still processing each word from scratch. This exhausts working memory before comprehension can begin \u2014 which is why children at this stage often finish a sentence and cannot recall what they just read. The skill is present. The automaticity is not. This gap closes through structured fluency practice, not more phonics instruction.',
+    focus:'Fluency-building practice focused on continuous blending and repeated reading of familiar texts. The goal is to move word recognition from conscious effort to automatic retrieval \u2014 freeing cognitive bandwidth for meaning-making.'
+  },
+  multisyllabic:{
+    gap:'The Multisyllabic Gap',phase:'Phase 3 \u00B7 Advanced Word Structure',
+    summary:function(n){return n+"'s reading patterns show reliable short-word decoding with a clear breakdown on longer, multisyllabic words."},
+    body:'This is among the most common \u2014 and most overlooked \u2014 gaps in upper-primary readers. Short words are handled automatically, but longer words trigger avoidance because no reliable strategy exists for breaking them apart. Without explicit instruction in syllabication and morphological structure, the brain defaults to guessing from the prefix or refusing to engage. This is not a regression. It is the natural ceiling of a reader who was never taught what to do when a word is too long to decode whole.',
+    focus:'Syllable division and morphological awareness \u2014 prefixes, suffixes, and systematic strategies for breaking unfamiliar words into decodable parts. Short, structured practice on this skill closes the gap quickly in most cases.'
+  },
+  mixed:{
+    gap:'A Mixed Decoding Profile',phase:'Multiple Gaps Present',
+    summary:function(n){return n+"'s reading patterns show inconsistency across word types, indicating that more than one area of decoding needs attention."},
+    body:'A mixed profile is common in children who have received inconsistent literacy instruction or who have compensated for gaps using verbal memory and contextual guessing. Some patterns are automatic. Others are effortful. Others are avoided entirely. This is not a more serious problem than a single-gap profile \u2014 it simply requires identifying the earliest unresolved gap and building systematically from there.',
+    focus:'A structured literacy baseline \u2014 beginning with phonemic awareness and early phonics to locate the first unresolved gap. Building from the ground up is faster and more reliable than targeting individual patterns in isolation.'
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+var quizState = {current:0, answers:[]};
+var snapState = {childName:'',grade:'',allWords:[],wordIdx:0,responses:[],result:null};
+
+// ═══════════════════════════════════════════════════════
+// VIEW MANAGEMENT
+// ═══════════════════════════════════════════════════════
+function showMainView(id) {
+  var isSnap = (id === 'view-snapshot');
+  document.getElementById('main-nav').style.display = isSnap ? 'none' : 'flex';
+  document.getElementById('snap-nav').style.display = isSnap ? 'flex' : 'none';
+  ['view-landing','view-quiz','view-quiz-results'].forEach(function(v){
+    document.getElementById(v).style.display = 'none';
+    document.getElementById(v).classList.remove('active');
+  });
+  document.getElementById('view-snapshot').style.display = isSnap ? 'block' : 'none';
+  if (!isSnap) {
+    var el = document.getElementById(id);
+    el.style.display = 'block';
+    el.classList.add('active');
+    var inner = el.querySelector('.fade-up, .quiz-shell, .results-shell');
+    if (inner) { inner.classList.remove('fade-up'); void inner.offsetWidth; inner.classList.add('fade-up'); }
+  }
+  window.scrollTo(0,0);
+}
+
+function showSnapPage(id) {
+  document.querySelectorAll('.snap-page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('snap-processing').classList.remove('active');
+  var el = document.getElementById(id);
+  if (id === 'snap-processing') { el.classList.add('active'); return; }
+  el.classList.add('active');
+  el.classList.remove('fade-up'); void el.offsetWidth; el.classList.add('fade-up');
+  window.scrollTo(0,0);
+}
+
+function scrollToQuiz() { document.getElementById('quiz-anchor').scrollIntoView({behavior:'smooth'}); }
+function backToLanding() { showMainView('view-landing'); }
+
+// ═══════════════════════════════════════════════════════
+// STRIPE
+// ═══════════════════════════════════════════════════════
+function goToStripe() {
+  window.location.href = STRIPE_URL;
+}
+
+function checkUnlockParam() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('unlocked') === 'true') {
+    localStorage.setItem('rr_unlocked','true');
+    history.replaceState({}, document.title, window.location.pathname);
+  }
+  return localStorage.getItem('rr_unlocked') === 'true';
+}
+
+// ═══════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════
+function startQuiz() {
+  quizState = {current:0, answers:[]};
+  showMainView('view-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  var q = QUIZ_QUESTIONS[quizState.current];
+  var dots = document.getElementById('quiz-progress').querySelectorAll('.quiz-dot');
+  dots.forEach(function(d,i){
+    d.className = 'quiz-dot';
+    if (i < quizState.current) d.classList.add('done');
+    else if (i === quizState.current) d.classList.add('active');
+  });
+  document.getElementById('quiz-q-num').textContent = 'Question ' + (quizState.current+1) + ' of 4';
+  document.getElementById('quiz-q-text').textContent = q.q;
+  var container = document.getElementById('quiz-options');
+  container.innerHTML = '';
+  q.options.forEach(function(opt) {
+    var btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="opt-key">' + opt.key + '</span>' + opt.text;
+    btn.addEventListener('click', function() {
+      container.querySelectorAll('.quiz-option').forEach(function(b){b.classList.remove('selected');});
+      btn.classList.add('selected');
+      setTimeout(function() { selectAnswer(opt.key); }, 400);
+    });
+    container.appendChild(btn);
+  });
+}
+
+function selectAnswer(key) {
+  quizState.answers.push(key);
+  if (quizState.current < 3) {
+    quizState.current++;
+    renderQuestion();
+  } else {
+    showQuizResults();
+  }
+}
+
+function showQuizResults() {
+  var counts = {A:0,B:0,C:0,D:0};
+  quizState.answers.forEach(function(a){counts[a]++;});
+  var winner = Object.keys(counts).reduce(function(a,b){return counts[a]>=counts[b]?a:b});
+  var r = QUIZ_RESULTS[winner];
+  document.getElementById('r-badge').textContent = r.badge;
+  document.getElementById('r-title').textContent = r.title;
+  function setMultiPara(id, text) {
+    var el = document.getElementById(id);
+    el.innerHTML = '';
+    text.split('\n').forEach(function(para) {
+      if (!para.trim()) return;
+      if (para.startsWith('\u2022')) {
+        var ul = el.querySelector('ul') || (function(){ var u = document.createElement('ul'); u.style.cssText='margin:12px 0 12px 16px;display:flex;flex-direction:column;gap:6px'; el.appendChild(u); return u; })();
+        var li = document.createElement('li');
+        li.textContent = para.replace('\u2022 ','').replace('\u2022','');
+        li.style.cssText = 'font-size:14px;color:var(--tx-mid);line-height:1.6;font-weight:300';
+        ul.appendChild(li);
+      } else {
+        var p = document.createElement('p');
+        p.textContent = para;
+        p.style.cssText = 'margin-bottom:14px';
+        el.appendChild(p);
+      }
+    });
+  }
+  setMultiPara('r-vibe', r.vibe);
+  setMultiPara('r-science', r.science);
+  document.getElementById('r-pivot').textContent = r.pivot;
+  showMainView('view-quiz-results');
+}
+
+function retakeQuiz() { startQuiz(); }
+
+// ═══════════════════════════════════════════════════════
+// SOCIAL SHARE
+// ═══════════════════════════════════════════════════════
+document.getElementById('btn-share').addEventListener('click', function() {
+  var badge = document.getElementById('r-badge').textContent;
+  var text = 'I just discovered I am a ' + badge + ' parent! Take the free 60-second quiz to find your reading coaching style: ' + SITE_URL;
+  if (navigator.share) {
+    navigator.share({title:'My Reading Coach Archetype', text:text, url:SITE_URL}).catch(function(){});
+  } else {
+    navigator.clipboard.writeText(text).then(function(){
+      document.getElementById('btn-share').textContent = 'Copied!';
+      setTimeout(function(){document.getElementById('btn-share').textContent='Share My Result';},2000);
+    });
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// SNAPSHOT
+// ═══════════════════════════════════════════════════════
+function computeSnapResult(grade, responses) {
+  var total = responses.length;
+  if (!total) return 'accuracy';
+  var c = {instant:0,heavy:0,guess:0,wall:0};
+  responses.forEach(function(r){c[r]++;});
+  var pctBad = (c.guess+c.wall)/total, pctHeavy = c.heavy/total;
+  if (grade==='2'||grade==='3') {
+    var sects=WORD_LISTS[grade].sections, sc=sects[0].length+sects[1].length;
+    var sR=responses.slice(0,sc), mR=responses.slice(sc);
+    var sBad=sR.filter(function(r){return r==='guess'||r==='wall';}).length/sR.length;
+    var mBad=mR.length?mR.filter(function(r){return r==='guess'||r==='wall';}).length/mR.length:0;
+    if (sBad<0.26&&mBad>=0.5) return 'multisyllabic';
+  }
+  if (pctBad>=0.30) return 'accuracy';
+  if (pctHeavy>=0.40&&pctBad<0.20) return 'automaticity';
+  if (pctBad>=0.15&&pctHeavy>=0.25) return 'mixed';
+  return 'accuracy';
+}
+
+function snapFirst() { return snapState.childName.trim().split(' ')[0]||'your child'; }
+
+function buildRespBtns(containerId, items, onClick) {
+  var c = document.getElementById(containerId);
+  c.innerHTML = '';
+  items.forEach(function(r) {
+    var b = document.createElement('button');
+    b.className = 'resp-btn';
+    b.innerHTML = '<span class="resp-label">'+r.label+'</span><span class="resp-sub">'+r.sub+'</span>';
+    b.addEventListener('click', function(){onClick(r.key);});
+    c.appendChild(b);
+  });
+}
+
+function loadPrevResult() {
+  var stored = localStorage.getItem('rr_snap_result');
+  if (!stored) return;
+  try {
+    var d = JSON.parse(stored);
+    document.getElementById('snap-prev-result').style.display = 'block';
+    document.getElementById('snap-prev-gap').textContent = d.gap;
+    document.getElementById('snap-prev-date').textContent = d.date;
+  } catch(e){}
+}
+
+function viewPrevResult() {
+  var stored = localStorage.getItem('rr_snap_result');
+  if (!stored) return;
+  var d = JSON.parse(stored);
+  renderSnapResults(d.resultKey, d.childName);
+  showSnapPage('snap-results');
+}
+
+function renderSnapResults(resultKey, name) {
+  var p = SNAP_RESULTS[resultKey];
+  var firstName = name || snapFirst();
+  document.getElementById('snap-r-eyebrow').textContent = 'Reading Snapshot \u00B7 ' + firstName;
+  document.getElementById('snap-r-title').textContent = "What's Holding " + firstName + ' Back';
+  document.getElementById('snap-r-phase').textContent = p.phase;
+  document.getElementById('snap-r-gap').textContent = p.gap;
+  document.getElementById('snap-r-summary').textContent = p.summary(firstName);
+  document.getElementById('snap-r-body').textContent = p.body;
+  document.getElementById('snap-r-focus').textContent = p.focus;
+  localStorage.setItem('rr_snap_result', JSON.stringify({
+    resultKey:resultKey, gap:p.gap, childName:firstName,
+    date:'Last taken ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})
+  }));
+}
+
+document.getElementById('grade-grid').addEventListener('click', function(e) {
+  var btn = e.target.closest('.grade-btn');
+  if (!btn) return;
+  document.querySelectorAll('.grade-btn').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');
+  snapState.grade = btn.dataset.grade;
+  document.getElementById('err-grade').classList.remove('show');
+});
+
+document.getElementById('child-name').addEventListener('input', function() {
+  document.getElementById('err-name').classList.remove('show');
+  document.getElementById('child-name').classList.remove('error');
+});
+
+document.getElementById('btn-start-snap').addEventListener('click', function() {
+  var name = document.getElementById('child-name').value.trim();
+  var ok = true;
+  if (!name) { document.getElementById('err-name').classList.add('show'); document.getElementById('child-name').classList.add('error'); ok=false; }
+  if (!snapState.grade) { document.getElementById('err-grade').classList.add('show'); ok=false; }
+  if (!ok) return;
+  snapState.childName=name;
+  snapState.allWords=WORD_LISTS[snapState.grade].sections.reduce(function(a,b){return a.concat(b);},[]);
+  snapState.wordIdx=0; snapState.responses=[];
+  loadWord();
+  showSnapPage('snap-assessment');
+});
+
+function loadWord() {
+  var total=snapState.allWords.length;
+  document.getElementById('snap-progress').style.width=((snapState.wordIdx/total)*100)+'%';
+  document.getElementById('snap-instruction').textContent='Have '+snapFirst()+' read the word aloud. Wait 3 seconds before stepping in. Select the response that best describes how they read it.';
+  var w=document.getElementById('current-word');
+  w.textContent=snapState.allWords[snapState.wordIdx];
+  w.classList.remove('word-in'); void w.offsetWidth; w.classList.add('word-in');
+  buildRespBtns('word-responses', WORD_RESPONSES, function(key) {
+    snapState.responses.push(key);
+    if (snapState.wordIdx+1<total){snapState.wordIdx++;loadWord();}
+    else{loadFluency();showSnapPage('snap-fluency');}
+  });
+}
+
+function loadFluency() {
+  document.getElementById('fluency-instruction').textContent='Final check. Have '+snapFirst()+' read this sentence aloud.';
+  document.getElementById('fluency-sentence').textContent='\u201C'+WORD_LISTS[snapState.grade].sentence+'\u201D';
+  buildRespBtns('fluency-responses', FLUENCY_RESPONSES, function() {
+    showSnapPage('snap-processing');
+    snapState.result=computeSnapResult(snapState.grade,snapState.responses);
+    setTimeout(function(){renderSnapResults(snapState.result,snapState.childName);showSnapPage('snap-results');},2200);
+  });
+}
+
+function restartSnap() {
+  snapState={childName:'',grade:'',allWords:[],wordIdx:0,responses:[],result:null};
+  document.getElementById('child-name').value='';
+  document.getElementById('snap-wl-email').value='';
+  document.getElementById('snap-wl-form').style.display='block';
+  document.getElementById('snap-wl-confirmed').style.display='none';
+  document.querySelectorAll('.grade-btn').forEach(function(b){b.classList.remove('selected');});
+  document.getElementById('err-name').classList.remove('show');
+  document.getElementById('err-grade').classList.remove('show');
+  document.getElementById('child-name').classList.remove('error');
+  loadPrevResult();
+  showSnapPage('snap-intro');
+}
+
+document.getElementById('btn-snap-notify').addEventListener('click', function() {
+  var email=document.getElementById('snap-wl-email').value.trim();
+  if(!email.includes('@')||!email.includes('.')) return;
+  document.getElementById('snap-wl-form').style.display='none';
+  document.getElementById('snap-wl-confirmed').style.display='block';
+  document.getElementById('snap-wl-confirmed-body').textContent="We'll notify you when "+snapFirst()+"'s 10-Minute Plan is ready. One email. No noise.";
+});
+document.getElementById('snap-wl-email').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('btn-snap-notify').click();});
+
+// ═══════════════════════════════════════════════════════
+// FAQ ACCORDION
+// ═══════════════════════════════════════════════════════
+document.getElementById('faq-list').addEventListener('click', function(e) {
+  var btn = e.target.closest('.faq-q');
+  if (!btn) return;
+  var item = btn.parentElement;
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+});
+
+// ═══════════════════════════════════════════════════════
+// PWA
+// ═══════════════════════════════════════════════════════
+var deferredInstall = null;
+var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+var isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredInstall = e;
+});
+
+function showPWABanner() {
+  if (isInStandaloneMode) return;
+  var banner = document.getElementById('pwa-banner');
+  if (deferredInstall) {
+    document.getElementById('pwa-native').style.display = 'block';
+    document.getElementById('btn-pwa-install').addEventListener('click', function() {
+      banner.classList.remove('visible');
+      deferredInstall.prompt(); deferredInstall = null;
+    });
+  } else if (isIOS) {
+    document.getElementById('pwa-ios-steps-list').style.display = 'block';
+  } else {
+    document.getElementById('pwa-generic-steps').style.display = 'block';
+  }
+  banner.classList.add('visible');
+}
+
+document.getElementById('btn-pwa-dismiss').addEventListener('click', function(){
+  document.getElementById('pwa-banner').classList.remove('visible');
+});
+
+document.getElementById('btn-add-phone').addEventListener('click', function() {
+  if (deferredInstall) {
+    deferredInstall.prompt(); deferredInstall = null;
+  } else {
+    if (isIOS) {
+      document.getElementById('pwa-ios-steps-list').style.display = 'block';
+      document.getElementById('pwa-native').style.display = 'none';
+      document.getElementById('pwa-generic-steps').style.display = 'none';
+    } else {
+      document.getElementById('pwa-generic-steps').style.display = 'block';
+      document.getElementById('pwa-native').style.display = 'none';
+      document.getElementById('pwa-ios-steps-list').style.display = 'none';
+    }
+    document.getElementById('pwa-banner').classList.add('visible');
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+(function init() {
+  // Inline PWA manifest
+  var manifest = {
+    name:'Reading Routines',short_name:'Reading Routines',
+    description:'Scripted reading routines for parents of struggling readers',
+    start_url:'/',display:'standalone',
+    background_color:'#0B1D2A',theme_color:'#0891B2',
+    icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%230B1D2A'/%3E%3Crect x='40' y='60' width='112' height='12' rx='6' fill='%230891B2'/%3E%3Crect x='40' y='90' width='80' height='12' rx='6' fill='%2367C4DC'/%3E%3Crect x='40' y='120' width='96' height='12' rx='6' fill='%230891B2'/%3E%3C/svg%3E",sizes:'192x192',type:'image/svg+xml'}]
+  };
+  var mBlob = new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+  document.getElementById('manifest-link').href = URL.createObjectURL(mBlob);
+
+  // Check if user has paid
+  var unlocked = checkUnlockParam();
+
+  // Check if URL points to snapshot directly
+  var params = new URLSearchParams(window.location.search);
+  if (unlocked || params.get('view') === 'snapshot') {
+    showMainView('view-snapshot');
+    loadPrevResult();
+  }
+
+  // PWA banner only shows when user clicks 'Add to Home Screen'
+})();
+</script>
+</body>
+</html>

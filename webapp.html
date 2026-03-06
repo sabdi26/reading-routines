@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Snapshot · Reading Routines</title>
+  <meta name="description" content="Scripted reading routines for parents of struggling readers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── CUSTOMIZE: Change colors here ───────────────────────── */
+    :root {
+      --teal:    #0891B2;
+      --teal-dk: #0C6A8A;
+      --teal-md: #67C4DC;
+      --teal-lt: #EEF9FC;
+      --teal-bd: #C4E8F4;
+      --dark:    #0B1D2A;
+      --bg:      #F7FAFB;
+      --white:   #FFFFFF;
+      --tx-hvy:  #0F172A;
+      --tx-mid:  #475569;
+      --tx-sft:  #94A3B8;
+      --bdr:     #E1EDF2;
+      --red:     #EF4444;
+      --serif:   'Playfair Display', Georgia, serif;
+      --sans:    'DM Sans', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: var(--sans); -webkit-font-smoothing: antialiased; color: var(--tx-hvy); }
+    button { cursor: pointer; font-family: inherit; }
+    button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+    /* ── ANIMATIONS ───────────────────────────────────────────── */
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes wordIn  { from { opacity:0; transform:translateY(10px) scale(.96); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes blink   { 0%,80%,100% { opacity:.15; transform:scaleY(.5); } 40% { opacity:1; transform:scaleY(1); } }
+    .fade-up  { animation: fadeUp .45s cubic-bezier(.22,1,.36,1) both; }
+    .word-in  { animation: wordIn .38s cubic-bezier(.22,1,.36,1) both; }
+
+    /* ── NAV ──────────────────────────────────────────────────── */
+    nav {
+      background: var(--dark); border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 18px; height: 18px; display: flex; flex-direction: column; gap: 3px; justify-content: center; }
+    .logo-bar { height: 3px; border-radius: 2px; background: var(--teal); }
+    .logo-bar:nth-child(2) { width: 70%; background: var(--teal-md); }
+    .logo-name { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: -.01em; }
+    .logo-sub  { font-size: 9px; font-weight: 400; color: rgba(255,255,255,.4); letter-spacing: .06em; text-transform: uppercase; margin-top: 2px; }
+    .nav-badge { font-size: 11px; color: rgba(255,255,255,.4); letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
+
+    /* ── GATED SCREEN ─────────────────────────────────────────── */
+    #screen-gate {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 40px 24px; text-align: center;
+    }
+    .gate-card {
+      background: var(--white); border: 1px solid var(--bdr); border-radius: 16px;
+      padding: 48px 40px; max-width: 420px; width: 100%;
+      box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    }
+    .gate-card h2 { font-family: var(--serif); font-size: 24px; color: var(--tx-hvy); margin-bottom: 12px; }
+    .gate-card p  { font-size: 14px; color: var(--tx-mid); line-height: 1.75; margin-bottom: 28px; font-weight: 300; }
+    .gate-input {
+      width: 100%; padding: 13px 16px; font-size: 15px; text-align: center;
+      border: 1.5px solid var(--bdr); border-radius: 8px; color: var(--tx-hvy);
+      background: var(--white); font-family: inherit; outline: none; margin-bottom: 14px;
+      transition: border-color .15s;
+    }
+    .gate-input:focus { border-color: var(--teal); }
+    .gate-err { font-size: 12px; color: var(--red); margin-bottom: 12px; display: none; }
+    .gate-err.show { display: block; }
+
+    /* ── PAGES ────────────────────────────────────────────────── */
+    .page { display: none; max-width: 520px; margin: 0 auto; padding: 52px 24px 80px; }
+    .page.wide   { max-width: 600px; }
+    .page.center { max-width: 460px; text-align: center; }
+    .page.active { display: block; }
+    #snap-processing { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 65vh; gap: 22px; }
+    #snap-processing.active { display: flex; }
+
+    /* ── WELCOME PAGE ─────────────────────────────────────────── */
+    .welcome-eyebrow { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
+    .welcome-title   { font-family: var(--serif); font-size: clamp(28px,5vw,38px); font-weight: 700; color: var(--tx-hvy); line-height: 1.12; margin-bottom: 20px; }
+    .welcome-sub     { font-size: 15px; color: var(--tx-mid); line-height: 1.85; font-weight: 300; margin-bottom: 36px; }
+    .steps-card {
+      background: var(--white); border: 1px solid var(--bdr); border-radius: 12px;
+      padding: 28px; margin-bottom: 36px;
+    }
+    .steps-label { font-size: 10px; font-weight: 700; color: var(--teal); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 20px; }
+    .step-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--bdr); }
+    .step-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-text { font-size: 14px; color: var(--tx-mid); line-height: 1.6; font-weight: 300; padding-top: 2px; }
+    .step-text strong { color: var(--tx-hvy); font-weight: 600; }
+
+    /* ── BUTTONS ──────────────────────────────────────────────── */
+    .btn-primary {
+      width: 100%; padding: 15px 24px; background: var(--teal); color: #fff;
+      border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
+      letter-spacing: .01em; transition: background .15s;
+    }
+    .btn-primary:hover { background: var(--teal-dk); }
+    .btn-dark {
+      width: 100%; padding: 15px 24px; background: #063D50; color: #fff;
+      border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
+      letter-spacing: .01em; transition: background .15s;
+    }
+    .btn-dark:hover { background: #042C3A; }
+    .btn-secondary {
+      padding: 13px 28px; background: var(--white); color: var(--teal);
+      border: 1.5px solid var(--teal-bd); border-radius: 8px; font-size: 14px;
+      font-weight: 600; transition: all .15s;
+    }
+    .btn-secondary:hover { background: var(--teal-lt); color: var(--teal-dk); }
+    .btn-ghost {
+      background: none; border: none; color: var(--tx-sft); font-size: 13px;
+      margin-top: 20px; display: block; text-align: center; transition: color .15s;
+    }
+    .btn-ghost:hover { color: var(--teal); }
+    .btn-hint { font-size: 12px; color: var(--tx-sft); text-align: center; margin-top: 14px; }
+
+    /* ── FORM FIELDS ──────────────────────────────────────────── */
+    .field-label {
+      display: block; font-size: 11px; font-weight: 600; color: var(--tx-mid);
+      letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .field-group { margin-bottom: 28px; }
+    .snap-input {
+      width: 100%; padding: 13px 16px; font-size: 15px; border: 1.5px solid var(--bdr);
+      border-radius: 8px; color: var(--tx-hvy); background: var(--white);
+      font-family: inherit; transition: border-color .15s; outline: none;
+    }
+    .snap-input:focus { border-color: var(--teal); }
+    .snap-input.error { border-color: var(--red); }
+    .snap-input[type="email"] { text-align: center; }
+    .err-msg { font-size: 12px; color: var(--red); margin-top: 8px; display: none; }
+    .err-msg.show { display: block; }
+    .grade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 40px; }
+    .grade-btn {
+      padding: 13px 16px; border: 1.5px solid var(--bdr); border-radius: 8px;
+      background: var(--white); color: var(--tx-mid); font-size: 14px;
+      font-weight: 400; text-align: left; transition: all .15s;
+    }
+    .grade-btn:hover  { border-color: var(--teal-md); background: var(--teal-lt); }
+    .grade-btn.selected { border-color: var(--teal); background: var(--teal-lt); color: var(--teal-dk); font-weight: 600; }
+    .field-divider { height: 1px; background: var(--bdr); margin-bottom: 36px; }
+
+    /* ── ASSESSMENT ───────────────────────────────────────────── */
+    .progress-track { height: 2px; background: var(--bdr); border-radius: 1px; overflow: hidden; margin-bottom: 44px; }
+    .progress-fill  { height: 100%; background: var(--teal); border-radius: 1px; transition: width .45s cubic-bezier(.4,0,.2,1); width: 0; }
+    .progress-full  { height: 2px; background: var(--teal); border-radius: 1px; margin-bottom: 44px; }
+    .instruction-text { font-size: 13px; color: var(--tx-sft); line-height: 1.75; text-align: center; max-width: 360px; margin: 0 auto 52px; }
+    #word-display { text-align: center; margin-bottom: 56px; }
+    #word-display span { font-family: var(--serif); font-size: clamp(52px,10vw,72px); font-weight: 700; color: var(--tx-hvy); letter-spacing: .02em; line-height: 1; display: block; }
+    .resp-list { display: flex; flex-direction: column; gap: 10px; }
+    .resp-btn {
+      width: 100%; padding: 14px 18px; background: var(--white); border: 1.5px solid var(--bdr);
+      border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 12px;
+      transition: all .15s; font-family: inherit;
+    }
+    .resp-btn:hover { border-color: var(--teal-md); background: var(--teal-lt); }
+    .resp-label { font-weight: 600; color: var(--tx-hvy); font-size: 14px; min-width: 140px; flex-shrink: 0; }
+    .resp-sub   { font-size: 12px; color: var(--tx-sft); line-height: 1.5; }
+    .sentence-card {
+      background: var(--teal-lt); border: 1px solid var(--teal-bd); border-radius: 10px;
+      padding: 32px 28px; text-align: center; margin-bottom: 44px;
+    }
+    .sentence-card span { font-family: var(--serif); font-size: clamp(18px,3vw,22px); font-weight: 600; color: var(--tx-hvy); line-height: 1.55; }
+
+    /* ── PROCESSING ───────────────────────────────────────────── */
+    .blink-bars { display: flex; gap: 8px; align-items: center; }
+    .blink-bar  { width: 5px; height: 22px; background: var(--teal); border-radius: 3px; }
+    .blink-bar:nth-child(1) { animation: blink 1.2s ease-in-out 0s    infinite; }
+    .blink-bar:nth-child(2) { animation: blink 1.2s ease-in-out .18s  infinite; }
+    .blink-bar:nth-child(3) { animation: blink 1.2s ease-in-out .36s  infinite; }
+    .processing-label { font-size: 13px; color: var(--tx-sft); letter-spacing: .06em; }
+
+    /* ── RESULTS ──────────────────────────────────────────────── */
+    .eyebrow-teal { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
+    .serif-title  { font-family: var(--serif); font-size: clamp(26px,5vw,34px); font-weight: 700; color: var(--tx-hvy); line-height: 1.15; margin-bottom: 8px; }
+    .snap-phase   { font-size: 13px; color: var(--tx-sft); margin-bottom: 32px; }
+    .gap-pill     { display: inline-block; background: var(--teal); border-radius: 6px; padding: 10px 22px; margin-bottom: 32px; }
+    .gap-pill span { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: .01em; }
+    .result-summary { font-size: 16px; color: var(--tx-hvy); font-weight: 500; line-height: 1.8; margin-bottom: 24px; }
+    .result-body-block { border-left: 2px solid var(--teal-bd); padding-left: 22px; margin-bottom: 32px; }
+    .result-body-block p { font-size: 14px; color: var(--tx-mid); line-height: 1.9; font-weight: 300; }
+    .focus-card { background: var(--teal-lt); border: 1px solid var(--teal-bd); border-radius: 10px; padding: 22px 24px; margin-bottom: 44px; }
+    .focus-label { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; }
+    .focus-card p { font-size: 14px; color: var(--tx-hvy); line-height: 1.85; }
+
+    /* ── WAITLIST ─────────────────────────────────────────────── */
+    .check-circle {
+      width: 52px; height: 52px; border-radius: 50%; background: var(--teal-lt);
+      border: 1.5px solid var(--teal-bd); display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 28px;
+    }
+    .waitlist-body { font-size: 14px; color: var(--tx-mid); line-height: 1.85; margin-bottom: 36px; font-weight: 300; }
+    .no-spam { font-size: 12px; color: var(--tx-sft); margin-top: 14px; }
+
+    /* ── MOBILE ───────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      #word-display span { font-size: 52px; }
+      .grade-grid { grid-template-columns: 1fr; }
+      .gate-card  { padding: 32px 20px; }
+      .steps-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-bar" style="width:100%"></div>
+      <div class="logo-bar"></div>
+      <div class="logo-bar" style="width:80%"></div>
+    </div>
+    <div>
+      <div class="logo-name">Reading Routines</div>
+      <div class="logo-sub">for parents</div>
+    </div>
+  </div>
+  <span class="nav-badge">Reading Snapshot</span>
+</nav>
+
+<!-- ── GATE SCREEN ───────────────────────────────────────────── -->
+<!-- Shown to anyone who lands without a valid token             -->
+<div id="screen-gate" style="display:none;">
+  <div class="gate-card">
+    <h2>Access Required</h2>
+    <p>The Reading Snapshot is available after purchase. If you&rsquo;ve already paid, please use the link from your confirmation email or return via the checkout page.</p>
+    <p style="font-size:13px;color:var(--tx-sft);margin-top:-16px">Have an access code? Enter it below.</p>
+    <input type="text" id="gate-input" class="gate-input" placeholder="Access code" autocomplete="off">
+    <p class="gate-err" id="gate-err">That code doesn&rsquo;t match. Please try again.</p>
+    <button class="btn-dark" onclick="checkManualCode()">Unlock Access</button>
+    <a href="/" style="display:block;text-align:center;margin-top:20px;font-size:13px;color:var(--tx-sft);">&larr; Back to home</a>
+  </div>
+</div>
+
+<!-- ── APP SCREENS (shown after gate passes) ─────────────────── -->
+<div id="app" style="display:none;">
+
+  <!-- WELCOME -->
+  <div id="page-welcome" class="page active fade-up">
+    <p class="welcome-eyebrow">Your Reading Snapshot is Ready</p>
+    <h1 class="welcome-title">Let&rsquo;s find out exactly what&rsquo;s happening when your child reads.</h1>
+    <p class="welcome-sub">
+      This 5-minute assessment goes word by word. You read aloud with your child and log exactly what happens on each word. At the end, the Snapshot identifies your child&rsquo;s specific decoding gap &mdash; and gives you a focused strategy you can use tonight.
+    </p>
+    <div class="steps-card">
+      <p class="steps-label">How it works</p>
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <p class="step-text"><strong>Enter your child&rsquo;s name and grade.</strong> The word list adjusts to their level.</p>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <p class="step-text"><strong>Read each word aloud together.</strong> Wait 3 seconds before stepping in.</p>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <p class="step-text"><strong>Tap how your child responded.</strong> Instant, Heavy Lift, Guess, or Wall.</p>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <p class="step-text"><strong>Read one sentence together.</strong> A final fluency check.</p>
+      </div>
+      <div class="step-row">
+        <div class="step-num">5</div>
+        <p class="step-text"><strong>Get your result.</strong> A clear gap label and a strategy to start tonight.</p>
+      </div>
+    </div>
+    <button class="btn-dark" onclick="showPage('page-setup')">Start the Reading Snapshot &rarr;</button>
+    <p class="btn-hint">Saved to this device &bull; Return anytime &bull; No account needed</p>
+  </div>
+
+  <!-- SETUP -->
+  <div id="page-setup" class="page fade-up">
+    <p class="welcome-eyebrow">Science of Reading &bull; Grades K&ndash;3</p>
+    <h1 class="serif-title">Reading Snapshot</h1>
+    <!-- Show previous result if exists -->
+    <div id="prev-result-banner" style="display:none;margin-bottom:24px">
+      <div style="background:var(--teal-lt);border:1px solid var(--teal-bd);border-radius:8px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <p style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Previous Result</p>
+          <p id="prev-gap-text" style="font-size:14px;font-weight:600;color:var(--tx-hvy)"></p>
+          <p id="prev-date-text" style="font-size:12px;color:var(--tx-sft)"></p>
+        </div>
+        <button class="btn-secondary" style="white-space:nowrap;font-size:12px;padding:8px 14px" onclick="loadPrevResult()">View</button>
+      </div>
+    </div>
+    <div class="field-divider"></div>
+    <div class="field-group">
+      <label class="field-label" for="child-name">Child&rsquo;s first name</label>
+      <input type="text" id="child-name" class="snap-input" placeholder="First name" autocomplete="off">
+      <p class="err-msg" id="err-name">Please enter your child&rsquo;s name to continue.</p>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Current grade</label>
+      <div class="grade-grid" id="grade-grid">
+        <button class="grade-btn" data-grade="K">Kindergarten</button>
+        <button class="grade-btn" data-grade="1">1st Grade</button>
+        <button class="grade-btn" data-grade="2">2nd Grade</button>
+        <button class="grade-btn" data-grade="3">3rd Grade</button>
+      </div>
+      <p class="err-msg" id="err-grade">Please select a grade to continue.</p>
+    </div>
+    <button class="btn-dark" id="btn-start">Begin Assessment</button>
+    <p class="btn-hint">Approximately 5 minutes &bull; Saved to this device</p>
+  </div>
+
+  <!-- ASSESSMENT -->
+  <div id="page-assessment" class="page">
+    <div class="progress-track"><div class="progress-fill" id="snap-progress"></div></div>
+    <p class="instruction-text" id="snap-instruction"></p>
+    <div id="word-display"><span id="current-word"></span></div>
+    <div class="resp-list" id="word-responses"></div>
+  </div>
+
+  <!-- FLUENCY -->
+  <div id="page-fluency" class="page fade-up">
+    <div class="progress-full"></div>
+    <p class="instruction-text" id="fluency-instruction"></p>
+    <div class="sentence-card"><span id="fluency-sentence"></span></div>
+    <div class="resp-list" id="fluency-responses"></div>
+  </div>
+
+  <!-- PROCESSING -->
+  <div id="snap-processing">
+    <div class="blink-bars">
+      <div class="blink-bar"></div>
+      <div class="blink-bar"></div>
+      <div class="blink-bar"></div>
+    </div>
+    <p class="processing-label">Analyzing reading patterns&hellip;</p>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="page-results" class="page wide fade-up">
+    <p class="eyebrow-teal" id="r-eyebrow"></p>
+    <h1 class="serif-title" id="r-title"></h1>
+    <p class="snap-phase" id="r-phase"></p>
+    <div class="gap-pill"><span id="r-gap"></span></div><br style="margin-bottom:8px">
+    <p class="result-summary" id="r-summary"></p>
+    <div class="result-body-block"><p id="r-body"></p></div>
+    <div class="focus-card">
+      <p class="focus-label">Where to Focus</p>
+      <p id="r-focus"></p>
+    </div>
+    <button class="btn-dark" onclick="showPage('page-waitlist')">Get Your 10-Minute Plan &rarr;</button>
+    <div style="text-align:center;margin-top:16px">
+      <button class="btn-ghost" onclick="restartSnap()">Take the assessment again</button>
+    </div>
+  </div>
+
+  <!-- WAITLIST -->
+  <div id="page-waitlist" class="page center fade-up">
+    <div id="wl-form">
+      <h2 style="font-family:var(--serif);font-size:26px;font-weight:700;color:var(--tx-hvy);line-height:1.2;margin-bottom:14px">Your 10-Minute Plan is coming.</h2>
+      <p class="waitlist-body" id="wl-body"></p>
+      <input type="email" id="wl-email" class="snap-input" placeholder="your@email.com">
+      <button class="btn-dark" id="btn-notify" style="margin-top:14px">Notify Me</button>
+      <p class="no-spam">No spam. One email when it launches.</p>
+    </div>
+    <div id="wl-confirmed" style="display:none">
+      <div class="check-circle">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10l4 4 8-8" stroke="#0891B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--tx-hvy);margin-bottom:14px">You&rsquo;re on the list.</h2>
+      <p class="waitlist-body" id="wl-confirmed-body"></p>
+      <button class="btn-secondary" onclick="restartSnap()">Run Another Snapshot</button>
+    </div>
+  </div>
+
+</div><!-- end #app -->
+
+<script>
+  // ════════════════════════════════════════════════════════════
+  // CUSTOMIZE: Change this token to anything you like.
+  // Users arriving from Square should have ?access=YOUR_TOKEN
+  // Set your Square redirect URL to:
+  //   https://readingroutine.com/webapp?access=rr2025
+  // ════════════════════════════════════════════════════════════
+  var ACCESS_TOKEN = 'rr2025';
+
+  // ── WORD LISTS ─────────────────────────────────────────────
+  var WORD_LISTS = {
+    K:   { sections:[['cat','sun','mop','pig'],['hat','bed','bug','top']],                                                          sentence:'The dog ran.' },
+    '1': { sections:[['trip','clam','frog','step'],['chip','brush','math','duck'],['made','bike','rope','tune']],                    sentence:'The fish swam fast.' },
+    '2': { sections:[['rain','heat','coat','feet'],['park','bird','corn','hurt'],['rabbit','pencil','sunset','mitten']],             sentence:'The brown bird sat in the green tree.' },
+    '3': { sections:[['flight','south','crawl','point'],['basket','garden','thunder','mistake'],['important','remember','discover','beginning']], sentence:'The children discovered a hidden path in the forest.' }
+  };
+
+  var WORD_RESPONSES = [
+    { key:'instant', label:'Instant',          sub:'No hesitation \u2014 read immediately' },
+    { key:'heavy',   label:'Heavy Lift',        sub:'Sounded out \u2014 slow but correct'   },
+    { key:'guess',   label:'Guess / Incorrect', sub:'Wrong word or partial guess'           },
+    { key:'wall',    label:'Wall',              sub:'Refused, froze, or showed distress'    }
+  ];
+  var FLUENCY_RESPONSES = [
+    { key:'smooth',  label:'Smooth',             sub:'Read the sentence without stopping'       },
+    { key:'choppy',  label:'Choppy / Effortful', sub:'Paused, sounded out, or lost the thread' },
+    { key:'refused', label:'Refused',            sub:'Would not attempt'                       }
+  ];
+
+  var RESULTS = {
+    accuracy: {
+      gap:'The Accuracy Gap', phase:'Phase 1 \u00B7 Decoding Foundation',
+      summary:function(n){return n+"'s reading patterns indicate that foundational decoding is the primary area of need."},
+      body:'When a child substitutes words, guesses from the first letter, or relies on picture cues, the brain is bypassing the actual letters on the page. This is not a comprehension issue and it is not a reflection of intelligence. It signals that phonics patterns have not yet been fully mapped \u2014 the brain is reaching for familiar-looking words rather than processing the sound-symbol connections that make decoding reliable and automatic.',
+      focus:'Explicit, systematic phonics instruction \u2014 beginning with the patterns that are not yet secure. The goal is accuracy before speed. Every correct decoding attempt, however slow, is the mechanism through which reading becomes automatic.'
+    },
+    automaticity: {
+      gap:'The Automaticity Gap', phase:'Phase 2 \u00B7 Fluency Development',
+      summary:function(n){return n+"'s reading patterns indicate that decoding accuracy is in place, but word recognition has not yet become automatic."},
+      body:'When a child decodes correctly but slowly, the brain is still processing each word from scratch. This exhausts working memory before comprehension can begin \u2014 which is why children at this stage often finish a sentence and cannot recall what they just read. The skill is present. The automaticity is not.',
+      focus:'Fluency-building practice focused on continuous blending and repeated reading of familiar texts. The goal is to move word recognition from conscious effort to automatic retrieval \u2014 freeing cognitive bandwidth for meaning-making.'
+    },
+    multisyllabic: {
+      gap:'The Multisyllabic Gap', phase:'Phase 3 \u00B7 Advanced Word Structure',
+      summary:function(n){return n+"'s reading patterns show reliable short-word decoding with a clear breakdown on longer, multisyllabic words."},
+      body:'This is among the most common \u2014 and most overlooked \u2014 gaps in upper-primary readers. Short words are handled automatically, but longer words trigger avoidance because no reliable strategy exists for breaking them apart. Without explicit instruction in syllabication and morphological structure, the brain defaults to guessing from the prefix or refusing to engage.',
+      focus:'Syllable division and morphological awareness \u2014 prefixes, suffixes, and systematic strategies for breaking unfamiliar words into decodable parts. Short, structured practice on this skill closes the gap quickly in most cases.'
+    },
+    mixed: {
+      gap:'A Mixed Decoding Profile', phase:'Multiple Gaps Present',
+      summary:function(n){return n+"'s reading patterns show inconsistency across word types, indicating that more than one area of decoding needs attention."},
+      body:'A mixed profile is common in children who have received inconsistent literacy instruction or who have compensated for gaps using verbal memory and contextual guessing. Some patterns are automatic. Others are effortful. Others are avoided entirely. This is not a more serious problem than a single-gap profile \u2014 it simply requires identifying the earliest unresolved gap and building systematically from there.',
+      focus:'A structured literacy baseline \u2014 beginning with phonemic awareness and early phonics to locate the first unresolved gap. Building from the ground up is faster and more reliable than targeting individual patterns in isolation.'
+    }
+  };
+
+  // ── STATE ───────────────────────────────────────────────────
+  var state = { childName:'', grade:'', allWords:[], wordIdx:0, responses:[], result:null };
+
+  // ── GATE ────────────────────────────────────────────────────
+  function checkAccess() {
+    var params = new URLSearchParams(window.location.search);
+    var token  = params.get('access') || params.get('token');
+
+    // Save token to localStorage if present in URL
+    if (token === ACCESS_TOKEN) {
+      localStorage.setItem('rr_access', 'true');
+      // Clean URL
+      history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    var hasAccess = localStorage.getItem('rr_access') === 'true';
+
+    if (hasAccess) {
+      document.getElementById('app').style.display = 'block';
+      loadPrevResultBanner();
+    } else {
+      document.getElementById('screen-gate').style.display = 'flex';
+    }
+  }
+
+  function checkManualCode() {
+    var input = document.getElementById('gate-input').value.trim();
+    if (input === ACCESS_TOKEN) {
+      localStorage.setItem('rr_access', 'true');
+      document.getElementById('screen-gate').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadPrevResultBanner();
+    } else {
+      document.getElementById('gate-err').classList.add('show');
+    }
+  }
+  document.getElementById('gate-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkManualCode();
+  });
+
+  // ── PAGE NAVIGATION ─────────────────────────────────────────
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('snap-processing').classList.remove('active');
+    var el = document.getElementById(id);
+    el.classList.add('active');
+    if (id !== 'page-assessment') {
+      el.classList.remove('fade-up'); void el.offsetWidth; el.classList.add('fade-up');
+    }
+    window.scrollTo(0, 0);
+  }
+  function showProcessing() {
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('snap-processing').classList.add('active');
+  }
+
+  // ── SETUP ───────────────────────────────────────────────────
+  document.getElementById('grade-grid').addEventListener('click', function(e) {
+    var btn = e.target.closest('.grade-btn');
+    if (!btn) return;
+    document.querySelectorAll('.grade-btn').forEach(function(b){ b.classList.remove('selected'); });
+    btn.classList.add('selected');
+    state.grade = btn.dataset.grade;
+    document.getElementById('err-grade').classList.remove('show');
+  });
+
+  document.getElementById('child-name').addEventListener('input', function() {
+    document.getElementById('err-name').classList.remove('show');
+    document.getElementById('child-name').classList.remove('error');
+  });
+
+  document.getElementById('btn-start').addEventListener('click', startAssessment);
+  document.getElementById('child-name').addEventListener('keydown', function(e){ if(e.key==='Enter') startAssessment(); });
+
+  function startAssessment() {
+    var name = document.getElementById('child-name').value.trim();
+    var ok = true;
+    if (!name) { document.getElementById('err-name').classList.add('show'); document.getElementById('child-name').classList.add('error'); ok=false; }
+    if (!state.grade) { document.getElementById('err-grade').classList.add('show'); ok=false; }
+    if (!ok) return;
+    state.childName = name;
+    state.allWords  = WORD_LISTS[state.grade].sections.reduce(function(a,b){return a.concat(b);},[]);
+    state.wordIdx   = 0;
+    state.responses = [];
+    loadWord();
+    showPage('page-assessment');
+  }
+
+  function firstName() { return state.childName.trim().split(' ')[0] || 'your child'; }
+
+  // ── ASSESSMENT ──────────────────────────────────────────────
+  function loadWord() {
+    var total = state.allWords.length;
+    document.getElementById('snap-progress').style.width = ((state.wordIdx / total) * 100) + '%';
+    document.getElementById('snap-instruction').textContent =
+      'Have ' + firstName() + ' read the word aloud. Wait 3 seconds before stepping in. Tap the response that best describes what happened.';
+    var w = document.getElementById('current-word');
+    w.textContent = state.allWords[state.wordIdx];
+    w.classList.remove('word-in'); void w.offsetWidth; w.classList.add('word-in');
+    buildButtons('word-responses', WORD_RESPONSES, function(key) {
+      state.responses.push(key);
+      if (state.wordIdx + 1 < total) { state.wordIdx++; loadWord(); }
+      else { loadFluency(); showPage('page-fluency'); }
+    });
+  }
+
+  // ── FLUENCY ─────────────────────────────────────────────────
+  function loadFluency() {
+    document.getElementById('fluency-instruction').textContent =
+      'Final check. Have ' + firstName() + ' read this sentence aloud.';
+    document.getElementById('fluency-sentence').textContent =
+      '\u201C' + WORD_LISTS[state.grade].sentence + '\u201D';
+    buildButtons('fluency-responses', FLUENCY_RESPONSES, function() {
+      showProcessing();
+      state.result = computeResult(state.grade, state.responses);
+      setTimeout(function(){ renderResults(); showPage('page-results'); }, 2200);
+    });
+  }
+
+  // ── SCORING ─────────────────────────────────────────────────
+  function computeResult(grade, responses) {
+    var total = responses.length;
+    if (!total) return 'accuracy';
+    var c = { instant:0, heavy:0, guess:0, wall:0 };
+    responses.forEach(function(r){ c[r]++; });
+    var pctBad = (c.guess + c.wall) / total, pctHeavy = c.heavy / total;
+    if (grade === '2' || grade === '3') {
+      var sects = WORD_LISTS[grade].sections;
+      var sc = sects[0].length + sects[1].length;
+      var sR = responses.slice(0, sc), mR = responses.slice(sc);
+      var sBad = sR.filter(function(r){return r==='guess'||r==='wall';}).length / sR.length;
+      var mBad = mR.length ? mR.filter(function(r){return r==='guess'||r==='wall';}).length / mR.length : 0;
+      if (sBad < 0.26 && mBad >= 0.5) return 'multisyllabic';
+    }
+    if (pctBad >= 0.30)                       return 'accuracy';
+    if (pctHeavy >= 0.40 && pctBad < 0.20)   return 'automaticity';
+    if (pctBad >= 0.15   && pctHeavy >= 0.25) return 'mixed';
+    return 'accuracy';
+  }
+
+  // ── RESULTS ─────────────────────────────────────────────────
+  function renderResults() {
+    var n = firstName();
+    var p = RESULTS[state.result];
+    document.getElementById('r-eyebrow').textContent  = 'Reading Snapshot \u00B7 ' + n;
+    document.getElementById('r-title').textContent    = "What\u2019s Holding " + n + ' Back';
+    document.getElementById('r-phase').textContent    = p.phase;
+    document.getElementById('r-gap').textContent      = p.gap;
+    document.getElementById('r-summary').textContent  = p.summary(n);
+    document.getElementById('r-body').textContent     = p.body;
+    document.getElementById('r-focus').textContent    = p.focus;
+    document.getElementById('wl-body').textContent    =
+      "A targeted, structured sequence built specifically for " + n + "\u2019s gap. Enter your email to be notified when it\u2019s ready.";
+    // Save to localStorage
+    localStorage.setItem('rr_snap_result', JSON.stringify({
+      resultKey: state.result, gap: p.gap, childName: n,
+      date: 'Last taken ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})
+    }));
+  }
+
+  // ── PREVIOUS RESULT BANNER ──────────────────────────────────
+  function loadPrevResultBanner() {
+    var stored = localStorage.getItem('rr_snap_result');
+    if (!stored) return;
+    try {
+      var d = JSON.parse(stored);
+      document.getElementById('prev-result-banner').style.display = 'block';
+      document.getElementById('prev-gap-text').textContent = d.gap;
+      document.getElementById('prev-date-text').textContent = d.date;
+    } catch(e){}
+  }
+
+  function loadPrevResult() {
+    var stored = localStorage.getItem('rr_snap_result');
+    if (!stored) return;
+    var d = JSON.parse(stored);
+    state.childName = d.childName || 'your child';
+    state.result    = d.resultKey;
+    renderResults();
+    showPage('page-results');
+  }
+
+  function restartSnap() {
+    state = { childName:'', grade:'', allWords:[], wordIdx:0, responses:[], result:null };
+    document.getElementById('child-name').value = '';
+    document.getElementById('wl-email').value   = '';
+    document.getElementById('wl-form').style.display      = 'block';
+    document.getElementById('wl-confirmed').style.display = 'none';
+    document.querySelectorAll('.grade-btn').forEach(function(b){ b.classList.remove('selected'); });
+    document.getElementById('err-name').classList.remove('show');
+    document.getElementById('err-grade').classList.remove('show');
+    document.getElementById('child-name').classList.remove('error');
+    loadPrevResultBanner();
+    showPage('page-setup');
+  }
+
+  // ── WAITLIST ─────────────────────────────────────────────────
+  document.getElementById('btn-notify').addEventListener('click', submitEmail);
+  document.getElementById('wl-email').addEventListener('keydown', function(e){ if(e.key==='Enter') submitEmail(); });
+
+  function submitEmail() {
+    var email = document.getElementById('wl-email').value.trim();
+    if (!email.includes('@') || !email.includes('.')) return;
+    document.getElementById('wl-form').style.display      = 'none';
+    document.getElementById('wl-confirmed').style.display = 'block';
+    document.getElementById('wl-confirmed-body').textContent =
+      "We\u2019ll notify you when " + firstName() + "\u2019s 10-Minute Plan is ready. One email. No noise.";
+  }
+
+  // ── SHARED BUTTON BUILDER ────────────────────────────────────
+  function buildButtons(containerId, items, onClick) {
+    var c = document.getElementById(containerId);
+    c.innerHTML = '';
+    items.forEach(function(r) {
+      var b = document.createElement('button');
+      b.className = 'resp-btn';
+      b.innerHTML = '<span class="resp-label">'+r.label+'</span><span class="resp-sub">'+r.sub+'</span>';
+      b.addEventListener('click', function(){ onClick(r.key); });
+      c.appendChild(b);
+    });
+  }
+
+  // ── INIT ────────────────────────────────────────────────────
+  checkAccess();
+</script>
+</body>
+</html>
