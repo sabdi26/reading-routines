@@ -3,220 +3,228 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reading Snapshot · Reading Routines</title>
+  <title>Reading Snapshot &middot; Reading Routines</title>
   <meta name="description" content="Scripted reading routines for parents of struggling readers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ── CUSTOMIZE: Change colors here ───────────────────────── */
     :root {
-      --teal:    #0891B2;
-      --teal-dk: #0C6A8A;
-      --teal-md: #67C4DC;
-      --teal-lt: #EEF9FC;
-      --teal-bd: #C4E8F4;
-      --dark:    #0B1D2A;
-      --bg:      #F7FAFB;
-      --white:   #FFFFFF;
-      --tx-hvy:  #0F172A;
-      --tx-mid:  #475569;
-      --tx-sft:  #94A3B8;
-      --bdr:     #E1EDF2;
-      --red:     #EF4444;
+      --teal:    #0891B2; --teal-dk: #0C6A8A; --teal-md: #67C4DC;
+      --teal-lt: #EEF9FC; --teal-bd: #C4E8F4;
+      --dark:    #0B1D2A; --bg: #F7FAFB; --white: #FFFFFF;
+      --tx-hvy:  #0F172A; --tx-mid: #475569; --tx-sft: #94A3B8;
+      --bdr:     #E1EDF2; --red: #EF4444;
       --serif:   'Playfair Display', Georgia, serif;
-      --sans:    'DM Sans', 'Segoe UI', system-ui, sans-serif;
+      --sans:    'DM Sans', system-ui, sans-serif;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); font-family: var(--sans); -webkit-font-smoothing: antialiased; color: var(--tx-hvy); }
     button { cursor: pointer; font-family: inherit; }
     button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
-    /* ── ANIMATIONS ───────────────────────────────────────────── */
-    @keyframes fadeUp  { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes wordIn  { from { opacity:0; transform:translateY(10px) scale(.96); } to { opacity:1; transform:translateY(0) scale(1); } }
-    @keyframes blink   { 0%,80%,100% { opacity:.15; transform:scaleY(.5); } 40% { opacity:1; transform:scaleY(1); } }
-    .fade-up  { animation: fadeUp .45s cubic-bezier(.22,1,.36,1) both; }
-    .word-in  { animation: wordIn .38s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes fadeUp  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes blink   { 0%,80%,100%{opacity:.15;transform:scaleY(.5)} 40%{opacity:1;transform:scaleY(1)} }
+    @keyframes wordIn  { from{opacity:0;transform:translateX(32px)} to{opacity:1;transform:translateX(0)} }
+    @keyframes wordOut { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(-32px)} }
+    @keyframes popIn   { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+    @keyframes pulse   { 0%,100%{box-shadow:0 0 0 0 rgba(8,145,178,.3)} 50%{box-shadow:0 0 0 8px rgba(8,145,178,0)} }
 
-    /* ── NAV ──────────────────────────────────────────────────── */
-    nav {
-      background: var(--dark); border-bottom: 1px solid rgba(255,255,255,.08);
-      padding: 0 24px; height: 60px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 50;
-    }
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark { width: 18px; height: 18px; display: flex; flex-direction: column; gap: 3px; justify-content: center; }
-    .logo-bar { height: 3px; border-radius: 2px; background: var(--teal); }
-    .logo-bar:nth-child(2) { width: 70%; background: var(--teal-md); }
-    .logo-name { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: -.01em; }
-    .logo-sub  { font-size: 9px; font-weight: 400; color: rgba(255,255,255,.4); letter-spacing: .06em; text-transform: uppercase; margin-top: 2px; }
-    .nav-badge { font-size: 11px; color: rgba(255,255,255,.4); letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
+    .fade-up { animation: fadeUp .45s cubic-bezier(.22,1,.36,1) both; }
 
-    /* ── GATED SCREEN ─────────────────────────────────────────── */
-    #screen-gate {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      padding: 40px 24px; text-align: center;
-    }
-    .gate-card {
-      background: var(--white); border: 1px solid var(--bdr); border-radius: 16px;
-      padding: 48px 40px; max-width: 420px; width: 100%;
-      box-shadow: 0 4px 24px rgba(0,0,0,.06);
-    }
-    .gate-card h2 { font-family: var(--serif); font-size: 24px; color: var(--tx-hvy); margin-bottom: 12px; }
-    .gate-card p  { font-size: 14px; color: var(--tx-mid); line-height: 1.75; margin-bottom: 28px; font-weight: 300; }
-    .gate-input {
-      width: 100%; padding: 13px 16px; font-size: 15px; text-align: center;
-      border: 1.5px solid var(--bdr); border-radius: 8px; color: var(--tx-hvy);
-      background: var(--white); font-family: inherit; outline: none; margin-bottom: 14px;
-      transition: border-color .15s;
-    }
-    .gate-input:focus { border-color: var(--teal); }
-    .gate-err { font-size: 12px; color: var(--red); margin-bottom: 12px; display: none; }
-    .gate-err.show { display: block; }
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav { background:var(--dark); border-bottom:1px solid rgba(255,255,255,.08); padding:0 24px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
+    .logo { display:flex; align-items:center; gap:10px; }
+    .logo-mark { width:18px; height:18px; display:flex; flex-direction:column; gap:3px; justify-content:center; }
+    .logo-bar { height:3px; border-radius:2px; background:var(--teal); }
+    .logo-bar:nth-child(2){ width:70%; background:var(--teal-md); }
+    .logo-name { font-size:13px; font-weight:700; color:#fff; }
+    .logo-sub  { font-size:9px; color:rgba(255,255,255,.4); letter-spacing:.06em; text-transform:uppercase; margin-top:2px; }
+    .nav-badge { font-size:11px; color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase; font-weight:500; }
 
-    /* ── PAGES ────────────────────────────────────────────────── */
-    .page { display: none; max-width: 520px; margin: 0 auto; padding: 52px 24px 80px; }
-    .page.wide   { max-width: 600px; }
-    .page.center { max-width: 460px; text-align: center; }
-    .page.active { display: block; }
-    #snap-processing { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 65vh; gap: 22px; }
-    #snap-processing.active { display: flex; }
+    /* ── PAGES ───────────────────────────────────────────────── */
+    .page { display:none; max-width:520px; margin:0 auto; padding:48px 24px 80px; }
+    .page.wide { max-width:600px; }
+    .page.active { display:block; }
+    #snap-processing { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:65vh; gap:22px; }
+    #snap-processing.active { display:flex; }
 
-    /* ── WELCOME PAGE ─────────────────────────────────────────── */
-    .welcome-eyebrow { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
-    .welcome-title   { font-family: var(--serif); font-size: clamp(28px,5vw,38px); font-weight: 700; color: var(--tx-hvy); line-height: 1.12; margin-bottom: 20px; }
-    .welcome-sub     { font-size: 15px; color: var(--tx-mid); line-height: 1.85; font-weight: 300; margin-bottom: 36px; }
-    .steps-card {
-      background: var(--white); border: 1px solid var(--bdr); border-radius: 12px;
-      padding: 28px; margin-bottom: 36px;
-    }
-    .steps-label { font-size: 10px; font-weight: 700; color: var(--teal); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 20px; }
-    .step-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--bdr); }
-    .step-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .step-text { font-size: 14px; color: var(--tx-mid); line-height: 1.6; font-weight: 300; padding-top: 2px; }
-    .step-text strong { color: var(--tx-hvy); font-weight: 600; }
+    /* ── WELCOME ─────────────────────────────────────────────── */
+    .welcome-eyebrow { font-size:11px; font-weight:700; color:var(--teal); letter-spacing:.12em; text-transform:uppercase; margin-bottom:14px; }
+    .welcome-title   { font-family:var(--serif); font-size:clamp(26px,5vw,36px); font-weight:700; color:var(--tx-hvy); line-height:1.12; margin-bottom:18px; }
+    .welcome-sub     { font-size:15px; color:var(--tx-mid); line-height:1.85; font-weight:300; margin-bottom:32px; }
+    .steps-card  { background:var(--white); border:1px solid var(--bdr); border-radius:12px; padding:28px; margin-bottom:32px; }
+    .steps-label { font-size:10px; font-weight:700; color:var(--teal); letter-spacing:.12em; text-transform:uppercase; margin-bottom:20px; }
+    .step-row    { display:flex; align-items:flex-start; gap:14px; padding:12px 0; border-bottom:1px solid var(--bdr); }
+    .step-row:last-child { border-bottom:none; padding-bottom:0; }
+    .step-num  { width:26px; height:26px; border-radius:50%; background:var(--teal); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .step-text { font-size:14px; color:var(--tx-mid); line-height:1.6; font-weight:300; padding-top:2px; }
+    .step-text strong { color:var(--tx-hvy); font-weight:600; }
 
-    /* ── BUTTONS ──────────────────────────────────────────────── */
-    .btn-primary {
-      width: 100%; padding: 15px 24px; background: var(--teal); color: #fff;
-      border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
-      letter-spacing: .01em; transition: background .15s;
-    }
-    .btn-primary:hover { background: var(--teal-dk); }
-    .btn-dark {
-      width: 100%; padding: 15px 24px; background: #063D50; color: #fff;
-      border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
-      letter-spacing: .01em; transition: background .15s;
-    }
-    .btn-dark:hover { background: #042C3A; }
-    .btn-secondary {
-      padding: 13px 28px; background: var(--white); color: var(--teal);
-      border: 1.5px solid var(--teal-bd); border-radius: 8px; font-size: 14px;
-      font-weight: 600; transition: all .15s;
-    }
-    .btn-secondary:hover { background: var(--teal-lt); color: var(--teal-dk); }
-    .btn-ghost {
-      background: none; border: none; color: var(--tx-sft); font-size: 13px;
-      margin-top: 20px; display: block; text-align: center; transition: color .15s;
-    }
-    .btn-ghost:hover { color: var(--teal); }
-    .btn-hint { font-size: 12px; color: var(--tx-sft); text-align: center; margin-top: 14px; }
+    /* ── SETUP ───────────────────────────────────────────────── */
+    .serif-title   { font-family:var(--serif); font-size:clamp(24px,5vw,32px); font-weight:700; color:var(--tx-hvy); line-height:1.15; margin-bottom:8px; }
+    .field-label   { display:block; font-size:11px; font-weight:600; color:var(--tx-mid); letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; }
+    .field-group   { margin-bottom:28px; }
+    .field-divider { height:1px; background:var(--bdr); margin-bottom:28px; }
+    .snap-input    { width:100%; padding:13px 16px; font-size:15px; border:1.5px solid var(--bdr); border-radius:8px; color:var(--tx-hvy); background:var(--white); font-family:inherit; transition:border-color .15s; outline:none; }
+    .snap-input:focus { border-color:var(--teal); }
+    .snap-input.error { border-color:var(--red); }
+    .err-msg { font-size:12px; color:var(--red); margin-top:8px; display:none; }
+    .err-msg.show { display:block; }
+    .prev-banner { background:var(--teal-lt); border:1px solid var(--teal-bd); border-radius:8px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:24px; }
 
-    /* ── FORM FIELDS ──────────────────────────────────────────── */
-    .field-label {
-      display: block; font-size: 11px; font-weight: 600; color: var(--tx-mid);
-      letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px;
-    }
-    .field-group { margin-bottom: 28px; }
-    .snap-input {
-      width: 100%; padding: 13px 16px; font-size: 15px; border: 1.5px solid var(--bdr);
-      border-radius: 8px; color: var(--tx-hvy); background: var(--white);
-      font-family: inherit; transition: border-color .15s; outline: none;
-    }
-    .snap-input:focus { border-color: var(--teal); }
-    .snap-input.error { border-color: var(--red); }
-    .snap-input[type="email"] { text-align: center; }
-    .err-msg { font-size: 12px; color: var(--red); margin-top: 8px; display: none; }
-    .err-msg.show { display: block; }
-    .grade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 40px; }
-    .grade-btn {
-      padding: 13px 16px; border: 1.5px solid var(--bdr); border-radius: 8px;
-      background: var(--white); color: var(--tx-mid); font-size: 14px;
-      font-weight: 400; text-align: left; transition: all .15s;
-    }
-    .grade-btn:hover  { border-color: var(--teal-md); background: var(--teal-lt); }
-    .grade-btn.selected { border-color: var(--teal); background: var(--teal-lt); color: var(--teal-dk); font-weight: 600; }
-    .field-divider { height: 1px; background: var(--bdr); margin-bottom: 36px; }
+    /* ── BUTTONS ─────────────────────────────────────────────── */
+    .btn-dark { width:100%; padding:15px 24px; background:#063D50; color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:700; letter-spacing:.01em; transition:background .15s; }
+    .btn-dark:hover { background:#042C3A; }
+    .btn-secondary { padding:10px 16px; background:var(--white); color:var(--teal); border:1.5px solid var(--teal-bd); border-radius:8px; font-size:13px; font-weight:600; transition:all .15s; }
+    .btn-secondary:hover { background:var(--teal-lt); }
+    .btn-ghost { background:none; border:none; color:var(--tx-sft); font-size:13px; display:inline-block; transition:color .15s; }
+    .btn-ghost:hover { color:var(--teal); }
+    .btn-hint { font-size:12px; color:var(--tx-sft); text-align:center; margin-top:14px; }
 
-    /* ── ASSESSMENT ───────────────────────────────────────────── */
-    .progress-track { height: 2px; background: var(--bdr); border-radius: 1px; overflow: hidden; margin-bottom: 44px; }
-    .progress-fill  { height: 100%; background: var(--teal); border-radius: 1px; transition: width .45s cubic-bezier(.4,0,.2,1); width: 0; }
-    .progress-full  { height: 2px; background: var(--teal); border-radius: 1px; margin-bottom: 44px; }
-    .instruction-text { font-size: 13px; color: var(--tx-sft); line-height: 1.75; text-align: center; max-width: 360px; margin: 0 auto 52px; }
-    #word-display { text-align: center; margin-bottom: 56px; }
-    #word-display span { font-family: var(--serif); font-size: clamp(52px,10vw,72px); font-weight: 700; color: var(--tx-hvy); letter-spacing: .02em; line-height: 1; display: block; }
-    .resp-list { display: flex; flex-direction: column; gap: 10px; }
-    .resp-btn {
-      width: 100%; padding: 14px 18px; background: var(--white); border: 1.5px solid var(--bdr);
-      border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 12px;
-      transition: all .15s; font-family: inherit;
+    /* ── ASSESSMENT: TIMER ───────────────────────────────────── */
+    .timer-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:28px; padding:12px 18px; background:var(--white); border:1px solid var(--bdr); border-radius:12px; transition:all .25s; }
+    .timer-left { display:flex; align-items:center; gap:14px; }
+    .timer-display { font-family:var(--serif); font-size:28px; font-weight:700; color:var(--tx-hvy); letter-spacing:.04em; min-width:50px; transition:color .3s; }
+    .timer-display.urgent { color:var(--red); }
+    .timer-info { font-size:11px; color:var(--tx-sft); line-height:1.6; }
+    .timer-info strong { color:var(--tx-mid); font-weight:600; display:block; }
+    .timer-done { font-size:11px; color:var(--teal-dk); font-weight:600; display:none; margin-top:2px; }
+    .timer-done.show { display:block; }
+    .btn-hide-timer { flex-shrink:0; background:none; border:1px solid var(--bdr); border-radius:8px; font-size:11px; color:var(--tx-sft); padding:8px 12px; line-height:1.5; text-align:center; transition:all .15s; }
+    .btn-hide-timer:hover { background:var(--teal-lt); color:var(--teal-dk); border-color:var(--teal-bd); }
+
+    /* ── ASSESSMENT: PROGRESS ────────────────────────────────── */
+    .progress-track { height:3px; background:var(--bdr); border-radius:2px; overflow:hidden; margin-bottom:24px; }
+    .progress-fill  { height:100%; background:var(--teal); border-radius:2px; transition:width .4s cubic-bezier(.4,0,.2,1); }
+
+    /* ── ASSESSMENT: LEVEL HEADER ────────────────────────────── */
+    .assess-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .level-badge   { font-size:11px; font-weight:700; color:var(--teal); letter-spacing:.1em; text-transform:uppercase; }
+    .word-counter  { font-size:11px; color:var(--tx-sft); font-weight:500; }
+    .level-name    { font-family:var(--serif); font-size:16px; font-weight:700; color:var(--tx-hvy); margin-bottom:4px; }
+    .level-sub-label { font-size:12px; color:var(--tx-sft); margin-bottom:20px; }
+
+    /* ── ASSESSMENT: WORD DOTS ───────────────────────────────── */
+    .word-dots { display:flex; gap:6px; align-items:center; margin-bottom:28px; }
+    .word-dot  { width:10px; height:10px; border-radius:50%; background:var(--bdr); transition:all .25s; flex-shrink:0; }
+    .word-dot.current { background:var(--teal); animation:pulse 1.5s ease-in-out infinite; }
+    .word-dot.easy    { background:var(--teal); animation:none; }
+    .word-dot.heavy   { background:#F59E0B; animation:none; }
+    .word-dot.guess   { background:var(--red); animation:none; }
+
+    /* ── ASSESSMENT: WORD STAGE ──────────────────────────────── */
+    .word-type-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 12px; border-radius:20px; margin-bottom:20px; }
+    .word-type-badge.alien { background:#EEF2FF; color:#4F46E5; border:1px solid #C7D2FE; }
+    .word-type-badge.alien::before { content:'\01F6F8'; }
+    .word-type-badge.real  { background:var(--teal-lt); color:var(--teal-dk); border:1px solid var(--teal-bd); }
+    .word-type-badge.real::before  { content:'\01F4DA'; }
+
+    .word-stage { display:flex; flex-direction:column; align-items:center; gap:0; margin-bottom:28px; }
+    .big-word-card {
+      width:100%; padding:36px 24px; background:var(--white);
+      border:2px solid var(--bdr); border-radius:16px;
+      text-align:center; cursor:pointer; transition:border-color .15s, transform .1s;
+      -webkit-tap-highlight-color:transparent; user-select:none;
     }
-    .resp-btn:hover { border-color: var(--teal-md); background: var(--teal-lt); }
-    .resp-label { font-weight: 600; color: var(--tx-hvy); font-size: 14px; min-width: 140px; flex-shrink: 0; }
-    .resp-sub   { font-size: 12px; color: var(--tx-sft); line-height: 1.5; }
-    .sentence-card {
-      background: var(--teal-lt); border: 1px solid var(--teal-bd); border-radius: 10px;
-      padding: 32px 28px; text-align: center; margin-bottom: 44px;
+    .big-word-card:hover { border-color:var(--teal-bd); }
+    .big-word-card:active { transform:scale(.98); border-color:var(--teal); }
+    .big-word-card.alien-card { border-style:dashed; border-color:#C7D2FE; }
+    .big-word-card.alien-card:hover { border-color:#818CF8; }
+    .big-word { font-family:var(--serif); font-size:clamp(42px,10vw,64px); font-weight:700; color:var(--tx-hvy); display:block; }
+    .big-word.word-enter { animation:wordIn .3s cubic-bezier(.22,1,.36,1) both; }
+    .word-tap-hint { font-size:12px; color:var(--tx-sft); margin-top:12px; letter-spacing:.04em; }
+
+    /* ── ASSESSMENT: SCORE TALLY ─────────────────────────────── */
+    .score-row  { display:flex; gap:8px; }
+    .score-row-label { font-size:11px; color:var(--tx-sft); text-align:center; margin-bottom:8px; font-weight:500; }
+    .score-chip {
+      flex:1; padding:14px 4px; border-radius:10px; text-align:center;
+      font-size:11px; font-weight:700; border:2px solid transparent;
+      cursor:pointer; transition:all .15s; -webkit-tap-highlight-color:transparent;
     }
-    .sentence-card span { font-family: var(--serif); font-size: clamp(18px,3vw,22px); font-weight: 600; color: var(--tx-hvy); line-height: 1.55; }
+    .score-chip .snum { font-size:22px; font-weight:700; display:block; line-height:1.3; }
+    .score-chip.easy  { background:var(--teal-lt); color:var(--teal-dk); }
+    .score-chip.heavy { background:#FFFBEB; color:#B45309; }
+    .score-chip.guess { background:#FEF2F2; color:var(--red); }
+    .score-chip.easy:hover  { border-color:var(--teal); background:#D9F4FA; }
+    .score-chip.heavy:hover { border-color:#F59E0B; background:#FEF3C7; }
+    .score-chip.guess:hover { border-color:var(--red); background:#FEE2E2; }
+    .score-chip:active { transform:scale(.96); }
+    .score-chip.just-tapped { border-color:var(--teal); }
 
-    /* ── PROCESSING ───────────────────────────────────────────── */
-    .blink-bars { display: flex; gap: 8px; align-items: center; }
-    .blink-bar  { width: 5px; height: 22px; background: var(--teal); border-radius: 3px; }
-    .blink-bar:nth-child(1) { animation: blink 1.2s ease-in-out 0s    infinite; }
-    .blink-bar:nth-child(2) { animation: blink 1.2s ease-in-out .18s  infinite; }
-    .blink-bar:nth-child(3) { animation: blink 1.2s ease-in-out .36s  infinite; }
-    .processing-label { font-size: 13px; color: var(--tx-sft); letter-spacing: .06em; }
+    /* ── PROCESSING ──────────────────────────────────────────── */
+    .blink-bars { display:flex; gap:8px; align-items:center; }
+    .blink-bar  { width:5px; height:22px; background:var(--teal); border-radius:3px; }
+    .blink-bar:nth-child(1){ animation:blink 1.2s ease-in-out 0s    infinite; }
+    .blink-bar:nth-child(2){ animation:blink 1.2s ease-in-out .18s  infinite; }
+    .blink-bar:nth-child(3){ animation:blink 1.2s ease-in-out .36s  infinite; }
+    .processing-label { font-size:13px; color:var(--tx-sft); letter-spacing:.06em; }
 
-    /* ── RESULTS ──────────────────────────────────────────────── */
-    .eyebrow-teal { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
-    .serif-title  { font-family: var(--serif); font-size: clamp(26px,5vw,34px); font-weight: 700; color: var(--tx-hvy); line-height: 1.15; margin-bottom: 8px; }
-    .snap-phase   { font-size: 13px; color: var(--tx-sft); margin-bottom: 32px; }
-    .gap-pill     { display: inline-block; background: var(--teal); border-radius: 6px; padding: 10px 22px; margin-bottom: 32px; }
-    .gap-pill span { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: .01em; }
-    .result-summary { font-size: 16px; color: var(--tx-hvy); font-weight: 500; line-height: 1.8; margin-bottom: 24px; }
-    .result-body-block { border-left: 2px solid var(--teal-bd); padding-left: 22px; margin-bottom: 32px; }
-    .result-body-block p { font-size: 14px; color: var(--tx-mid); line-height: 1.9; font-weight: 300; }
-    .focus-card { background: var(--teal-lt); border: 1px solid var(--teal-bd); border-radius: 10px; padding: 22px 24px; margin-bottom: 44px; }
-    .focus-label { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; }
-    .focus-card p { font-size: 14px; color: var(--tx-hvy); line-height: 1.85; }
-
-    /* ── WAITLIST ─────────────────────────────────────────────── */
-    .check-circle {
-      width: 52px; height: 52px; border-radius: 50%; background: var(--teal-lt);
-      border: 1.5px solid var(--teal-bd); display: flex; align-items: center;
-      justify-content: center; margin: 0 auto 28px;
+    /* ── RESULTS: BLUR LOCK ──────────────────────────────────── */
+    .results-blur-wrap { transition:filter .5s, opacity .5s; }
+    .results-blur-wrap.locked { filter:blur(8px); opacity:.4; pointer-events:none; user-select:none; }
+    .results-waiting-banner {
+      background:var(--dark); border-radius:12px; padding:24px 28px;
+      margin-bottom:32px; display:none; text-align:center;
     }
-    .waitlist-body { font-size: 14px; color: var(--tx-mid); line-height: 1.85; margin-bottom: 36px; font-weight: 300; }
-    .no-spam { font-size: 12px; color: var(--tx-sft); margin-top: 14px; }
+    .results-waiting-banner.show { display:block; }
+    .waiting-timer { font-family:var(--serif); font-size:40px; font-weight:700; color:#fff; display:block; margin:8px 0 4px; }
+    .waiting-timer.urgent { color:#F87171; }
+    .waiting-label { font-size:12px; color:rgba(255,255,255,.5); }
 
-    /* ── MOBILE ───────────────────────────────────────────────── */
-    @media (max-width: 480px) {
-      #word-display span { font-size: 52px; }
-      .grade-grid { grid-template-columns: 1fr; }
-      .gate-card  { padding: 32px 20px; }
-      .steps-card { padding: 20px; }
+    /* ── GOLDEN RULE MODAL ───────────────────────────────────── */
+    .modal-overlay {
+      position:fixed; inset:0; background:rgba(11,29,42,.7);
+      z-index:200; display:none; align-items:center; justify-content:center;
+      padding:24px; -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+    }
+    .modal-overlay.open { display:flex; }
+    .modal-card {
+      background:var(--white); border-radius:20px; padding:36px 28px;
+      max-width:460px; width:100%; text-align:center;
+      animation:popIn .35s cubic-bezier(.22,1,.36,1);
+    }
+    .modal-timer-badge { display:inline-flex; align-items:center; gap:6px; background:#FEF2F2; color:var(--red); font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 12px; border-radius:20px; margin-bottom:16px; }
+    .modal-title { font-family:var(--serif); font-size:22px; font-weight:700; color:var(--tx-hvy); margin-bottom:16px; line-height:1.3; }
+    .modal-rule  { font-size:14px; color:var(--tx-mid); line-height:1.85; margin-bottom:24px; }
+    .celebrate-box { background:#FFFBEB; border:1px solid #FDE68A; border-radius:12px; padding:20px 20px; margin-bottom:24px; }
+    .celebrate-label { font-size:10px; font-weight:700; color:#B45309; letter-spacing:.12em; text-transform:uppercase; margin-bottom:10px; }
+    .celebrate-quote { font-family:var(--serif); font-size:17px; color:#92400E; line-height:1.6; font-style:italic; }
+    .celebrate-quote span { font-weight:700; font-style:normal; color:#B45309; }
+    .modal-btn { width:100%; padding:15px 24px; background:#063D50; color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700; font-family:inherit; transition:background .15s; }
+    .modal-btn:hover { background:#042C3A; }
+
+    /* ── RESULTS: CONTENT ────────────────────────────────────── */
+    .eyebrow-teal    { font-size:11px; font-weight:700; color:var(--teal); letter-spacing:.12em; text-transform:uppercase; margin-bottom:10px; display:block; }
+    .profile-icon    { font-size:48px; display:block; text-align:center; margin-bottom:8px; }
+    .snap-phase      { font-size:13px; color:var(--tx-sft); margin-bottom:28px; }
+    .gap-pill        { display:inline-block; background:var(--teal); border-radius:6px; padding:10px 22px; margin-bottom:28px; }
+    .gap-pill span   { font-size:15px; font-weight:600; color:#fff; }
+    .result-summary  { font-size:16px; color:var(--tx-hvy); font-weight:500; line-height:1.75; margin-bottom:20px; }
+    .result-body-block { border-left:2px solid var(--teal-bd); padding-left:20px; margin-bottom:28px; }
+    .result-body-block p { font-size:14px; color:var(--tx-mid); line-height:1.9; font-weight:300; }
+    .focus-card  { background:var(--teal-lt); border:1px solid var(--teal-bd); border-radius:10px; padding:22px 24px; margin-bottom:16px; }
+    .focus-label { font-size:10px; font-weight:700; color:var(--teal); letter-spacing:.12em; text-transform:uppercase; margin-bottom:10px; }
+    .focus-card p { font-size:14px; color:var(--tx-hvy); line-height:1.85; }
+    .shift-card  { background:var(--dark); border-radius:12px; padding:28px; margin-bottom:16px; }
+    .shift-label { font-size:10px; font-weight:700; color:var(--teal-md); letter-spacing:.12em; text-transform:uppercase; margin-bottom:10px; }
+    .shift-title { font-family:var(--serif); font-size:18px; font-weight:700; color:#fff; margin-bottom:14px; line-height:1.3; }
+    .shift-script { font-size:14px; color:rgba(255,255,255,.8); line-height:1.9; font-weight:300; border-left:2px solid var(--teal-md); padding-left:16px; font-style:italic; }
+
+    /* ── MOBILE ──────────────────────────────────────────────── */
+    @media(max-width:480px){
+      .page { padding:36px 20px 60px; }
+      .steps-card, .shift-card { padding:20px; }
+      .big-word { font-size:clamp(38px,12vw,56px); }
+      .big-word-card { padding:28px 20px; }
+      .modal-card { padding:28px 20px; }
+      .sheet-btn { padding:14px 16px; gap:12px; }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="logo">
     <div class="logo-mark">
@@ -232,71 +240,57 @@
   <span class="nav-badge">Reading Snapshot</span>
 </nav>
 
-<!-- ── GATE SCREEN ───────────────────────────────────────────── -->
-<!-- Shown to anyone who lands without a valid token             -->
-<div id="screen-gate" style="display:none;">
-  <div class="gate-card">
-    <h2>Access Required</h2>
-    <p>The Reading Snapshot is available after purchase. If you&rsquo;ve already paid, please use the link from your confirmation email or return via the checkout page.</p>
-    <p style="font-size:13px;color:var(--tx-sft);margin-top:-16px">Have an access code? Enter it below.</p>
-    <input type="text" id="gate-input" class="gate-input" placeholder="Access code" autocomplete="off">
-    <p class="gate-err" id="gate-err">That code doesn&rsquo;t match. Please try again.</p>
-    <button class="btn-dark" onclick="checkManualCode()">Unlock Access</button>
-    <a href="/" style="display:block;text-align:center;margin-top:20px;font-size:13px;color:var(--tx-sft);">&larr; Back to home</a>
-  </div>
-</div>
+<div id="app">
 
-<!-- ── APP SCREENS (shown after gate passes) ─────────────────── -->
-<div id="app" style="display:none;">
-
-  <!-- WELCOME -->
+  <!-- ── SCREEN 1: BRIEFING ───────────────────────────────── -->
   <div id="page-welcome" class="page active fade-up">
-    <p class="welcome-eyebrow">Your Reading Snapshot is Ready</p>
-    <h1 class="welcome-title">Let&rsquo;s find out exactly what&rsquo;s happening when your child reads.</h1>
+    <p class="welcome-eyebrow">Reading Snapshot &bull; The 5-Level Diagnostic</p>
+    <h1 class="welcome-title">Welcome to the Reading Snapshot.</h1>
     <p class="welcome-sub">
-      This 5-minute assessment goes word by word. You read aloud with your child and log exactly what happens on each word. At the end, the Snapshot identifies your child&rsquo;s specific decoding gap &mdash; and gives you a focused strategy you can use tonight.
+      Let&rsquo;s look under the hood and find your child&rsquo;s exact reading bottleneck. Your child will read both real words and <strong>Alien words</strong>. We use Alien words because they force the brain to prove it knows the phonics code &mdash; rather than relying on memory.
     </p>
     <div class="steps-card">
-      <p class="steps-label">How it works</p>
+      <p class="steps-label">How It Works</p>
       <div class="step-row">
         <div class="step-num">1</div>
-        <p class="step-text"><strong>Enter your child&rsquo;s name and grade.</strong> The word list adjusts to their level.</p>
+        <p class="step-text"><strong>Sit across from your child.</strong> Show them the screen so they can read each word aloud.</p>
       </div>
       <div class="step-row">
         <div class="step-num">2</div>
-        <p class="step-text"><strong>Read each word aloud together.</strong> Wait 3 seconds before stepping in.</p>
+        <p class="step-text"><strong>Words appear one at a time.</strong> After your child reads it, tap the word card to rate how they did.</p>
       </div>
       <div class="step-row">
         <div class="step-num">3</div>
-        <p class="step-text"><strong>Tap how your child responded.</strong> Instant, Heavy Lift, Guess, or Wall.</p>
+        <p class="step-text"><strong>If they stall for more than 3 seconds,</strong> tap the word, mark it Guessed&nbsp;/&nbsp;Skipped, and say &ldquo;Let&rsquo;s try the next one.&rdquo;</p>
       </div>
       <div class="step-row">
         <div class="step-num">4</div>
-        <p class="step-text"><strong>Read one sentence together.</strong> A final fluency check.</p>
+        <p class="step-text"><strong>A 1-minute timer runs in the background.</strong> It is only for your reference &mdash; you can hide it so it does not stress your child.</p>
       </div>
       <div class="step-row">
         <div class="step-num">5</div>
-        <p class="step-text"><strong>Get your result.</strong> A clear gap label and a strategy to start tonight.</p>
+        <p class="step-text"><strong>Assessment is NOT teaching time.</strong> Do not correct or hint. Just observe and rate each word honestly.</p>
+      </div>
+      <div class="step-row">
+        <div class="step-num">6</div>
+        <p class="step-text"><strong>When time is up,</strong> the app will guide you through a short celebration before revealing your child&rsquo;s reading profile.</p>
       </div>
     </div>
-    <button class="btn-dark" onclick="showPage('page-setup')">Start the Reading Snapshot &rarr;</button>
-    <p class="btn-hint">Saved to this device &bull; Return anytime &bull; No account needed</p>
+    <button class="btn-dark" onclick="showPage('page-setup')">Start the Snapshot &rarr;</button>
+    <p class="btn-hint">5 minutes &bull; Saved to this device &bull; No account needed</p>
   </div>
 
-  <!-- SETUP -->
+  <!-- ── SCREEN 2A: SETUP ─────────────────────────────────── -->
   <div id="page-setup" class="page fade-up">
-    <p class="welcome-eyebrow">Science of Reading &bull; Grades K&ndash;3</p>
+    <p class="welcome-eyebrow">Science of Reading &bull; 5 Levels</p>
     <h1 class="serif-title">Reading Snapshot</h1>
-    <!-- Show previous result if exists -->
-    <div id="prev-result-banner" style="display:none;margin-bottom:24px">
-      <div style="background:var(--teal-lt);border:1px solid var(--teal-bd);border-radius:8px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
-        <div>
-          <p style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Previous Result</p>
-          <p id="prev-gap-text" style="font-size:14px;font-weight:600;color:var(--tx-hvy)"></p>
-          <p id="prev-date-text" style="font-size:12px;color:var(--tx-sft)"></p>
-        </div>
-        <button class="btn-secondary" style="white-space:nowrap;font-size:12px;padding:8px 14px" onclick="loadPrevResult()">View</button>
+    <div id="prev-result-banner" style="display:none" class="prev-banner">
+      <div>
+        <p style="font-size:11px;color:var(--teal);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Previous Result</p>
+        <p id="prev-gap-text"  style="font-size:14px;font-weight:600;color:var(--tx-hvy)"></p>
+        <p id="prev-date-text" style="font-size:12px;color:var(--tx-sft)"></p>
       </div>
+      <button class="btn-secondary" onclick="loadPrevResult()">View</button>
     </div>
     <div class="field-divider"></div>
     <div class="field-group">
@@ -304,37 +298,73 @@
       <input type="text" id="child-name" class="snap-input" placeholder="First name" autocomplete="off">
       <p class="err-msg" id="err-name">Please enter your child&rsquo;s name to continue.</p>
     </div>
-    <div class="field-group">
-      <label class="field-label">Current grade</label>
-      <div class="grade-grid" id="grade-grid">
-        <button class="grade-btn" data-grade="K">Kindergarten</button>
-        <button class="grade-btn" data-grade="1">1st Grade</button>
-        <button class="grade-btn" data-grade="2">2nd Grade</button>
-        <button class="grade-btn" data-grade="3">3rd Grade</button>
-      </div>
-      <p class="err-msg" id="err-grade">Please select a grade to continue.</p>
-    </div>
     <button class="btn-dark" id="btn-start">Begin Assessment</button>
-    <p class="btn-hint">Approximately 5 minutes &bull; Saved to this device</p>
+    <p class="btn-hint">5 levels &bull; Approximately 5 minutes &bull; Saved to this device</p>
   </div>
 
-  <!-- ASSESSMENT -->
+  <!-- ── SCREEN 2B: ASSESSMENT (one word at a time) ──────── -->
   <div id="page-assessment" class="page">
+
+    <!-- Timer -->
+    <div class="timer-bar" id="timer-bar">
+      <div class="timer-left">
+        <div class="timer-display" id="timer-display">1:00</div>
+        <div>
+          <div class="timer-info">
+            <strong>1-minute timer</strong>
+            This timer is for you &mdash; not your child.
+          </div>
+          <div class="timer-done" id="timer-done">Time&rsquo;s up &mdash; keep going!</div>
+        </div>
+      </div>
+      <button class="btn-hide-timer" id="btn-hide-timer" onclick="toggleTimer()">
+        Hide timer<br><span style="font-size:10px;font-weight:300">if it stresses your child</span>
+      </button>
+    </div>
+
+    <!-- Overall progress bar -->
     <div class="progress-track"><div class="progress-fill" id="snap-progress"></div></div>
-    <p class="instruction-text" id="snap-instruction"></p>
-    <div id="word-display"><span id="current-word"></span></div>
-    <div class="resp-list" id="word-responses"></div>
+
+    <!-- Level label + word counter -->
+    <div class="assess-header">
+      <div>
+        <div class="level-badge" id="level-badge">Level 1 of 5</div>
+        <div class="level-name"  id="level-name"></div>
+        <div class="level-sub-label" id="level-sub-label"></div>
+      </div>
+      <div class="word-counter" id="word-counter">Word 1 of 8</div>
+    </div>
+
+    <!-- 8 dots — one per word in this level -->
+    <div class="word-dots" id="word-dots"></div>
+
+    <!-- Word type badge -->
+    <div class="word-type-badge" id="word-type-badge"></div>
+
+    <!-- THE WORD — display only -->
+    <div class="word-stage">
+      <div class="big-word-card" id="big-word-card">
+        <span class="big-word" id="big-word"></span>
+      </div>
+      <p class="word-tap-hint">After they read it, tap how they did below</p>
+    </div>
+
+    <!-- Rating buttons (also show running tally) -->
+    <p class="score-row-label">How did they do?</p>
+    <div class="score-row">
+      <button class="score-chip easy"  onclick="rateWord('easy')">
+        <span class="snum" id="count-easy">0</span>&#9989; Decoded
+      </button>
+      <button class="score-chip heavy" onclick="rateWord('heavy')">
+        <span class="snum" id="count-heavy">0</span>&#9888;&#65039; Heavy
+      </button>
+      <button class="score-chip guess" onclick="rateWord('guess')">
+        <span class="snum" id="count-guess">0</span>&#10067; Guessed
+      </button>
+    </div>
   </div>
 
-  <!-- FLUENCY -->
-  <div id="page-fluency" class="page fade-up">
-    <div class="progress-full"></div>
-    <p class="instruction-text" id="fluency-instruction"></p>
-    <div class="sentence-card"><span id="fluency-sentence"></span></div>
-    <div class="resp-list" id="fluency-responses"></div>
-  </div>
-
-  <!-- PROCESSING -->
+  <!-- ── PROCESSING ──────────────────────────────────────── -->
   <div id="snap-processing">
     <div class="blink-bars">
       <div class="blink-bar"></div>
@@ -344,271 +374,445 @@
     <p class="processing-label">Analyzing reading patterns&hellip;</p>
   </div>
 
-  <!-- RESULTS -->
+  <!-- ── SCREEN 3: RESULTS (blurred until timer fires) ───── -->
   <div id="page-results" class="page wide fade-up">
-    <p class="eyebrow-teal" id="r-eyebrow"></p>
-    <h1 class="serif-title" id="r-title"></h1>
-    <p class="snap-phase" id="r-phase"></p>
-    <div class="gap-pill"><span id="r-gap"></span></div><br style="margin-bottom:8px">
-    <p class="result-summary" id="r-summary"></p>
-    <div class="result-body-block"><p id="r-body"></p></div>
-    <div class="focus-card">
-      <p class="focus-label">Where to Focus</p>
-      <p id="r-focus"></p>
-    </div>
-    <button class="btn-dark" onclick="showPage('page-waitlist')">Get Your 10-Minute Plan &rarr;</button>
-    <div style="text-align:center;margin-top:16px">
-      <button class="btn-ghost" onclick="restartSnap()">Take the assessment again</button>
-    </div>
-  </div>
 
-  <!-- WAITLIST -->
-  <div id="page-waitlist" class="page center fade-up">
-    <div id="wl-form">
-      <h2 style="font-family:var(--serif);font-size:26px;font-weight:700;color:var(--tx-hvy);line-height:1.2;margin-bottom:14px">Your 10-Minute Plan is coming.</h2>
-      <p class="waitlist-body" id="wl-body"></p>
-      <input type="email" id="wl-email" class="snap-input" placeholder="your@email.com">
-      <button class="btn-dark" id="btn-notify" style="margin-top:14px">Notify Me</button>
-      <p class="no-spam">No spam. One email when it launches.</p>
+    <!-- Waiting banner — visible only while timer is still running -->
+    <div class="results-waiting-banner" id="results-waiting-banner">
+      <div class="waiting-label">Timer still running &mdash; results unlock when time is up</div>
+      <span class="waiting-timer" id="waiting-timer-display">0:45</span>
+      <div class="waiting-label">Sit tight &mdash; your child&rsquo;s profile is ready below.</div>
     </div>
-    <div id="wl-confirmed" style="display:none">
-      <div class="check-circle">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M4 10l4 4 8-8" stroke="#0891B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+
+    <!-- Blurred content -->
+    <div class="results-blur-wrap locked" id="results-blur-wrap">
+      <p class="eyebrow-teal" id="r-eyebrow"></p>
+      <span class="profile-icon" id="r-icon"></span>
+      <h1 class="serif-title"   id="r-title"></h1>
+      <p class="snap-phase"     id="r-phase"></p>
+      <div class="gap-pill"><span id="r-gap"></span></div><br style="margin-bottom:8px">
+      <p class="result-summary" id="r-summary"></p>
+      <div class="result-body-block"><p id="r-body"></p></div>
+      <div class="focus-card">
+        <p class="focus-label">Your Action</p>
+        <p id="r-focus"></p>
       </div>
-      <h2 style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--tx-hvy);margin-bottom:14px">You&rsquo;re on the list.</h2>
-      <p class="waitlist-body" id="wl-confirmed-body"></p>
-      <button class="btn-secondary" onclick="restartSnap()">Run Another Snapshot</button>
+      <div class="shift-card">
+        <p class="shift-label">The Tonight Shift</p>
+        <p class="shift-title" id="r-shift-title"></p>
+        <p class="shift-script" id="r-shift"></p>
+      </div>
+      <div style="text-align:center;margin-top:28px">
+        <button class="btn-ghost" onclick="restartSnap()">Take the assessment again</button>
+      </div>
     </div>
+
   </div>
 
 </div><!-- end #app -->
 
+<!-- ── GOLDEN RULE MODAL ───────────────────────────────────── -->
+<div class="modal-overlay" id="golden-rule-overlay">
+  <div class="modal-card">
+    <div class="modal-timer-badge">&#9201; Time is up!</div>
+    <h2 class="modal-title">The Golden Rule of Assessment</h2>
+    <p class="modal-rule">Do <strong>NOT</strong> correct their mistakes. Assessment is not teaching time. Simply celebrate their effort and move on.</p>
+    <div class="celebrate-box">
+      <p class="celebrate-label">Say this out loud right now:</p>
+      <p class="celebrate-quote">
+        &ldquo;Wow! You read <span id="alien-word-count">0</span> alien words!<br>That&rsquo;s amazing!&rdquo;
+      </p>
+    </div>
+    <p style="font-size:12px;color:var(--tx-sft);margin-bottom:20px">That&rsquo;s it &mdash; no corrections, no fixes. Celebrate every single effort.</p>
+    <button class="modal-btn" onclick="dismissGoldenRule()">Got it &mdash; I celebrated! &rarr;</button>
+  </div>
+</div>
+
 <script>
   // ════════════════════════════════════════════════════════════
-  // CUSTOMIZE: Change this token to anything you like.
-  // Users arriving from Square should have ?access=YOUR_TOKEN
-  // Set your Square redirect URL to:
-  //   https://readingroutine.com/webapp?access=rr2025
+  // READING SNAPSHOT
+  // Screen 2: One word at a time — tap to open 3-option rating sheet
+  // Screen 3: Blurred until 1-min timer fires → Golden Rule modal → reveal
   // ════════════════════════════════════════════════════════════
-  var ACCESS_TOKEN = 'rr2025';
 
-  // ── WORD LISTS ─────────────────────────────────────────────
-  var WORD_LISTS = {
-    K:   { sections:[['cat','sun','mop','pig'],['hat','bed','bug','top']],                                                          sentence:'The dog ran.' },
-    '1': { sections:[['trip','clam','frog','step'],['chip','brush','math','duck'],['made','bike','rope','tune']],                    sentence:'The fish swam fast.' },
-    '2': { sections:[['rain','heat','coat','feet'],['park','bird','corn','hurt'],['rabbit','pencil','sunset','mitten']],             sentence:'The brown bird sat in the green tree.' },
-    '3': { sections:[['flight','south','crawl','point'],['basket','garden','thunder','mistake'],['important','remember','discover','beginning']], sentence:'The children discovered a hidden path in the forest.' }
-  };
-
-  var WORD_RESPONSES = [
-    { key:'instant', label:'Instant',          sub:'No hesitation \u2014 read immediately' },
-    { key:'heavy',   label:'Heavy Lift',        sub:'Sounded out \u2014 slow but correct'   },
-    { key:'guess',   label:'Guess / Incorrect', sub:'Wrong word or partial guess'           },
-    { key:'wall',    label:'Wall',              sub:'Refused, froze, or showed distress'    }
-  ];
-  var FLUENCY_RESPONSES = [
-    { key:'smooth',  label:'Smooth',             sub:'Read the sentence without stopping'       },
-    { key:'choppy',  label:'Choppy / Effortful', sub:'Paused, sounded out, or lost the thread' },
-    { key:'refused', label:'Refused',            sub:'Would not attempt'                       }
+  // ── 5 LEVELS ─────────────────────────────────────────────────────────────
+  var LEVELS = [
+    { num:1, name:'Level 1', sub:'The Foundation \u00B7 Short Vowels',
+      alien:['vop','zaf','lig','mun'], real:['nap','lid','rot','tug'] },
+    { num:2, name:'Level 2', sub:'The Blend Check \u00B7 Blends & Digraphs',
+      alien:['snim','thab','plog','chud'], real:['shut','clip','math','frog'] },
+    { num:3, name:'Level 3', sub:'The Magic \u2018E\u2019 Check \u00B7 Silent E',
+      alien:['zane','mibe','fote','lupe'], real:['bake','time','rope','cute'] },
+    { num:4, name:'Level 4', sub:'The Vowel Team Check',
+      alien:['voap','teem','raib','figh'], real:['boat','seem','rain','high'] },
+    { num:5, name:'Level 5', sub:'The Big Word Check \u00B7 Multisyllabic',
+      alien:['ziblot','fapnote','bunted','lennish'], real:['magnet','bedtime','napkin','tennis'] }
   ];
 
+  // ── 3 PROFILES ───────────────────────────────────────────────────────────
   var RESULTS = {
-    accuracy: {
-      gap:'The Accuracy Gap', phase:'Phase 1 \u00B7 Decoding Foundation',
-      summary:function(n){return n+"'s reading patterns indicate that foundational decoding is the primary area of need."},
-      body:'When a child substitutes words, guesses from the first letter, or relies on picture cues, the brain is bypassing the actual letters on the page. This is not a comprehension issue and it is not a reflection of intelligence. It signals that phonics patterns have not yet been fully mapped \u2014 the brain is reaching for familiar-looking words rather than processing the sound-symbol connections that make decoding reliable and automatic.',
-      focus:'Explicit, systematic phonics instruction \u2014 beginning with the patterns that are not yet secure. The goal is accuracy before speed. Every correct decoding attempt, however slow, is the mechanism through which reading becomes automatic.'
+    true_decoder: {
+      icon: '\u2B50',
+      gap: 'The True Decoder',
+      phase: 'Profile \u00B7 Mostly Decoded Easily',
+      summary: function(n){ return 'Celebrate! ' + n + '\u2019s brain is mapping letters to sounds correctly.'; },
+      body: 'If real books still feel slow, they just need to bridge decoding to fluency. The phonics code is there \u2014 it just needs to become automatic so the brain has energy left over to actually enjoy the story.',
+      focus: 'Focus on Automaticity (speed). Use 1-Minute Fluency Sprints with real books to build reading rate and free up the brain for comprehension. If they already know a word, encourage them to just say it \u2014 no sounding out needed.',
+      shift_title: 'The 1-Minute Fluency Sprint',
+      shift: 'Pick a book they\u2019ve already read. Set a timer for 1 minute and say: \u201CToday we\u2019re going for speed. If you get stuck for 3 seconds, I\u2019ll whisper the word so we can keep moving.\u201D Track how many words they read. Try to beat that score tomorrow.'
     },
-    automaticity: {
-      gap:'The Automaticity Gap', phase:'Phase 2 \u00B7 Fluency Development',
-      summary:function(n){return n+"'s reading patterns indicate that decoding accuracy is in place, but word recognition has not yet become automatic."},
-      body:'When a child decodes correctly but slowly, the brain is still processing each word from scratch. This exhausts working memory before comprehension can begin \u2014 which is why children at this stage often finish a sentence and cannot recall what they just read. The skill is present. The automaticity is not.',
-      focus:'Fluency-building practice focused on continuous blending and repeated reading of familiar texts. The goal is to move word recognition from conscious effort to automatic retrieval \u2014 freeing cognitive bandwidth for meaning-making.'
+    heavy_lifter: {
+      icon: '\uD83C\uDFCB\uFE0F',
+      gap: 'The Heavy Lifter',
+      phase: 'Profile \u00B7 Mostly Heavy Lift',
+      summary: function(n){ return n + ' knows the code \u2014 but spends 100% of their energy letter-by-letter.'; },
+      body: 'By the end of a sentence, they\u2019ve forgotten what they read. They are exhausted. The phonics knowledge is there, but it hasn\u2019t become automatic yet. Every word still requires full conscious effort, which leaves nothing left over for comprehension.',
+      focus: 'Smooth it out. Practice Continuous Blending: \u201Cclllliiipppp\u201D instead of /c/\u2026/l/\u2026/i/\u2026/p/. Tell them: \u201CIf you already know the word, just say it!\u201D',
+      shift_title: 'Continuous Blending',
+      shift: 'When they chop up a word, don\u2019t say \u201Cno.\u201D Instead say: \u201CYou found all the right sounds! Now watch me stretch those sounds so they hold hands without taking a breath: mmmmaaaapppp. Now you try!\u201D Focus on the smooth flow, not perfection.'
     },
-    multisyllabic: {
-      gap:'The Multisyllabic Gap', phase:'Phase 3 \u00B7 Advanced Word Structure',
-      summary:function(n){return n+"'s reading patterns show reliable short-word decoding with a clear breakdown on longer, multisyllabic words."},
-      body:'This is among the most common \u2014 and most overlooked \u2014 gaps in upper-primary readers. Short words are handled automatically, but longer words trigger avoidance because no reliable strategy exists for breaking them apart. Without explicit instruction in syllabication and morphological structure, the brain defaults to guessing from the prefix or refusing to engage.',
-      focus:'Syllable division and morphological awareness \u2014 prefixes, suffixes, and systematic strategies for breaking unfamiliar words into decodable parts. Short, structured practice on this skill closes the gap quickly in most cases.'
-    },
-    mixed: {
-      gap:'A Mixed Decoding Profile', phase:'Multiple Gaps Present',
-      summary:function(n){return n+"'s reading patterns show inconsistency across word types, indicating that more than one area of decoding needs attention."},
-      body:'A mixed profile is common in children who have received inconsistent literacy instruction or who have compensated for gaps using verbal memory and contextual guessing. Some patterns are automatic. Others are effortful. Others are avoided entirely. This is not a more serious problem than a single-gap profile \u2014 it simply requires identifying the earliest unresolved gap and building systematically from there.',
-      focus:'A structured literacy baseline \u2014 beginning with phonemic awareness and early phonics to locate the first unresolved gap. Building from the ground up is faster and more reliable than targeting individual patterns in isolation.'
+    master_memorizer: {
+      icon: '\uD83D\uDD75\uFE0F',
+      gap: 'The Master Memorizer',
+      phase: 'Profile \u00B7 Mostly Guessed or Skipped',
+      summary: function(n){ return 'You\u2019ve uncovered a hidden gap. ' + n + ' relies on pictures, context, and memory.'; },
+      body: 'When memory fails, they guess or skip. This is completely fixable \u2014 it simply means explicit phonics instruction hasn\u2019t mapped these patterns yet. The brain is compensating with smart guessing instead of actually decoding the letters.',
+      focus: 'Go back to basics. Point to the word and say: \u201CLet\u2019s look at all the letters and sound them out.\u201D Focus 10 minutes a day on explicit phonics patterns like digraphs and vowel teams.',
+      shift_title: 'The Mistake Detective',
+      shift: 'When they guess wildly, don\u2019t correct it outright. Say: \u201CYou made a really smart guess! But let\u2019s be detectives. Let\u2019s look at every single letter. What sound does this one make? And this one?\u201D Get their eyes back on the actual word.'
     }
   };
 
-  // ── STATE ───────────────────────────────────────────────────
-  var state = { childName:'', grade:'', allWords:[], wordIdx:0, responses:[], result:null };
+  // ── STATE ─────────────────────────────────────────────────────────────────
+  var state = {
+    childName: '',
+    // Assessment
+    levelIdx: 0,
+    wordInLevel: 0,
+    levelWordList: [],     // [{word, isAlien}, ...] for current level (8 words)
+    levelDotStates: [],    // 'pending'|'easy'|'heavy'|'guess' for each of 8 dots
+    levelGuessCount: 0,
+    // Totals across all levels
+    totalEasy: 0,
+    totalHeavy: 0,
+    totalGuess: 0,
+    alienAttempted: 0,     // for Golden Rule word count
+    alienEasy: 0,          // alien words decoded easily
+    result: null,
+    // Timer
+    timerInterval: null,
+    timerSeconds: 60,
+    timerHidden: false,
+    timerFired: false,
+    resultsReady: false
+  };
 
-  // ── GATE ────────────────────────────────────────────────────
-  function checkAccess() {
-    var params = new URLSearchParams(window.location.search);
-    var token  = params.get('access') || params.get('token');
-
-    // Save token to localStorage if present in URL
-    if (token === ACCESS_TOKEN) {
-      localStorage.setItem('rr_access', 'true');
-      // Clean URL
-      history.replaceState({}, document.title, window.location.pathname);
-    }
-
-    var hasAccess = localStorage.getItem('rr_access') === 'true';
-
-    if (hasAccess) {
-      document.getElementById('app').style.display = 'block';
-      loadPrevResultBanner();
-    } else {
-      document.getElementById('screen-gate').style.display = 'flex';
-    }
-  }
-
-  function checkManualCode() {
-    var input = document.getElementById('gate-input').value.trim();
-    if (input === ACCESS_TOKEN) {
-      localStorage.setItem('rr_access', 'true');
-      document.getElementById('screen-gate').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      loadPrevResultBanner();
-    } else {
-      document.getElementById('gate-err').classList.add('show');
-    }
-  }
-  document.getElementById('gate-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') checkManualCode();
-  });
-
-  // ── PAGE NAVIGATION ─────────────────────────────────────────
+  // ── PAGE NAV ──────────────────────────────────────────────────────────────
   function showPage(id) {
     document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
     document.getElementById('snap-processing').classList.remove('active');
     var el = document.getElementById(id);
     el.classList.add('active');
-    if (id !== 'page-assessment') {
-      el.classList.remove('fade-up'); void el.offsetWidth; el.classList.add('fade-up');
-    }
+    el.classList.remove('fade-up'); void el.offsetWidth; el.classList.add('fade-up');
     window.scrollTo(0, 0);
   }
   function showProcessing() {
     document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
     document.getElementById('snap-processing').classList.add('active');
+    window.scrollTo(0, 0);
   }
 
-  // ── SETUP ───────────────────────────────────────────────────
-  document.getElementById('grade-grid').addEventListener('click', function(e) {
-    var btn = e.target.closest('.grade-btn');
-    if (!btn) return;
-    document.querySelectorAll('.grade-btn').forEach(function(b){ b.classList.remove('selected'); });
-    btn.classList.add('selected');
-    state.grade = btn.dataset.grade;
-    document.getElementById('err-grade').classList.remove('show');
-  });
-
-  document.getElementById('child-name').addEventListener('input', function() {
+  // ── SETUP ─────────────────────────────────────────────────────────────────
+  document.getElementById('child-name').addEventListener('input', function(){
     document.getElementById('err-name').classList.remove('show');
     document.getElementById('child-name').classList.remove('error');
   });
-
   document.getElementById('btn-start').addEventListener('click', startAssessment);
-  document.getElementById('child-name').addEventListener('keydown', function(e){ if(e.key==='Enter') startAssessment(); });
+  document.getElementById('child-name').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') startAssessment();
+  });
 
   function startAssessment() {
     var name = document.getElementById('child-name').value.trim();
-    var ok = true;
-    if (!name) { document.getElementById('err-name').classList.add('show'); document.getElementById('child-name').classList.add('error'); ok=false; }
-    if (!state.grade) { document.getElementById('err-grade').classList.add('show'); ok=false; }
-    if (!ok) return;
-    state.childName = name;
-    state.allWords  = WORD_LISTS[state.grade].sections.reduce(function(a,b){return a.concat(b);},[]);
-    state.wordIdx   = 0;
-    state.responses = [];
-    loadWord();
+    if (!name) {
+      document.getElementById('err-name').classList.add('show');
+      document.getElementById('child-name').classList.add('error');
+      return;
+    }
+    state.childName     = name;
+    state.levelIdx      = 0;
+    state.wordInLevel   = 0;
+    state.levelGuessCount = 0;
+    state.totalEasy     = 0;
+    state.totalHeavy    = 0;
+    state.totalGuess    = 0;
+    state.alienAttempted = 0;
+    state.alienEasy     = 0;
+    state.result        = null;
+    state.timerFired    = false;
+    state.resultsReady  = false;
+    state.timerHidden   = false;
+    startTimer();
+    loadLevel(0);
     showPage('page-assessment');
   }
 
   function firstName() { return state.childName.trim().split(' ')[0] || 'your child'; }
 
-  // ── ASSESSMENT ──────────────────────────────────────────────
-  function loadWord() {
-    var total = state.allWords.length;
-    document.getElementById('snap-progress').style.width = ((state.wordIdx / total) * 100) + '%';
-    document.getElementById('snap-instruction').textContent =
-      'Have ' + firstName() + ' read the word aloud. Wait 3 seconds before stepping in. Tap the response that best describes what happened.';
-    var w = document.getElementById('current-word');
-    w.textContent = state.allWords[state.wordIdx];
-    w.classList.remove('word-in'); void w.offsetWidth; w.classList.add('word-in');
-    buildButtons('word-responses', WORD_RESPONSES, function(key) {
-      state.responses.push(key);
-      if (state.wordIdx + 1 < total) { state.wordIdx++; loadWord(); }
-      else { loadFluency(); showPage('page-fluency'); }
-    });
+  // ── TIMER ─────────────────────────────────────────────────────────────────
+  function startTimer() {
+    clearInterval(state.timerInterval);
+    state.timerSeconds = 60;
+    resetTimerDisplay();
+    state.timerInterval = setInterval(function(){
+      state.timerSeconds--;
+      var s = state.timerSeconds;
+      // Update assessment timer display
+      var disp = document.getElementById('timer-display');
+      var mm = Math.floor(s / 60), ss = s % 60;
+      disp.textContent = mm + ':' + (ss < 10 ? '0' : '') + ss;
+      if (s <= 10) disp.classList.add('urgent');
+      // Update waiting banner timer if visible
+      var wd = document.getElementById('waiting-timer-display');
+      if (wd) {
+        wd.textContent = mm + ':' + (ss < 10 ? '0' : '') + ss;
+        if (s <= 10) wd.classList.add('urgent');
+      }
+      if (s <= 0) {
+        clearInterval(state.timerInterval);
+        state.timerFired = true;
+        document.getElementById('timer-done').classList.add('show');
+        // Fire Golden Rule modal immediately — wherever parent is
+        showGoldenRuleModal();
+      }
+    }, 1000);
   }
 
-  // ── FLUENCY ─────────────────────────────────────────────────
-  function loadFluency() {
-    document.getElementById('fluency-instruction').textContent =
-      'Final check. Have ' + firstName() + ' read this sentence aloud.';
-    document.getElementById('fluency-sentence').textContent =
-      '\u201C' + WORD_LISTS[state.grade].sentence + '\u201D';
-    buildButtons('fluency-responses', FLUENCY_RESPONSES, function() {
-      showProcessing();
-      state.result = computeResult(state.grade, state.responses);
-      setTimeout(function(){ renderResults(); showPage('page-results'); }, 2200);
-    });
+  function resetTimerDisplay() {
+    var disp = document.getElementById('timer-display');
+    var done = document.getElementById('timer-done');
+    disp.textContent = '1:00';
+    disp.classList.remove('urgent');
+    disp.style.display = '';
+    document.querySelector('.timer-info').style.display = '';
+    done.classList.remove('show');
+    document.getElementById('timer-bar').style.background  = '';
+    document.getElementById('timer-bar').style.borderColor = '';
   }
 
-  // ── SCORING ─────────────────────────────────────────────────
-  function computeResult(grade, responses) {
-    var total = responses.length;
-    if (!total) return 'accuracy';
-    var c = { instant:0, heavy:0, guess:0, wall:0 };
-    responses.forEach(function(r){ c[r]++; });
-    var pctBad = (c.guess + c.wall) / total, pctHeavy = c.heavy / total;
-    if (grade === '2' || grade === '3') {
-      var sects = WORD_LISTS[grade].sections;
-      var sc = sects[0].length + sects[1].length;
-      var sR = responses.slice(0, sc), mR = responses.slice(sc);
-      var sBad = sR.filter(function(r){return r==='guess'||r==='wall';}).length / sR.length;
-      var mBad = mR.length ? mR.filter(function(r){return r==='guess'||r==='wall';}).length / mR.length : 0;
-      if (sBad < 0.26 && mBad >= 0.5) return 'multisyllabic';
+  function toggleTimer() {
+    state.timerHidden = !state.timerHidden;
+    var disp = document.getElementById('timer-display');
+    var info = document.querySelector('.timer-info');
+    var bar  = document.getElementById('timer-bar');
+    var btn  = document.getElementById('btn-hide-timer');
+    if (state.timerHidden) {
+      disp.style.display = 'none';
+      info.style.display = 'none';
+      btn.innerHTML = 'Show timer';
+      bar.style.background  = 'transparent';
+      bar.style.borderColor = 'transparent';
+    } else {
+      disp.style.display = '';
+      info.style.display = '';
+      btn.innerHTML = 'Hide timer<br><span style="font-size:10px;font-weight:300">if it stresses your child</span>';
+      bar.style.background  = '';
+      bar.style.borderColor = '';
     }
-    if (pctBad >= 0.30)                       return 'accuracy';
-    if (pctHeavy >= 0.40 && pctBad < 0.20)   return 'automaticity';
-    if (pctBad >= 0.15   && pctHeavy >= 0.25) return 'mixed';
-    return 'accuracy';
   }
 
-  // ── RESULTS ─────────────────────────────────────────────────
+  // ── ASSESSMENT: LEVEL SETUP ───────────────────────────────────────────────
+  function getLevelWords(lv) {
+    var words = [];
+    lv.alien.forEach(function(w){ words.push({word:w, isAlien:true}); });
+    lv.real.forEach(function(w){  words.push({word:w, isAlien:false}); });
+    return words;
+  }
+
+  function loadLevel(idx) {
+    var lv = LEVELS[idx];
+    state.levelIdx        = idx;
+    state.wordInLevel     = 0;
+    state.levelGuessCount = 0;
+    state.levelWordList   = getLevelWords(lv);
+    state.levelDotStates  = state.levelWordList.map(function(){ return 'pending'; });
+
+    // Overall progress (by level)
+    document.getElementById('snap-progress').style.width = ((idx / LEVELS.length) * 100) + '%';
+    document.getElementById('level-badge').textContent     = 'Level ' + lv.num + ' of ' + LEVELS.length;
+    document.getElementById('level-name').textContent      = lv.name;
+    document.getElementById('level-sub-label').textContent = lv.sub;
+
+    renderDots();
+    loadWord();
+  }
+
+  // ── ASSESSMENT: WORD DISPLAY ──────────────────────────────────────────────
+  function loadWord() {
+    var wi      = state.wordInLevel;
+    var total   = state.levelWordList.length;
+    var current = state.levelWordList[wi];
+
+    document.getElementById('word-counter').textContent = 'Word ' + (wi + 1) + ' of ' + total;
+
+    // Word type badge
+    var badge = document.getElementById('word-type-badge');
+    if (current.isAlien) {
+      badge.textContent = 'Alien Word';
+      badge.className   = 'word-type-badge alien';
+      state.alienAttempted++;
+    } else {
+      badge.textContent = 'Real Word';
+      badge.className   = 'word-type-badge real';
+    }
+
+    // The word
+    var bw   = document.getElementById('big-word');
+    var card = document.getElementById('big-word-card');
+    bw.textContent = current.word;
+    bw.classList.remove('word-enter'); void bw.offsetWidth; bw.classList.add('word-enter');
+    card.className = 'big-word-card' + (current.isAlien ? ' alien-card' : '');
+
+    // Highlight current dot
+    renderDots();
+  }
+
+  // ── ASSESSMENT: DOTS ──────────────────────────────────────────────────────
+  function renderDots() {
+    var container = document.getElementById('word-dots');
+    container.innerHTML = '';
+    state.levelDotStates.forEach(function(s, i){
+      var dot = document.createElement('div');
+      if (s === 'pending') {
+        dot.className = i === state.wordInLevel ? 'word-dot current' : 'word-dot';
+      } else {
+        dot.className = 'word-dot ' + s;
+      }
+      container.appendChild(dot);
+    });
+  }
+
+  // ── RATING SHEET ──────────────────────────────────────────────────────────
+  function rateWord(key) {
+    var wi      = state.wordInLevel;
+    var current = state.levelWordList[wi];
+
+    // Update dot state
+    state.levelDotStates[wi] = key;
+
+    // Update totals
+    if (key === 'easy')  { state.totalEasy++;  if (current.isAlien) state.alienEasy++; }
+    if (key === 'heavy') state.totalHeavy++;
+    if (key === 'guess') { state.totalGuess++;  state.levelGuessCount++; }
+
+    // Update tally chips
+    document.getElementById('count-easy').textContent  = state.totalEasy;
+    document.getElementById('count-heavy').textContent = state.totalHeavy;
+    document.getElementById('count-guess').textContent = state.totalGuess;
+
+    // Check 2× ❌ trigger
+    if (state.levelGuessCount >= 2) {
+      setTimeout(triggerDiagnosis, 350);
+      return;
+    }
+
+    // Advance to next word or next level
+    var nextWi = wi + 1;
+    if (nextWi < state.levelWordList.length) {
+      state.wordInLevel = nextWi;
+      loadWord();
+    } else {
+      // Level complete — advance
+      var nextLevel = state.levelIdx + 1;
+      if (nextLevel < LEVELS.length) {
+        setTimeout(function(){ loadLevel(nextLevel); }, 300);
+      } else {
+        // All 5 levels done
+        setTimeout(triggerDiagnosis, 350);
+      }
+    }
+  }
+
+  // ── SCORING ───────────────────────────────────────────────────────────────
+  function triggerDiagnosis() {
+    state.result = talliedProfile();
+    // Always fire Golden Rule modal — whether child finished early or timer expired
+    clearInterval(state.timerInterval);
+    state.timerFired = true;
+    showProcessing();
+    setTimeout(function(){
+      renderResults();
+      state.resultsReady = true;
+      // Show modal on top of processing screen — results revealed on dismiss
+      showGoldenRuleModal();
+    }, 1800);
+  }
+
+  function talliedProfile() {
+    var e = state.totalEasy, h = state.totalHeavy, g = state.totalGuess;
+    if (g >= e && g >= h) return 'master_memorizer';
+    if (h >  e && h >= g) return 'heavy_lifter';
+    return 'true_decoder';
+  }
+
+  // ── GOLDEN RULE MODAL ─────────────────────────────────────────────────────
+  function showGoldenRuleModal() {
+    // Hide waiting banner
+    document.getElementById('results-waiting-banner').classList.remove('show');
+    // Count total words attempted for the celebration
+    var totalAttempted = state.totalEasy + state.totalHeavy + state.totalGuess;
+    document.getElementById('alien-word-count').textContent = totalAttempted;
+    // Show modal
+    document.getElementById('golden-rule-overlay').classList.add('open');
+  }
+
+  function dismissGoldenRule() {
+    document.getElementById('golden-rule-overlay').classList.remove('open');
+    // Always render + navigate to results, then unlock
+    if (!state.resultsReady) {
+      // Timer fired before assessment finished — score what we have
+      state.result = talliedProfile();
+    }
+    renderResults();
+    showPage('page-results');
+    state.resultsReady = true;
+    document.getElementById('results-blur-wrap').classList.remove('locked');
+    document.getElementById('results-waiting-banner').classList.remove('show');
+    document.getElementById('snap-progress').style.width = '100%';
+    window.scrollTo(0, 0);
+  }
+
+  // ── RESULTS RENDER ────────────────────────────────────────────────────────
   function renderResults() {
     var n = firstName();
     var p = RESULTS[state.result];
-    document.getElementById('r-eyebrow').textContent  = 'Reading Snapshot \u00B7 ' + n;
-    document.getElementById('r-title').textContent    = "What\u2019s Holding " + n + ' Back';
-    document.getElementById('r-phase').textContent    = p.phase;
-    document.getElementById('r-gap').textContent      = p.gap;
-    document.getElementById('r-summary').textContent  = p.summary(n);
-    document.getElementById('r-body').textContent     = p.body;
-    document.getElementById('r-focus').textContent    = p.focus;
-    document.getElementById('wl-body').textContent    =
-      "A targeted, structured sequence built specifically for " + n + "\u2019s gap. Enter your email to be notified when it\u2019s ready.";
-    // Save to localStorage
+    document.getElementById('r-eyebrow').textContent     = 'Reading Snapshot \u00B7 ' + n;
+    document.getElementById('r-icon').textContent        = p.icon;
+    document.getElementById('r-title').textContent       = p.gap;
+    document.getElementById('r-phase').textContent       = p.phase;
+    document.getElementById('r-gap').textContent         = p.gap;
+    document.getElementById('r-summary').textContent     = p.summary(n);
+    document.getElementById('r-body').textContent        = p.body;
+    document.getElementById('r-focus').textContent       = p.focus;
+    document.getElementById('r-shift-title').textContent = p.shift_title;
+    document.getElementById('r-shift').textContent       = p.shift;
+    // Ensure blurred on load
+    document.getElementById('results-blur-wrap').classList.add('locked');
     localStorage.setItem('rr_snap_result', JSON.stringify({
       resultKey: state.result, gap: p.gap, childName: n,
-      date: 'Last taken ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})
+      date: 'Last taken ' + new Date().toLocaleDateString('en-US',
+        {month:'long', day:'numeric', year:'numeric'})
     }));
   }
 
-  // ── PREVIOUS RESULT BANNER ──────────────────────────────────
+  // ── PREVIOUS RESULT ───────────────────────────────────────────────────────
   function loadPrevResultBanner() {
     var stored = localStorage.getItem('rr_snap_result');
     if (!stored) return;
     try {
       var d = JSON.parse(stored);
-      document.getElementById('prev-result-banner').style.display = 'block';
-      document.getElementById('prev-gap-text').textContent = d.gap;
+      document.getElementById('prev-result-banner').style.display = 'flex';
+      document.getElementById('prev-gap-text').textContent  = d.gap;
       document.getElementById('prev-date-text').textContent = d.date;
     } catch(e){}
   }
@@ -619,52 +823,37 @@
     var d = JSON.parse(stored);
     state.childName = d.childName || 'your child';
     state.result    = d.resultKey;
+    state.timerFired = true; // previous result: skip timer gate
     renderResults();
     showPage('page-results');
+    state.resultsReady = true;
+    // Unlock immediately for viewing previous result
+    document.getElementById('results-blur-wrap').classList.remove('locked');
   }
 
   function restartSnap() {
-    state = { childName:'', grade:'', allWords:[], wordIdx:0, responses:[], result:null };
+    clearInterval(state.timerInterval);
+    document.getElementById('golden-rule-overlay').classList.remove('open');
+    document.getElementById('results-waiting-banner').classList.remove('show');
+    document.getElementById('results-blur-wrap').classList.add('locked');
+    state = {
+      childName:'', levelIdx:0, wordInLevel:0,
+      levelWordList:[], levelDotStates:[], levelGuessCount:0,
+      totalEasy:0, totalHeavy:0, totalGuess:0,
+      alienAttempted:0, alienEasy:0, result:null,
+      timerInterval:null, timerSeconds:60, timerHidden:false,
+      timerFired:false, resultsReady:false
+    };
     document.getElementById('child-name').value = '';
-    document.getElementById('wl-email').value   = '';
-    document.getElementById('wl-form').style.display      = 'block';
-    document.getElementById('wl-confirmed').style.display = 'none';
-    document.querySelectorAll('.grade-btn').forEach(function(b){ b.classList.remove('selected'); });
     document.getElementById('err-name').classList.remove('show');
-    document.getElementById('err-grade').classList.remove('show');
     document.getElementById('child-name').classList.remove('error');
+    document.getElementById('snap-progress').style.width = '0';
     loadPrevResultBanner();
     showPage('page-setup');
   }
 
-  // ── WAITLIST ─────────────────────────────────────────────────
-  document.getElementById('btn-notify').addEventListener('click', submitEmail);
-  document.getElementById('wl-email').addEventListener('keydown', function(e){ if(e.key==='Enter') submitEmail(); });
-
-  function submitEmail() {
-    var email = document.getElementById('wl-email').value.trim();
-    if (!email.includes('@') || !email.includes('.')) return;
-    document.getElementById('wl-form').style.display      = 'none';
-    document.getElementById('wl-confirmed').style.display = 'block';
-    document.getElementById('wl-confirmed-body').textContent =
-      "We\u2019ll notify you when " + firstName() + "\u2019s 10-Minute Plan is ready. One email. No noise.";
-  }
-
-  // ── SHARED BUTTON BUILDER ────────────────────────────────────
-  function buildButtons(containerId, items, onClick) {
-    var c = document.getElementById(containerId);
-    c.innerHTML = '';
-    items.forEach(function(r) {
-      var b = document.createElement('button');
-      b.className = 'resp-btn';
-      b.innerHTML = '<span class="resp-label">'+r.label+'</span><span class="resp-sub">'+r.sub+'</span>';
-      b.addEventListener('click', function(){ onClick(r.key); });
-      c.appendChild(b);
-    });
-  }
-
-  // ── INIT ────────────────────────────────────────────────────
-  checkAccess();
+  // ── INIT ──────────────────────────────────────────────────────────────────
+  loadPrevResultBanner();
 </script>
 </body>
 </html>
