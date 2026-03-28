@@ -6,6 +6,142 @@
 <title>Heart Word Practice App &mdash; Science of Reading</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+  /* ── OPT-IN GATE ──────────────────────────────────────────── */
+  .gate {
+    position: fixed; inset: 0;
+    background: #F8F6F1;
+    z-index: 9999;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px 20px;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+  .gate.hidden { display: none; }
+
+  .gate-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    padding: 36px 32px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+  .gate-top-band {
+    background: #111;
+    color: #fff;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    display: inline-block;
+  }
+  .gate-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(22px, 6vw, 30px);
+    font-weight: 900;
+    color: #111;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .gate-sub {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.65;
+    margin-bottom: 22px;
+  }
+  .gate-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .gate-pill {
+    background: #F4F4F4;
+    border: 1.5px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 13px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+  }
+  .gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .gate-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 15px;
+    color: #111;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .gate-input:focus { border-color: #111; }
+  .gate-btn {
+    width: 100%;
+    padding: 15px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .gate-btn:hover { background: #333; }
+  .gate-btn:disabled { background: #aaa; cursor: default; }
+  .gate-legal {
+    font-size: 11px;
+    color: #aaa;
+    line-height: 1.5;
+  }
+  .gate-error {
+    font-size: 12px;
+    color: #C0392B;
+    font-weight: 700;
+    min-height: 16px;
+  }
+  .gate-success {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0;
+  }
+  .gate-success.show { display: flex; }
+  .gate-success-icon {
+    width: 64px; height: 64px;
+    background: #111; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: #fff;
+  }
+  .gate-success-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px; font-weight: 900; color: #111;
+  }
+  .gate-success-sub { font-size: 13px; color: #666; line-height: 1.6; }
+  .gate-unlock-btn {
+    background: #111; color: #fff;
+    border: none; border-radius: 10px;
+    padding: 14px 32px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 800;
+    cursor: pointer; width: 100%;
+  }
+
   :root {
     --black: #111;
     --off-white: #F8F6F1;
@@ -239,6 +375,61 @@
 </head>
 <body>
 
+<!-- ══════════════════════════════════════════════════════════
+     OPT-IN GATE
+     Replace YOUR_MAILERLITE_FORM_URL with your MailerLite
+     embedded form action URL once your form is set up.
+══════════════════════════════════════════════════════════ -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+
+    <!-- Default: form view -->
+    <div id="gate-form-view">
+      <div class="gate-top-band">Exclusive Bonus — Buyers Only</div>
+      <div class="gate-title">Free Heart Word<br>Practice App</div>
+      <div class="gate-sub">
+        All 30 heart words with tappable sound boxes, red heart highlighting,
+        and three practice modes. Enter your email to unlock instant free access.
+      </div>
+      <div class="gate-features">
+        <div class="gate-pill">30 heart words</div>
+        <div class="gate-pill">Heart highlights</div>
+        <div class="gate-pill">3 practice modes</div>
+        <div class="gate-pill">Know-It pile</div>
+        <div class="gate-pill">Parent coaching tips</div>
+        <div class="gate-pill">Any device</div>
+      </div>
+      <div class="gate-form">
+        <input class="gate-input" id="gate-name" type="text" placeholder="Your first name" autocomplete="given-name">
+        <input class="gate-input" id="gate-email" type="email" placeholder="Your email address" autocomplete="email">
+        <div class="gate-error" id="gate-error"></div>
+        <button class="gate-btn" id="gate-submit" onclick="submitGate()">
+          Unlock Free Access &rarr;
+        </button>
+      </div>
+      <div class="gate-legal">
+        By entering your email you agree to receive occasional reading resources
+        from Reading Routines. No spam, ever. Unsubscribe anytime.
+      </div>
+    </div>
+
+    <!-- Success view (shown after submit) -->
+    <div class="gate-success" id="gate-success">
+      <div class="gate-success-icon">&#10003;</div>
+      <div class="gate-success-title">You're in!</div>
+      <div class="gate-success-sub">
+        Check your inbox for a confirmation email.<br>
+        Your practice app is ready right now &mdash; click below to start.
+      </div>
+      <button class="gate-unlock-btn" onclick="unlockApp()">
+        Open the App &rarr;
+      </button>
+    </div>
+
+  </div>
+</div>
+<!-- END GATE -->
+
 <div class="top-bar">
   <div class="logo">Heart Word Practice</div>
   <div class="progress-pill" id="progPill">1 / 30</div>
@@ -343,65 +534,65 @@
 // heartIdx: array of sound indices (0-based) that are the "heart" (irregular) part
 // heartNote: short explanation of what is irregular
 const WORDS = [
-  { word:"a",   sounds:["/a/"],               heartIdx:[0],    heartNote:"This letter can say /a/ or /u/ depending on context",
+  { word:"a",   heartLetters:[0],   sounds:["/a/"],               heartIdx:[0],    heartNote:"This letter can say /a/ or /u/ depending on context",
     sentence:"I see a dog.",   tip:"Say: What sound does this letter make? It can say /a/ like in acorn or a quiet /u/ like in about. Both are correct!" },
-  { word:"I",   sounds:["/i/"],               heartIdx:[],     heartNote:"",
+  { word:"I",   heartLetters:[],    sounds:["/i/"],               heartIdx:[],     heartNote:"",
     sentence:"I can run fast.", tip:"Just one sound. Clap once as you say it. The word I sounds exactly like the letter name." },
-  { word:"the", sounds:["/th/","/u/"],         heartIdx:[1],    heartNote:"The letter E here makes an unexpected /u/ sound",
+  { word:"the", heartLetters:[2],   sounds:["/th/","/u/"],         heartIdx:[1],    heartNote:"The letter E here makes an unexpected /u/ sound",
     sentence:"The cat sat here.", tip:"The tricky heart part is that sneaky E at the end. It makes a quiet /u/ sound. Tap each sound: /th/ then /u/." },
-  { word:"in",  sounds:["/i/","/n/"],          heartIdx:[],     heartNote:"",
+  { word:"in",  heartLetters:[],    sounds:["/i/","/n/"],          heartIdx:[],     heartNote:"",
     sentence:"The ball is in the box.", tip:"Two regular sounds: /i/ then /n/. Tap two fingers on the table. Then ask: How many sounds does this word have?" },
-  { word:"it",  sounds:["/i/","/t/"],          heartIdx:[],     heartNote:"",
+  { word:"it",  heartLetters:[],    sounds:["/i/","/t/"],          heartIdx:[],     heartNote:"",
     sentence:"It is a big hat.", tip:"Two sounds: /i/ and /t/. Tap them then blend fast. Try asking: Can you use this word in your own sentence?" },
-  { word:"is",  sounds:["/i/","/z/"],          heartIdx:[1],    heartNote:"The letter S here makes a /z/ sound instead of its usual /s/",
+  { word:"is",  heartLetters:[1],   sounds:["/i/","/z/"],          heartIdx:[1],    heartNote:"The letter S here makes a /z/ sound instead of its usual /s/",
     sentence:"She is my friend.", tip:"The heart part is that sneaky S that buzzes like a /z/. Point it out: That letter usually says /s/ but here it says /z/!" },
-  { word:"and", sounds:["/a/","/n/","/d/"],    heartIdx:[],     heartNote:"",
+  { word:"and", heartLetters:[],    sounds:["/a/","/n/","/d/"],    heartIdx:[],     heartNote:"",
     sentence:"Mom and Dad are here.", tip:"Three regular sounds: /a/ then /n/ then /d/. Tap each one slowly then blend faster and faster." },
-  { word:"on",  sounds:["/o/","/n/"],          heartIdx:[],     heartNote:"",
+  { word:"on",  heartLetters:[],    sounds:["/o/","/n/"],          heartIdx:[],     heartNote:"",
     sentence:"The cup is on the table.", tip:"Say octopus and hear that /o/ at the start. That same vowel is in the word ON. Tap: /o/ then /n/." },
-  { word:"up",  sounds:["/u/","/p/"],          heartIdx:[],     heartNote:"",
+  { word:"up",  heartLetters:[],    sounds:["/u/","/p/"],          heartIdx:[],     heartNote:"",
     sentence:"The bird flew up high.", tip:"Two sounds: /u/ and /p/. Point your finger UP when you say the whole word. Movement helps children remember." },
-  { word:"to",  sounds:["/t/","/oo/"],         heartIdx:[1],    heartNote:"The letter O makes an unexpected long /oo/ sound like in moon",
+  { word:"to",  heartLetters:[1],   sounds:["/t/","/oo/"],         heartIdx:[1],    heartNote:"The letter O makes an unexpected long /oo/ sound like in moon",
     sentence:"We walk to school.", tip:"The heart part is the O making an /oo/ sound. Say: That O is being sneaky. It makes the sound from the word moon." },
-  { word:"if",  sounds:["/i/","/f/"],          heartIdx:[],     heartNote:"",
+  { word:"if",  heartLetters:[],    sounds:["/i/","/f/"],          heartIdx:[],     heartNote:"",
     sentence:"If it rains, we stay in.", tip:"Two regular sounds: /i/ and /f/. After practicing, make up silly IF sentences together." },
-  { word:"you", sounds:["/y/","/oo/"],         heartIdx:[1],    heartNote:"The letters OU make an /oo/ sound and the final U is silent",
+  { word:"you", heartLetters:[1,2], sounds:["/y/","/oo/"],         heartIdx:[1],    heartNote:"The letters OU make an /oo/ sound and the final U is silent",
     sentence:"Can you help me?", tip:"The heart part is those two letters making just one /oo/ sound. Say: Three letters, only two sounds. Can you find the sneaky silent one?" },
-  { word:"us",  sounds:["/u/","/s/"],          heartIdx:[],     heartNote:"",
+  { word:"us",  heartLetters:[],    sounds:["/u/","/s/"],          heartIdx:[],     heartNote:"",
     sentence:"Come with us to the park.", tip:"Short and quick: /u/ then /s/. After tapping, ask: How many sounds, not letters, do you hear?" },
-  { word:"at",  sounds:["/a/","/t/"],          heartIdx:[],     heartNote:"",
+  { word:"at",  heartLetters:[],    sounds:["/a/","/t/"],          heartIdx:[],     heartNote:"",
     sentence:"Look at that butterfly!", tip:"Two regular sounds: /a/ then /t/. Then play a rhyme game. What words rhyme with AT? Cat, hat, sat!" },
-  { word:"of",  sounds:["/u/","/v/"],          heartIdx:[0,1],  heartNote:"The O says /u/ and the F says /v/ -- both letters are irregular here",
+  { word:"of",  heartLetters:[0,1], sounds:["/u/","/v/"],          heartIdx:[0,1],  heartNote:"The O says /u/ and the F says /v/ -- both letters are irregular here",
     sentence:"A cup of milk is yummy.", tip:"This word has two heart parts! The O says /u/ and the F says /v/. Say: Both letters are being sneaky in this one." },
-  { word:"his", sounds:["/h/","/i/","/z/"],    heartIdx:[2],    heartNote:"The letter S makes a /z/ sound just like in the word IS",
+  { word:"his", heartLetters:[2],   sounds:["/h/","/i/","/z/"],    heartIdx:[2],    heartNote:"The letter S makes a /z/ sound just like in the word IS",
     sentence:"That is his backpack.", tip:"The heart part is that S buzzing like a /z/ again. Point out the pattern: IS and HIS both have that sneaky S." },
-  { word:"did", sounds:["/d/","/i/","/d/"],    heartIdx:[],     heartNote:"",
+  { word:"did", heartLetters:[],    sounds:["/d/","/i/","/d/"],    heartIdx:[],     heartNote:"",
     sentence:"She did a great job!", tip:"Three regular sounds: /d/ then /i/ then /d/. The same sound at both ends. Tell your child: This word is like a sound sandwich!" },
-  { word:"an",  sounds:["/a/","/n/"],          heartIdx:[],     heartNote:"",
+  { word:"an",  heartLetters:[],    sounds:["/a/","/n/"],          heartIdx:[],     heartNote:"",
     sentence:"I ate an apple today.", tip:"Two regular sounds: /a/ then /n/. This word is used before vowel sounds like AN apple and AN egg." },
-  { word:"man", sounds:["/m/","/a/","/n/"],    heartIdx:[],     heartNote:"",
+  { word:"man", heartLetters:[],    sounds:["/m/","/a/","/n/"],    heartIdx:[],     heartNote:"",
     sentence:"The man has a red hat.", tip:"Three regular sounds: /m/ then /a/ then /n/. Challenge: what rhymes with MAN? Can, ran, pan!" },
-  { word:"was", sounds:["/w/","/u/","/z/"],    heartIdx:[1,2],  heartNote:"The A says /u/ and the S says /z/ -- both are irregular heart parts",
+  { word:"was", heartLetters:[1,2], sounds:["/w/","/u/","/z/"],    heartIdx:[1,2],  heartNote:"The A says /u/ and the S says /z/ -- both are irregular heart parts",
     sentence:"It was a sunny day.", tip:"Two heart parts! The A says /u/ and the S says /z/. Say: Two sneaky letters in this one. This word does not play by the rules!" },
-  { word:"can", sounds:["/k/","/a/","/n/"],    heartIdx:[],     heartNote:"",
+  { word:"can", heartLetters:[],    sounds:["/k/","/a/","/n/"],    heartIdx:[],     heartNote:"",
     sentence:"I can read this word!", tip:"Three regular sounds: /k/ then /a/ then /n/. Make it a celebration: After blending, say together: Yes, I CAN read this word!" },
-  { word:"not", sounds:["/n/","/o/","/t/"],    heartIdx:[],     heartNote:"",
+  { word:"not", heartLetters:[],    sounds:["/n/","/o/","/t/"],    heartIdx:[],     heartNote:"",
     sentence:"I do not like spinach.", tip:"Three regular sounds: /n/ then /o/ then /t/. Make a funny face when you say it. Silliness helps children remember!" },
-  { word:"he",  sounds:["/h/","/ee/"],         heartIdx:[1],    heartNote:"The letter E makes its long sound /ee/ like in eel",
+  { word:"he",  heartLetters:[1],   sounds:["/h/","/ee/"],         heartIdx:[1],    heartNote:"The letter E makes its long sound /ee/ like in eel",
     sentence:"He is very tall.", tip:"The heart part is the E making its long /ee/ sound. Say: That E is saying its own name. Stretch it: /h/ then /eeee/." },
-  { word:"be",  sounds:["/b/","/ee/"],         heartIdx:[1],    heartNote:"The letter E makes its long sound /ee/ like in bee",
+  { word:"be",  heartLetters:[1],   sounds:["/b/","/ee/"],         heartIdx:[1],    heartNote:"The letter E makes its long sound /ee/ like in bee",
     sentence:"Be kind to others.", tip:"Long E again just like the word bee! Say: That E is saying its name again. Tap and buzz: /b/ then /eeee/." },
-  { word:"had", sounds:["/h/","/a/","/d/"],    heartIdx:[],     heartNote:"",
+  { word:"had", heartLetters:[],    sounds:["/h/","/a/","/d/"],    heartIdx:[],     heartNote:"",
     sentence:"She had a new puppy.", tip:"Three regular sounds: /h/ then /a/ then /d/. Short A in the middle like in apple. Stretch it: /h/ then /aaa/ then /d/." },
-  { word:"him", sounds:["/h/","/i/","/m/"],    heartIdx:[],     heartNote:"",
+  { word:"him", heartLetters:[],    sounds:["/h/","/i/","/m/"],    heartIdx:[],     heartNote:"",
     sentence:"Give it to him, please.", tip:"Three regular sounds: /h/ then /i/ then /m/. Short I like in itch. Point to someone and use the word HIM in a sentence." },
-  { word:"big", sounds:["/b/","/i/","/g/"],    heartIdx:[],     heartNote:"",
+  { word:"big", heartLetters:[],    sounds:["/b/","/i/","/g/"],    heartIdx:[],     heartNote:"",
     sentence:"That is a big elephant!", tip:"Three regular sounds: /b/ then /i/ then /g/. Stretch your arms WIDE when you say the full word. Big movement for a big word!" },
-  { word:"so",  sounds:["/s/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound like in go and no",
+  { word:"so",  heartLetters:[1],   sounds:["/s/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound like in go and no",
     sentence:"I am so happy today!", tip:"The heart part is that O making its long /o/ sound. Say: That O is saying its own name. SO, GO, and NO are a rhyme family." },
-  { word:"go",  sounds:["/g/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound",
+  { word:"go",  heartLetters:[1],   sounds:["/g/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound",
     sentence:"Go, team, go!", tip:"The heart part is the long O. Ask: What other words rhyme with GO? So, no! Say all three together and clap the pattern." },
-  { word:"no",  sounds:["/n/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound",
+  { word:"no",  heartLetters:[1],   sounds:["/n/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound",
     sentence:"No, thank you.", tip:"Long O again. Shake your head NO while you tap each box. The movement makes it memorable. NO, GO, SO all rhyme!" },
 ];
 
@@ -480,18 +671,13 @@ function renderWordDisplay(d, blur) {
     wb.innerHTML = d.word;
     wb.classList.add('blurred');
   } else {
-    // Build highlighted word
-    // Split word into letters and mark heart letters
-    // For simplicity, highlight by coloring sound spans
-    const sounds = d.sounds;
-    const hi = d.heartIdx;
+    // Show actual word letters, highlight heart letters in red
     let html = '';
-    sounds.forEach((s, i) => {
-      const inner = s.replace(/\//g,'');
-      if (hi.includes(i)) {
-        html += `<span class="heart-highlight">${inner}</span>`;
+    d.word.split('').forEach((ch, i) => {
+      if (d.heartLetters && d.heartLetters.includes(i)) {
+        html += `<span class="heart-highlight">${ch}</span>`;
       } else {
-        html += `<span>${inner}</span>`;
+        html += `<span>${ch}</span>`;
       }
     });
     wb.innerHTML = html;
@@ -690,7 +876,61 @@ function launchConfetti() {
   }
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
+// ── Gate logic ────────────────────────────────────────────────
+const MAILERLITE_FORM_URL = 'https://assets.mailerlite.com/jsonp/2142684/forms/183113950863296190/subscribe';
+const MAILERLITE_FORM_ID  = '183113950863296190';
+
+function validateEmail(e) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
+
+async function submitGate() {
+  const name  = document.getElementById('gate-name').value.trim();
+  const email = document.getElementById('gate-email').value.trim();
+  const err   = document.getElementById('gate-error');
+  const btn   = document.getElementById('gate-submit');
+
+  err.textContent = '';
+  if (!name)               { err.textContent = 'Please enter your first name.'; return; }
+  if (!validateEmail(email)) { err.textContent = 'Please enter a valid email address.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  // If MailerLite form URL is set, post to it
+  if (MAILERLITE_FORM_URL && MAILERLITE_FORM_URL !== 'YOUR_MAILERLITE_FORM_URL') {
+    try {
+      const fd = new FormData();
+      fd.append('fields[name]',  name);
+      fd.append('fields[email]', email);
+      if (MAILERLITE_FORM_ID !== 'YOUR_MAILERLITE_FORM_ID') {
+        fd.append('ml-submit', '1');
+        fd.append('anticsrf', 'true');
+      }
+      await fetch(MAILERLITE_FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    } catch(e) {
+      // no-cors fetch always throws on response — that's fine, submission still goes through
+    }
+  }
+
+  // Always show success (submission went through, or URL not set yet)
+  document.getElementById('gate-form-view').style.display = 'none';
+  document.getElementById('gate-success').classList.add('show');
+
+  // Store in localStorage so gate never shows again on this device
+  localStorage.setItem('rr_unlocked', '1');
+}
+
+function unlockApp() {
+  document.getElementById('gate').classList.add('hidden');
+}
+
+// Check if already unlocked on this device
+if (localStorage.getItem('rr_unlocked')) {
+  document.getElementById('gate').classList.add('hidden');
+}
+
+// Init
 renderWord();
 </script>
 </body>
