@@ -356,6 +356,9 @@
   .ndot.known   { background: var(--known-color); }
   .ndot.current { background: var(--mid-gray); outline: 2px solid var(--black); outline-offset: 2px; }
 
+  /* locked nav dot */
+  .ndot.locked { background: var(--light-gray); opacity: 0.4; cursor: pointer; }
+
   /* ── Celebration ── */
   .celebrate { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
   .celebrate.show { opacity: 1; pointer-events: all; }
@@ -376,23 +379,22 @@
 <body>
 
 <!-- ══════════════════════════════════════════════════════════
-     OPT-IN GATE
-     Replace YOUR_MAILERLITE_FORM_URL with your MailerLite
-     embedded form action URL once your form is set up.
+     OPT-IN GATE — shows on load (if not unlocked) OR after word 5
 ══════════════════════════════════════════════════════════ -->
 <div class="gate" id="gate">
   <div class="gate-card">
 
     <!-- Default: form view -->
     <div id="gate-form-view">
-      <div class="gate-top-band">Exclusive Bonus — Buyers Only</div>
-      <div class="gate-title">Free Heart Word<br>Practice App</div>
-      <div class="gate-sub">
-        All 30 heart words with tappable sound boxes, red heart highlighting,
-        and three practice modes. Enter your email to unlock instant free access.
+      <div class="gate-top-band" id="gate-badge">Try 5 Free — Then Unlock All 30</div>
+      <div class="gate-title" id="gate-title">Unlock the Full<br>Heart Word App</div>
+      <div class="gate-sub" id="gate-sub">
+        You have tried the first 5 words free! Enter your email to unlock
+        all 30 heart words, three practice modes, the Know-It pile tracker,
+        and parent coaching tips on every single word.
       </div>
       <div class="gate-features">
-        <div class="gate-pill">30 heart words</div>
+        <div class="gate-pill">All 30 heart words</div>
         <div class="gate-pill">Heart highlights</div>
         <div class="gate-pill">3 practice modes</div>
         <div class="gate-pill">Know-It pile</div>
@@ -404,7 +406,7 @@
         <input class="gate-input" id="gate-email" type="email" placeholder="Your email address" autocomplete="email">
         <div class="gate-error" id="gate-error"></div>
         <button class="gate-btn" id="gate-submit" onclick="submitGate()">
-          Unlock Free Access &rarr;
+          Unlock All 30 Words — Free &rarr;
         </button>
       </div>
       <div class="gate-legal">
@@ -413,16 +415,16 @@
       </div>
     </div>
 
-    <!-- Success view (shown after submit) -->
+    <!-- Success view -->
     <div class="gate-success" id="gate-success">
       <div class="gate-success-icon">&#10003;</div>
       <div class="gate-success-title">You're in!</div>
       <div class="gate-success-sub">
-        Check your inbox for a confirmation email.<br>
-        Your practice app is ready right now &mdash; click below to start.
+        Check your inbox for your access email.<br>
+        All 30 words are unlocked right now &mdash; click below to continue.
       </div>
       <button class="gate-unlock-btn" onclick="unlockApp()">
-        Open the App &rarr;
+        Continue Practicing &rarr;
       </button>
     </div>
 
@@ -820,9 +822,19 @@ function updatePileCount() {
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────
+const FREE_WORDS = 5; // first N words are free
+
 function nextWord() {
-  if (currentIdx < WORDS.length - 1) {
-    currentIdx++;
+  const nextIdx = currentIdx + 1;
+
+  // If not unlocked and trying to go past the free preview — show gate
+  if (!localStorage.getItem('rr_unlocked') && nextIdx >= FREE_WORDS) {
+    showMidGate();
+    return;
+  }
+
+  if (nextIdx < WORDS.length) {
+    currentIdx = nextIdx;
     renderWord();
   } else {
     if (knownSet.size === WORDS.length) {
@@ -834,13 +846,28 @@ function nextWord() {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+function showMidGate() {
+  // Gate is already set up with preview messaging — just show it
+  document.getElementById('gate').classList.remove('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
 function renderDots() {
   const nd = document.getElementById('navDots');
+  const unlocked = !!localStorage.getItem('rr_unlocked');
   nd.innerHTML = '';
   WORDS.forEach((_, i) => {
     const d = document.createElement('div');
-    d.className = 'ndot' + (knownSet.has(i) ? ' known' : '') + (i === currentIdx ? ' current' : '');
-    d.onclick = () => { currentIdx = i; renderWord(); };
+    const isLocked = !unlocked && i >= FREE_WORDS;
+    d.className = 'ndot'
+      + (knownSet.has(i) ? ' known' : '')
+      + (i === currentIdx ? ' current' : '')
+      + (isLocked ? ' locked' : '');
+    d.title = isLocked ? 'Sign up free to unlock' : '';
+    d.onclick = () => {
+      if (isLocked) { showMidGate(); return; }
+      currentIdx = i; renderWord();
+    };
     nd.appendChild(d);
   });
 }
@@ -895,40 +922,39 @@ async function submitGate() {
   if (!validateEmail(email)) { err.textContent = 'Please enter a valid email address.'; return; }
 
   btn.disabled = true;
-  btn.textContent = 'Submitting...';
+  btn.textContent = 'Unlocking...';
 
-  // If MailerLite form URL is set, post to it
   if (MAILERLITE_FORM_URL && MAILERLITE_FORM_URL !== 'YOUR_MAILERLITE_FORM_URL') {
     try {
       const fd = new FormData();
       fd.append('fields[name]',  name);
       fd.append('fields[email]', email);
-      if (MAILERLITE_FORM_ID !== 'YOUR_MAILERLITE_FORM_ID') {
-        fd.append('ml-submit', '1');
-        fd.append('anticsrf', 'true');
-      }
+      fd.append('ml-submit', '1');
+      fd.append('anticsrf', 'true');
       await fetch(MAILERLITE_FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' });
-    } catch(e) {
-      // no-cors fetch always throws on response — that's fine, submission still goes through
-    }
+    } catch(e) { /* no-cors always throws — submission still goes through */ }
   }
 
-  // Always show success (submission went through, or URL not set yet)
+  // Save unlock to localStorage — permanent on this device
+  localStorage.setItem('rr_unlocked', '1');
+
   document.getElementById('gate-form-view').style.display = 'none';
   document.getElementById('gate-success').classList.add('show');
-
-  // Store in localStorage so gate never shows again on this device
-  localStorage.setItem('rr_unlocked', '1');
 }
 
 function unlockApp() {
   document.getElementById('gate').classList.add('hidden');
+  // Move to word 6 (index 5) after unlocking if still on preview
+  if (currentIdx === FREE_WORDS - 1) {
+    currentIdx = FREE_WORDS;
+    renderWord();
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
-// Check if already unlocked on this device
-if (localStorage.getItem('rr_unlocked')) {
-  document.getElementById('gate').classList.add('hidden');
-}
+// Gate starts HIDDEN — free preview plays immediately
+// Gate only appears when nextWord() is called past FREE_WORDS
+document.getElementById('gate').classList.add('hidden');
 
 // Init
 renderWord();
