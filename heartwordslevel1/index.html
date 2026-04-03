@@ -3,523 +3,576 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Heart Word Practice App &mdash; Science of Reading</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Reading Routines | Heart Word Practice App — Science of Reading</title>
+<meta name="description" content="Free heart word practice app for Pre-K, Kindergarten and Grade 1. Science-of-reading aligned. Built for parents. First 5 words free — no sign up needed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  /* ── OPT-IN GATE ──────────────────────────────────────────── */
-  .gate {
-    position: fixed; inset: 0;
-    background: #F8F6F1;
-    z-index: 9999;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 24px 20px;
-    font-family: 'Nunito Sans', sans-serif;
-  }
-  .gate.hidden { display: none; }
 
-  .gate-card {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
-    padding: 36px 32px;
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-  }
-  .gate-top-band {
-    background: #111;
-    color: #fff;
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    margin-bottom: 22px;
-    display: inline-block;
-  }
-  .gate-title {
-    font-family: 'Nunito', sans-serif;
-    font-size: clamp(22px, 6vw, 30px);
-    font-weight: 900;
-    color: #111;
-    line-height: 1.15;
-    margin-bottom: 10px;
-  }
-  .gate-sub {
-    font-size: 14px;
-    color: #666;
-    line-height: 1.65;
-    margin-bottom: 22px;
-  }
-  .gate-features {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    justify-content: center;
-    margin-bottom: 24px;
-  }
-  .gate-pill {
-    background: #F4F4F4;
-    border: 1.5px solid #ddd;
-    border-radius: 20px;
-    padding: 5px 13px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #333;
-  }
-  .gate-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .gate-input {
-    width: 100%;
-    padding: 14px 16px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    font-family: 'Nunito Sans', sans-serif;
-    font-size: 15px;
-    color: #111;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .gate-input:focus { border-color: #111; }
-  .gate-btn {
-    width: 100%;
-    padding: 15px;
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .gate-btn:hover { background: #333; }
-  .gate-btn:disabled { background: #aaa; cursor: default; }
-  .gate-legal {
-    font-size: 11px;
-    color: #aaa;
-    line-height: 1.5;
-  }
-  .gate-error {
-    font-size: 12px;
-    color: #C0392B;
-    font-weight: 700;
-    min-height: 16px;
-  }
-  .gate-success {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 20px 0;
-  }
-  .gate-success.show { display: flex; }
-  .gate-success-icon {
-    width: 64px; height: 64px;
-    background: #111; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; color: #fff;
-  }
-  .gate-success-title {
-    font-family: 'Nunito', sans-serif;
-    font-size: 22px; font-weight: 900; color: #111;
-  }
-  .gate-success-sub { font-size: 13px; color: #666; line-height: 1.6; }
-  .gate-unlock-btn {
-    background: #111; color: #fff;
-    border: none; border-radius: 10px;
-    padding: 14px 32px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px; font-weight: 800;
-    cursor: pointer; width: 100%;
-  }
+/* ══════════════════════════════════════════════════════════════
+   SHARED
+══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-  :root {
-    --black: #111;
-    --off-white: #F8F6F1;
-    --warm-gray: #E8E4DC;
-    --mid-gray: #777;
-    --light-gray: #ccc;
-    --box-bg: #F4F4F4;
-    --heart-color: #C0392B;
-    --heart-bg: #FDECEA;
-    --known-color: #2D6A4F;
-    --known-bg: #EAF4EF;
-    --radius: 14px;
-    --shadow: 0 6px 32px rgba(0,0,0,0.12);
-  }
+:root {
+  --black: #0D0D0D;
+  --white: #FAFAF8;
+  --gray:  #888;
+  --rule:  #E0E0DC;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans:  'DM Sans', system-ui, sans-serif;
+  --app-font: 'Nunito Sans', sans-serif;
+  --heart: #C0392B;
+  --heart-bg: #FDECEA;
+  --known: #2D6A4F;
+  --known-bg: #EAF4EF;
+  --radius: 14px;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: var(--sans);
+  background: var(--white);
+  color: var(--black);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
-  body {
-    font-family: 'Nunito Sans', sans-serif;
-    background: var(--off-white);
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    overflow-x: hidden;
-  }
+/* ══════════════════════════════════════════════════════════════
+   LANDING — NAV
+══════════════════════════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: var(--white);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(20px, 5vw, 60px);
+  height: 60px;
+}
+.nav-logo { font-family: var(--serif); font-size: 18px; color: var(--black); text-decoration: none; letter-spacing: -0.02em; }
+.nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+.nav-links a { font-size: 13px; font-weight: 500; letter-spacing: 0.04em; color: var(--gray); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+.nav-links a:hover { color: var(--black); }
+.nav-cta { background: var(--black); color: var(--white) !important; padding: 8px 20px; font-size: 13px !important; text-transform: uppercase !important; letter-spacing: 0.06em !important; transition: opacity 0.2s !important; }
+.nav-cta:hover { opacity: 0.75 !important; }
 
-  /* ── Top bar ── */
-  .top-bar {
-    background: var(--black); color: #fff;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 18px; position: sticky; top: 0; z-index: 100;
-  }
-  .top-bar .logo { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-  .top-bar .progress-pill { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 13px; font-size: 12px; font-weight: 700; }
-  .top-bar .mode-lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.7; }
+/* ══════════════════════════════════════════════════════════════
+   LANDING — HERO
+══════════════════════════════════════════════════════════════ */
+.hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 60px; }
+.hero-left { display: flex; flex-direction: column; justify-content: center; padding: clamp(60px,8vw,100px) clamp(30px,5vw,80px); border-right: 1px solid var(--rule); }
+.hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+.hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gray); }
+.hero-title { font-family: var(--serif); font-size: clamp(42px,5vw,72px); line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 28px; }
+.hero-title em { font-style: italic; color: var(--gray); }
+.hero-body { font-size: 17px; font-weight: 300; color: #444; line-height: 1.75; max-width: 420px; margin-bottom: 44px; }
+.hero-actions { display: flex; flex-direction: column; gap: 12px; max-width: 340px; }
+.btn-primary { display: block; text-align: center; background: var(--black); color: var(--white); font-family: var(--sans); font-size: 14px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; padding: 16px 32px; transition: opacity 0.2s; cursor: pointer; border: none; width: 100%; }
+.btn-primary:hover { opacity: 0.8; }
+.btn-secondary { display: block; text-align: center; background: transparent; color: var(--black); font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; padding: 14px 32px; border: 1px solid var(--rule); transition: border-color 0.2s; }
+.btn-secondary:hover { border-color: var(--black); }
+.hero-note { margin-top: 16px; font-size: 12px; color: var(--gray); letter-spacing: 0.02em; }
 
-  /* ── Main ── */
-  .main { width: 100%; max-width: 580px; margin: 0 auto; padding: 18px 14px 60px; display: flex; flex-direction: column; gap: 14px; }
+/* Hero right — app preview */
+.hero-right { display: flex; align-items: center; justify-content: center; background: var(--black); padding: clamp(40px,6vw,80px); position: relative; overflow: hidden; }
+.hero-right::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(var(--rule) 0.5px, transparent 0.5px), linear-gradient(90deg, var(--rule) 0.5px, transparent 0.5px); background-size: 40px 40px; opacity: 0.08; }
+.app-preview { position: relative; z-index: 1; background: var(--white); width: 100%; max-width: 360px; box-shadow: 0 40px 80px rgba(0,0,0,0.5); }
+.app-preview-bar { background: var(--black); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+.app-preview-bar span { font-size: 10px; letter-spacing: 0.08em; color: rgba(255,255,255,0.7); text-transform: uppercase; }
+.app-preview-body { padding: 24px 20px; }
+.preview-word-row { text-align: center; margin-bottom: 6px; }
+.preview-word { font-family: var(--serif); font-size: 72px; line-height: 1; letter-spacing: -0.03em; color: var(--black); }
+.preview-word .h { color: var(--heart); text-decoration: underline; text-decoration-color: var(--heart); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.preview-note { text-align: center; font-size: 11px; font-weight: 600; color: var(--heart); margin-bottom: 16px; }
+.preview-boxes { display: flex; justify-content: center; gap: 0; margin-bottom: 10px; }
+.preview-box { width: 80px; height: 54px; border: 2px solid var(--black); background: #F4F4F4; display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--black); }
+.preview-box:not(:first-child) { border-left: none; }
+.preview-box.heart { background: var(--heart-bg); border-color: var(--heart); color: var(--heart); }
+.preview-box.heart:not(:first-child) { border-left: none; border-left: 2px solid var(--heart); }
+.preview-legend { display: flex; align-items: center; gap: 6px; background: var(--heart-bg); border: 1px solid #F5C6C0; padding: 6px 10px; margin-bottom: 14px; font-size: 10px; font-weight: 600; color: var(--heart); }
+.preview-legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--heart); flex-shrink: 0; }
+.preview-tip { background: #F8F6F1; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #555; line-height: 1.55; border-left: 2px solid var(--black); }
+.preview-tip strong { font-weight: 600; color: var(--black); display: block; margin-bottom: 2px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.preview-modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.preview-mode { border: 1px solid #E0E0DC; padding: 8px 4px; text-align: center; }
+.preview-mode-letter { width: 22px; height: 22px; background: var(--black); border-radius: 50%; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--white); }
+.preview-mode-label { font-size: 10px; font-weight: 600; color: var(--black); text-transform: uppercase; letter-spacing: 0.04em; }
+.preview-mode-sub { font-size: 9px; color: var(--gray); line-height: 1.3; margin-top: 2px; }
 
-  /* ── Mode selector ── */
-  .mode-bar { display: flex; gap: 6px; background: var(--warm-gray); border-radius: 30px; padding: 5px; }
-  .mode-btn {
-    flex: 1; padding: 8px 4px; border: none; background: transparent;
-    border-radius: 24px; font-family: 'Nunito', sans-serif;
-    font-size: 11px; font-weight: 800; letter-spacing: 0.04em;
-    color: var(--mid-gray); cursor: pointer; transition: all 0.2s; text-align: center;
-  }
-  .mode-btn.active { background: var(--black); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+/* ══════════════════════════════════════════════════════════════
+   LANDING — TICKER
+══════════════════════════════════════════════════════════════ */
+.ticker { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); overflow: hidden; white-space: nowrap; padding: 14px 0; }
+.ticker-inner { display: inline-flex; gap: 48px; animation: ticker-scroll 20s linear infinite; }
+.ticker-item { font-size: 12px; font-weight: 500; letter-spacing: 0.10em; text-transform: uppercase; color: var(--gray); display: flex; align-items: center; gap: 16px; }
+.ticker-item::before { content: '✦'; font-size: 8px; color: var(--rule); }
+@keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-  /* ── Progress bar ── */
-  .prog-wrap { width: 100%; height: 4px; background: var(--warm-gray); border-radius: 3px; overflow: hidden; }
-  .prog-fill { height: 100%; background: var(--black); border-radius: 3px; transition: width 0.4s ease; }
+/* ══════════════════════════════════════════════════════════════
+   LANDING — SECTIONS
+══════════════════════════════════════════════════════════════ */
+.how { padding: clamp(80px,10vw,140px) clamp(24px,5vw,80px); }
+.section-header { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; margin-bottom: 72px; padding-bottom: 40px; border-bottom: 1px solid var(--rule); }
+.section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray); margin-bottom: 16px; }
+.section-title { font-family: var(--serif); font-size: clamp(32px,4vw,52px); line-height: 1.1; letter-spacing: -0.02em; }
+.section-body { font-size: 16px; font-weight: 300; color: #555; line-height: 1.75; padding-top: 24px; }
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+.step { padding: 48px 40px; border-right: 1px solid var(--rule); opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.step:last-child { border-right: none; }
+.step.visible { opacity: 1; transform: translateY(0); }
+.step:nth-child(2) { transition-delay: 0.1s; }
+.step:nth-child(3) { transition-delay: 0.2s; }
+.step-num { font-family: var(--serif); font-size: 72px; line-height: 1; color: var(--rule); margin-bottom: 24px; letter-spacing: -0.04em; }
+.step-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.01em; }
+.step-body { font-size: 14px; font-weight: 300; color: #555; line-height: 1.7; }
 
-  /* ── Word card ── */
-  .word-card {
-    background: #fff; border-radius: var(--radius); box-shadow: var(--shadow);
-    border: 1.5px solid #e8e8e8; overflow: hidden;
-  }
-  .word-card-top { background: var(--black); padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; }
-  .word-card-top .wc-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
-  .word-card-top .wc-num { font-size: 10px; color: rgba(255,255,255,0.6); }
+.explainer { background: var(--black); padding: clamp(80px,10vw,120px) clamp(24px,5vw,80px); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.explainer-left .section-eyebrow { color: rgba(255,255,255,0.4); }
+.explainer-left .section-title { color: var(--white); }
+.explainer-left .section-body { color: rgba(255,255,255,0.6); margin-top: 20px; }
+.explainer-cards { display: flex; flex-direction: column; gap: 16px; }
+.explainer-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10); padding: 20px 22px; display: flex; gap: 16px; align-items: flex-start; opacity: 0; transform: translateX(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.explainer-card.visible { opacity: 1; transform: translateX(0); }
+.explainer-card:nth-child(2) { transition-delay: 0.1s; }
+.explainer-card:nth-child(3) { transition-delay: 0.2s; }
+.explainer-card:nth-child(4) { transition-delay: 0.3s; }
+.ec-word { font-family: var(--serif); font-size: 28px; line-height: 1; color: var(--white); min-width: 56px; text-align: center; padding-top: 4px; }
+.ec-word .h { color: var(--heart); text-decoration: underline; text-decoration-color: var(--heart); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.ec-title { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+.ec-sub { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
 
-  .word-card-body { padding: 22px 24px 18px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.for-parents { padding: clamp(80px,10vw,140px) clamp(24px,5vw,80px); border-top: 1px solid var(--rule); }
+.features-grid { display: grid; grid-template-columns: repeat(3,1fr); margin-top: 64px; }
+.feature { padding: 40px 36px; border-right: 1px solid var(--rule); border-top: 1px solid var(--rule); }
+.feature:nth-child(4), .feature:nth-child(5), .feature:nth-child(6) { border-bottom: 1px solid var(--rule); }
+.feature:nth-child(3), .feature:nth-child(6) { border-right: none; }
+.feature-num { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray); margin-bottom: 20px; }
+.feature-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.01em; }
+.feature-body { font-size: 13px; font-weight: 300; color: #555; line-height: 1.7; }
 
-  /* Word display with heart highlighting */
-  .word-display-wrap { text-align: center; }
-  .word-big {
-    font-family: 'Nunito', sans-serif; font-size: clamp(60px,16vw,86px);
-    font-weight: 900; color: var(--black); line-height: 1; letter-spacing: -0.02em;
-  }
-  .word-big.blurred { filter: blur(7px); opacity: 0.25; user-select: none; }
+.curriculum { padding: clamp(60px,8vw,100px) clamp(24px,5vw,80px); background: #F5F5F2; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.curriculum-inner { display: grid; grid-template-columns: auto 1fr; gap: 60px; align-items: center; }
+.curriculum-label { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray); writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+.curriculum-programs { display: flex; flex-wrap: wrap; gap: 0; }
+.program { padding: 20px 32px; border: 1px solid var(--rule); margin-right: -1px; margin-bottom: -1px; }
+.program-name { font-size: 14px; font-weight: 600; color: var(--black); margin-bottom: 3px; }
+.program-sub { font-size: 12px; color: var(--gray); }
 
-  /* Heart part highlighting */
-  .heart-highlight { color: var(--heart-color); position: relative; }
-  .heart-explain {
-    font-size: 11px; color: var(--heart-color); font-weight: 700;
-    letter-spacing: 0.04em; margin-top: 2px; opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .heart-explain.show { opacity: 1; }
+/* ══════════════════════════════════════════════════════════════
+   TRANSITION STRIP — between landing and app
+══════════════════════════════════════════════════════════════ */
+.app-anchor {
+  background: var(--black);
+  padding: 60px clamp(24px,5vw,80px) 0;
+  text-align: center;
+}
+.app-anchor-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.app-anchor-title { font-family: var(--serif); font-size: clamp(32px,5vw,56px); line-height: 1.1; letter-spacing: -0.02em; color: var(--white); margin-bottom: 14px; }
+.app-anchor-title em { font-style: italic; color: rgba(255,255,255,0.5); }
+.app-anchor-sub { font-size: 16px; font-weight: 300; color: rgba(255,255,255,0.6); margin-bottom: 32px; }
 
-  /* Sentence */
-  .sentence-row { font-size: 13px; color: #666; font-style: italic; text-align: center; min-height: 18px; line-height: 1.4; }
-  .sentence-row.hidden { opacity: 0; }
+/* ══════════════════════════════════════════════════════════════
+   APP SECTION WRAPPER
+══════════════════════════════════════════════════════════════ */
+#app-section {
+  background: var(--black);
+  padding-bottom: 60px;
+}
 
-  /* ── Sound boxes section ── */
-  .boxes-card {
-    background: #fff; border-radius: var(--radius); box-shadow: var(--shadow);
-    border: 1.5px solid #e8e8e8; padding: 18px 18px 14px;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-  }
-  .boxes-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--mid-gray); align-self: flex-start; }
+/* ══════════════════════════════════════════════════════════════
+   APP — GATE
+══════════════════════════════════════════════════════════════ */
+.gate {
+  position: fixed; inset: 0;
+  background: #F8F6F1;
+  z-index: 9999;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px 20px;
+  font-family: var(--app-font);
+}
+.gate.hidden { display: none; }
+.gate-card { background: #fff; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.12); padding: 36px 32px; max-width: 480px; width: 100%; text-align: center; }
+.gate-top-band { background: #111; color: #fff; border-radius: 12px; padding: 4px 16px; font-size: 11px; font-weight: 800; letter-spacing: 0.10em; text-transform: uppercase; margin-bottom: 22px; display: inline-block; }
+.gate-title { font-family: 'Nunito', sans-serif; font-size: clamp(22px,6vw,30px); font-weight: 900; color: #111; line-height: 1.15; margin-bottom: 10px; }
+.gate-sub { font-size: 14px; color: #666; line-height: 1.65; margin-bottom: 22px; }
+.gate-features { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 24px; }
+.gate-pill { background: #F4F4F4; border: 1.5px solid #ddd; border-radius: 20px; padding: 5px 13px; font-size: 12px; font-weight: 700; color: #333; }
+.gate-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.gate-input { width: 100%; padding: 14px 16px; border: 2px solid #ddd; border-radius: 10px; font-family: var(--app-font); font-size: 15px; color: #111; outline: none; transition: border-color 0.15s; }
+.gate-input:focus { border-color: #111; }
+.gate-btn { width: 100%; padding: 15px; background: #111; color: #fff; border: none; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; letter-spacing: 0.04em; cursor: pointer; transition: background 0.15s; }
+.gate-btn:hover { background: #333; }
+.gate-btn:disabled { background: #aaa; cursor: default; }
+.gate-legal { font-size: 11px; color: #aaa; line-height: 1.5; }
+.gate-error { font-size: 12px; color: var(--heart); font-weight: 700; min-height: 16px; }
+.gate-success { display: none; flex-direction: column; align-items: center; gap: 12px; padding: 20px 0; }
+.gate-success.show { display: flex; }
+.gate-success-icon { width: 64px; height: 64px; background: #111; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; }
+.gate-success-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: #111; }
+.gate-success-sub { font-size: 13px; color: #666; line-height: 1.6; text-align: center; }
+.gate-unlock-btn { background: #111; color: #fff; border: none; border-radius: 10px; padding: 14px 32px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer; width: 100%; }
 
-  .boxes-row { display: flex; gap: 0; justify-content: center; }
-  .s-box {
-    width: clamp(54px,14vw,72px); height: clamp(54px,14vw,72px);
-    border: 2.5px solid var(--black); background: var(--box-bg);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    cursor: pointer; transition: all 0.15s cubic-bezier(0.34,1.56,0.64,1);
-    position: relative; user-select: none;
-  }
-  .s-box:not(:first-child) { border-left: none; }
-  .s-box:first-child { border-radius: 8px 0 0 8px; }
-  .s-box:last-child  { border-radius: 0 8px 8px 0; }
-  .s-box:only-child  { border-radius: 8px; }
+/* ══════════════════════════════════════════════════════════════
+   APP — MAIN UI
+══════════════════════════════════════════════════════════════ */
+.app-inner {
+  max-width: 580px; margin: 0 auto; padding: 18px 14px 60px;
+  display: flex; flex-direction: column; gap: 14px;
+  font-family: var(--app-font);
+}
+:root {
+  --box-bg: #F4F4F4;
+  --warm-gray: #E8E4DC;
+  --mid-gray: #777;
+  --light-gray: #ccc;
+  --shadow: 0 6px 32px rgba(0,0,0,0.12);
+}
+.top-bar { background: #111; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; position: sticky; top: 0; z-index: 100; }
+.top-bar .logo { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.top-bar .progress-pill { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 13px; font-size: 12px; font-weight: 700; }
+.top-bar .mode-lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.7; }
+.mode-bar { display: flex; gap: 6px; background: var(--warm-gray); border-radius: 30px; padding: 5px; }
+.mode-btn { flex: 1; padding: 8px 4px; border: none; background: transparent; border-radius: 24px; font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 0.04em; color: var(--mid-gray); cursor: pointer; transition: all 0.2s; text-align: center; }
+.mode-btn.active { background: #111; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.prog-wrap { width: 100%; height: 4px; background: var(--warm-gray); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; background: #111; border-radius: 3px; transition: width 0.4s ease; }
+.word-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1.5px solid #e8e8e8; overflow: hidden; }
+.word-card-top { background: #111; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; }
+.word-card-top .wc-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+.word-card-top .wc-num { font-size: 10px; color: rgba(255,255,255,0.6); }
+.word-card-body { padding: 22px 24px 18px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.word-display-wrap { text-align: center; }
+.word-big { font-family: 'Nunito', sans-serif; font-size: clamp(60px,16vw,86px); font-weight: 900; color: #111; line-height: 1; letter-spacing: -0.02em; }
+.word-big.blurred { filter: blur(7px); opacity: 0.25; user-select: none; }
+.heart-highlight { color: var(--heart); text-decoration: underline; text-decoration-color: var(--heart); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.heart-explain { font-size: 11px; color: var(--heart); font-weight: 700; letter-spacing: 0.04em; margin-top: 2px; opacity: 0; transition: opacity 0.2s; }
+.heart-explain.show { opacity: 1; }
+.sentence-row { font-size: 13px; color: #666; font-style: italic; text-align: center; min-height: 18px; line-height: 1.4; }
+.sentence-row.hidden { opacity: 0; }
+.boxes-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1.5px solid #e8e8e8; padding: 18px 18px 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.boxes-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--mid-gray); align-self: flex-start; }
+.boxes-row { display: flex; gap: 0; justify-content: center; }
+.s-box { width: clamp(54px,14vw,72px); height: clamp(54px,14vw,72px); border: 2.5px solid #111; background: var(--box-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s cubic-bezier(0.34,1.56,0.64,1); position: relative; user-select: none; }
+.s-box:not(:first-child) { border-left: none; }
+.s-box:first-child { border-radius: 8px 0 0 8px; }
+.s-box:last-child { border-radius: 0 8px 8px 0; }
+.s-box:only-child { border-radius: 8px; }
+.s-box.heart-part { background: var(--heart-bg); border-color: var(--heart); }
+.s-box.heart-part .s-box-sound { color: var(--heart); }
+.s-box.tapped { background: #111; border-color: #111; transform: scale(0.93); }
+.s-box.tapped .s-box-sound { color: #fff; }
+.s-box.tapped.heart-part { background: var(--heart); border-color: var(--heart); }
+.s-box-sound { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: clamp(12px,3vw,16px); color: #111; text-align: center; line-height: 1.2; transition: color 0.15s; }
+.s-box-sound.hidden-s { opacity: 0; }
+.s-box-num { font-size: 9px; font-weight: 700; color: #aaa; position: absolute; bottom: 4px; }
+.s-box.tapped .s-box-num { color: rgba(255,255,255,0.5); }
+.tap-hint { font-size: 11px; color: var(--mid-gray); font-style: italic; text-align: center; min-height: 15px; }
+.heart-legend { display: flex; align-items: center; gap: 8px; background: var(--heart-bg); border: 1px solid #F5C6C0; border-radius: 8px; padding: 7px 12px; align-self: stretch; transition: opacity 0.2s; }
+.heart-legend.hidden { opacity: 0; pointer-events: none; }
+.heart-dot { width: 10px; height: 10px; background: var(--heart); border-radius: 50%; flex-shrink: 0; }
+.heart-legend-txt { font-size: 11px; color: var(--heart); font-weight: 700; line-height: 1.4; }
+.write-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1.5px solid #e8e8e8; padding: 16px 18px; display: none; flex-direction: column; gap: 8px; }
+.write-card.active { display: flex; }
+.write-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--mid-gray); }
+.write-input-row { display: flex; gap: 10px; align-items: center; }
+.write-input { flex: 1; font-family: 'Nunito', sans-serif; font-size: 26px; font-weight: 900; border: none; border-bottom: 2.5px solid #111; background: transparent; color: #111; outline: none; padding: 4px 0; letter-spacing: 0.02em; }
+.write-check-btn { padding: 9px 18px; background: #111; color: #fff; border: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; }
+.write-feedback { font-size: 12px; font-weight: 700; min-height: 16px; text-align: center; transition: opacity 0.2s; }
+.write-feedback.correct { color: var(--known); }
+.write-feedback.wrong { color: var(--heart); }
+.blend-btn { width: 100%; padding: 15px; background: #111; color: #fff; border: none; border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 0.04em; cursor: pointer; transition: all 0.15s; }
+.blend-btn:active { transform: scale(0.97); background: #333; }
+.blend-btn:disabled { opacity: 0.3; cursor: default; }
+.action-row { display: flex; gap: 8px; }
+.act-btn { flex: 1; padding: 12px 8px; border: 2px solid #ddd; background: #fff; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; color: #111; cursor: pointer; transition: all 0.15s; text-align: center; }
+.act-btn:active { background: var(--warm-gray); }
+.act-btn.know-btn { border-color: var(--known); color: var(--known); flex: 1.4; }
+.act-btn.know-btn:active { background: var(--known-bg); }
+.act-btn.next-btn { background: #111; color: #fff; border-color: #111; flex: 1.8; }
+.act-btn.next-btn:active { background: #333; }
+.coach-card { background: var(--warm-gray); border-radius: var(--radius); padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; }
+.coach-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.coach-lbl { font-size: 9px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid-gray); margin-bottom: 3px; }
+.coach-txt { font-size: 12px; color: #333; line-height: 1.6; font-weight: 600; }
+.pile-section { display: flex; flex-direction: column; gap: 8px; }
+.pile-header { display: flex; justify-content: space-between; align-items: center; }
+.pile-title { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--mid-gray); }
+.pile-count { background: var(--known-bg); border: 1.5px solid var(--known); border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 800; color: var(--known); }
+.pile-words { display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px; }
+.pile-word { background: var(--known-bg); border: 1.5px solid var(--known); border-radius: 20px; padding: 4px 12px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; color: var(--known); cursor: pointer; animation: pop-in 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+@keyframes pop-in { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.pile-empty { font-size: 11px; color: #bbb; font-style: italic; padding: 6px 0; }
+.nav-dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
+.ndot { width: 10px; height: 10px; border-radius: 50%; background: var(--warm-gray); cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+.ndot.known { background: var(--known); }
+.ndot.current { background: var(--mid-gray); outline: 2px solid #111; outline-offset: 2px; }
+.ndot.locked { background: var(--light-gray); opacity: 0.4; cursor: pointer; }
+.celebrate { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.celebrate.show { opacity: 1; pointer-events: all; }
+.cel-card { background: #fff; border-radius: 20px; padding: 36px 28px; text-align: center; max-width: 300px; width: 90%; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+.celebrate.show .cel-card { transform: scale(1); }
+.cel-title { font-family: 'Nunito', sans-serif; font-size: 26px; font-weight: 900; color: #111; margin: 12px 0 8px; }
+.cel-sub { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 20px; }
+.cel-btn { background: #111; color: #fff; border: none; border-radius: 10px; padding: 13px 28px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; width: 100%; }
+.confetti-piece { position: fixed; top: -20px; animation: fall linear forwards; z-index: 300; pointer-events: none; }
+@keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
 
-  /* heart-part box */
-  .s-box.heart-part { background: var(--heart-bg); border-color: var(--heart-color); }
-  .s-box.heart-part .s-box-sound { color: var(--heart-color); }
+/* ══════════════════════════════════════════════════════════════
+   LANDING — FOOTER
+══════════════════════════════════════════════════════════════ */
+.site-footer { border-top: 1px solid var(--rule); padding: 32px clamp(24px,5vw,80px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; background: var(--white); }
+.footer-brand { font-family: var(--serif); font-size: 16px; letter-spacing: -0.01em; }
+.footer-links { display: flex; gap: 28px; }
+.footer-links a { font-size: 12px; color: var(--gray); text-decoration: none; text-transform: uppercase; letter-spacing: 0.06em; }
+.footer-links a:hover { color: var(--black); }
+.footer-copy { font-size: 12px; color: var(--gray); }
 
-  .s-box.tapped { background: var(--black); border-color: var(--black); transform: scale(0.93); }
-  .s-box.tapped .s-box-sound { color: #fff; }
-  .s-box.tapped.heart-part { background: var(--heart-color); border-color: var(--heart-color); }
+/* ══════════════════════════════════════════════════════════════
+   REVEAL
+══════════════════════════════════════════════════════════════ */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
-  .s-box-sound { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: clamp(12px,3vw,16px); color: var(--black); text-align: center; line-height: 1.2; transition: color 0.15s; }
-  .s-box-sound.hidden-s { opacity: 0; }
-  .s-box-num { font-size: 9px; font-weight: 700; color: #aaa; position: absolute; bottom: 4px; }
-  .s-box.tapped .s-box-num { color: rgba(255,255,255,0.5); }
-
-  .tap-hint { font-size: 11px; color: var(--mid-gray); font-style: italic; text-align: center; min-height: 15px; }
-
-  /* Heart legend */
-  .heart-legend {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--heart-bg); border: 1px solid #F5C6C0;
-    border-radius: 8px; padding: 7px 12px; align-self: stretch;
-    transition: opacity 0.2s;
-  }
-  .heart-legend.hidden { opacity: 0; pointer-events: none; }
-  .heart-dot { width: 10px; height: 10px; background: var(--heart-color); border-radius: 50%; flex-shrink: 0; }
-  .heart-legend-txt { font-size: 11px; color: var(--heart-color); font-weight: 700; line-height: 1.4; }
-
-  /* ── Write mode input ── */
-  .write-card {
-    background: #fff; border-radius: var(--radius); box-shadow: var(--shadow);
-    border: 1.5px solid #e8e8e8; padding: 16px 18px;
-    display: none; flex-direction: column; gap: 8px;
-  }
-  .write-card.active { display: flex; }
-  .write-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--mid-gray); }
-  .write-input-row { display: flex; gap: 10px; align-items: center; }
-  .write-input {
-    flex: 1; font-family: 'Nunito', sans-serif; font-size: 26px; font-weight: 900;
-    border: none; border-bottom: 2.5px solid var(--black); background: transparent;
-    color: var(--black); outline: none; padding: 4px 0; letter-spacing: 0.02em;
-  }
-  .write-check-btn {
-    padding: 9px 18px; background: var(--black); color: #fff;
-    border: none; border-radius: 8px; font-family: 'Nunito', sans-serif;
-    font-size: 13px; font-weight: 800; cursor: pointer;
-  }
-  .write-feedback {
-    font-size: 12px; font-weight: 700; min-height: 16px; text-align: center;
-    transition: opacity 0.2s;
-  }
-  .write-feedback.correct { color: var(--known-color); }
-  .write-feedback.wrong   { color: var(--heart-color); }
-
-  /* ── Blend button ── */
-  .blend-btn {
-    width: 100%; padding: 15px; background: var(--black); color: #fff;
-    border: none; border-radius: 12px; font-family: 'Nunito', sans-serif;
-    font-size: 14px; font-weight: 800; letter-spacing: 0.04em; cursor: pointer; transition: all 0.15s;
-  }
-  .blend-btn:active { transform: scale(0.97); background: #333; }
-  .blend-btn:disabled { opacity: 0.3; cursor: default; }
-
-  /* ── Action row ── */
-  .action-row { display: flex; gap: 8px; }
-  .act-btn {
-    flex: 1; padding: 12px 8px; border: 2px solid #ddd; background: #fff;
-    border-radius: 10px; font-family: 'Nunito', sans-serif;
-    font-size: 12px; font-weight: 800; color: var(--black); cursor: pointer; transition: all 0.15s; text-align: center;
-  }
-  .act-btn:active { background: var(--warm-gray); }
-  .act-btn.know-btn { border-color: var(--known-color); color: var(--known-color); flex: 1.4; }
-  .act-btn.know-btn:active { background: var(--known-bg); }
-  .act-btn.next-btn { background: var(--black); color: #fff; border-color: var(--black); flex: 1.8; }
-  .act-btn.next-btn:active { background: #333; }
-
-  /* ── Parent coaching card ── */
-  .coach-card {
-    background: var(--warm-gray); border-radius: var(--radius); padding: 14px 16px;
-    display: flex; gap: 12px; align-items: flex-start;
-  }
-  .coach-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-  .coach-lbl { font-size: 9px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid-gray); margin-bottom: 3px; }
-  .coach-txt { font-size: 12px; color: #333; line-height: 1.6; font-weight: 600; }
-
-  /* ── Know-it pile ── */
-  .pile-section { display: flex; flex-direction: column; gap: 8px; }
-  .pile-header { display: flex; justify-content: space-between; align-items: center; }
-  .pile-title { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--mid-gray); }
-  .pile-count {
-    background: var(--known-bg); border: 1.5px solid var(--known-color);
-    border-radius: 20px; padding: 3px 12px;
-    font-size: 11px; font-weight: 800; color: var(--known-color);
-  }
-  .pile-words { display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px; }
-  .pile-word {
-    background: var(--known-bg); border: 1.5px solid var(--known-color);
-    border-radius: 20px; padding: 4px 12px;
-    font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800;
-    color: var(--known-color); cursor: pointer;
-    animation: pop-in 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards;
-  }
-  @keyframes pop-in { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .pile-empty { font-size: 11px; color: #bbb; font-style: italic; padding: 6px 0; }
-
-  /* ── Nav dots ── */
-  .nav-dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
-  .ndot { width: 10px; height: 10px; border-radius: 50%; background: var(--warm-gray); cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
-  .ndot.known   { background: var(--known-color); }
-  .ndot.current { background: var(--mid-gray); outline: 2px solid var(--black); outline-offset: 2px; }
-
-  /* locked nav dot */
-  .ndot.locked { background: var(--light-gray); opacity: 0.4; cursor: pointer; }
-
-  /* ── Celebration ── */
-  .celebrate { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-  .celebrate.show { opacity: 1; pointer-events: all; }
-  .cel-card {
-    background: #fff; border-radius: 20px; padding: 36px 28px; text-align: center; max-width: 300px; width: 90%;
-    transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .celebrate.show .cel-card { transform: scale(1); }
-  .cel-title { font-family: 'Nunito', sans-serif; font-size: 26px; font-weight: 900; color: var(--black); margin: 12px 0 8px; }
-  .cel-sub { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 20px; }
-  .cel-btn { background: var(--black); color: #fff; border: none; border-radius: 10px; padding: 13px 28px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; width: 100%; }
-
-  /* confetti */
-  .confetti-piece { position: fixed; top: -20px; animation: fall linear forwards; z-index: 300; pointer-events: none; }
-  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-left { border-right: none; border-bottom: 1px solid var(--rule); min-height: auto; padding: 60px 24px 48px; }
+  .hero-right { min-height: 520px; }
+  .section-header { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
+  .step { border-right: none; border-bottom: 1px solid var(--rule); padding: 36px 24px; }
+  .step:last-child { border-bottom: none; }
+  .explainer { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature { border-right: none !important; }
+  .curriculum-inner { grid-template-columns: 1fr; }
+  .curriculum-label { writing-mode: horizontal-tb; transform: none; margin-bottom: 24px; }
+  .nav-links { display: none; }
+}
 </style>
 </head>
 <body>
 
 <!-- ══════════════════════════════════════════════════════════
-     OPT-IN GATE — shows on load (if not unlocked) OR after word 5
+     GATE (fixed overlay — only shows after word 5)
 ══════════════════════════════════════════════════════════ -->
-<div class="gate" id="gate">
+<div class="gate hidden" id="gate">
   <div class="gate-card">
-
-    <!-- Default: form view -->
     <div id="gate-form-view">
-      <div class="gate-top-band" id="gate-badge">Try 5 Free — Then Unlock All 30</div>
-      <div class="gate-title" id="gate-title">Unlock the Full<br>Heart Word App</div>
-      <div class="gate-sub" id="gate-sub">
-        You have tried the first 5 words free! Enter your email to unlock
-        all 30 heart words, three practice modes, the Know-It pile tracker,
-        and parent coaching tips on every single word.
-      </div>
+      <div class="gate-top-band">Try 5 Free — Then Unlock All 30</div>
+      <div class="gate-title">Want all 30 words +<br>printable practice sheets?</div>
+      <div class="gate-sub">Enter your email to unlock the full set + get free printable card pages and Level 2 the moment it's ready.</div>
       <div class="gate-features">
         <div class="gate-pill">All 30 heart words</div>
         <div class="gate-pill">Heart highlights</div>
         <div class="gate-pill">3 practice modes</div>
         <div class="gate-pill">Know-It pile</div>
-        <div class="gate-pill">Parent coaching tips</div>
-        <div class="gate-pill">Any device</div>
+        <div class="gate-pill">Free printable pages</div>
+        <div class="gate-pill">Level 2 early access</div>
       </div>
       <div class="gate-form">
         <input class="gate-input" id="gate-name" type="text" placeholder="Your first name" autocomplete="given-name">
         <input class="gate-input" id="gate-email" type="email" placeholder="Your email address" autocomplete="email">
         <div class="gate-error" id="gate-error"></div>
-        <button class="gate-btn" id="gate-submit" onclick="submitGate()">
-          Unlock All 30 Words — Free &rarr;
-        </button>
+        <button class="gate-btn" id="gate-submit" onclick="submitGate()">Unlock All 30 Words — Free &rarr;</button>
       </div>
-      <div class="gate-legal">
-        By entering your email you agree to receive occasional reading resources
-        from Reading Routines. No spam, ever. Unsubscribe anytime.
-      </div>
+      <div class="gate-legal">No spam, ever. Unsubscribe anytime.</div>
     </div>
-
-    <!-- Success view -->
     <div class="gate-success" id="gate-success">
       <div class="gate-success-icon">&#10003;</div>
       <div class="gate-success-title">You're in!</div>
-      <div class="gate-success-sub">
-        Check your inbox for your access email.<br>
-        All 30 words are unlocked right now &mdash; click below to continue.
-      </div>
-      <button class="gate-unlock-btn" onclick="unlockApp()">
-        Continue Practicing &rarr;
-      </button>
+      <div class="gate-success-sub">Check your inbox for your access email.<br>All 30 words are unlocked right now.</div>
+      <button class="gate-unlock-btn" onclick="unlockApp()">Continue Practicing &rarr;</button>
     </div>
-
   </div>
 </div>
-<!-- END GATE -->
 
-<div class="top-bar">
-  <div class="logo">Heart Word Practice</div>
-  <div class="progress-pill" id="progPill">1 / 30</div>
-  <div class="mode-lbl" id="modeLbl">Learn</div>
+<!-- ══════════════════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════════════════ -->
+<nav>
+  <a class="nav-logo" href="/">Reading Routines</a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">For parents</a></li>
+    <li><a href="#app-section" class="nav-cta">Try free — no sign up needed</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Science of Reading for Families</div>
+    <h1 class="hero-title">Help your child<br>read — <em>really</em><br>read.</h1>
+    <p class="hero-body">Free science-of-reading tools built for parents. No jargon. No expertise needed. Just 5 minutes a day and the exact words to say at every step.</p>
+    <div class="hero-actions">
+      <a href="#app-section" class="btn-primary">Try the free practice app — start now &darr;</a>
+      <a href="#how" class="btn-secondary">Learn how it works</a>
+    </div>
+    <p class="hero-note">First 5 words free &nbsp;·&nbsp; No sign up needed to start &nbsp;·&nbsp; Sign up to unlock all 30 + free printable pages</p>
+  </div>
+  <div class="hero-right">
+    <div class="app-preview">
+      <div class="app-preview-bar">
+        <span>Heart Word Practice</span>
+        <span>3 / 30</span>
+      </div>
+      <div class="app-preview-body">
+        <div class="preview-word-row">
+          <div class="preview-word">th<span class="h">e</span></div>
+        </div>
+        <div class="preview-note">Heart part: E makes an unexpected /u/ sound</div>
+        <div class="preview-boxes">
+          <div class="preview-box">/th/</div>
+          <div class="preview-box heart">/u/</div>
+        </div>
+        <div class="preview-legend"><div class="preview-legend-dot"></div>Red = heart part &nbsp;·&nbsp; learn this sound by heart</div>
+        <div class="preview-tip"><strong>Parent tip</strong>The red E is the heart part. It makes a quiet /u/ sound. Tap: /th/ then /u/. Say: That E is being sneaky!</div>
+        <div class="preview-modes">
+          <div class="preview-mode"><div class="preview-mode-letter">L</div><div class="preview-mode-label">Learn</div><div class="preview-mode-sub">Sounds visible</div></div>
+          <div class="preview-mode"><div class="preview-mode-letter">T</div><div class="preview-mode-label">Try It</div><div class="preview-mode-sub">Guess first</div></div>
+          <div class="preview-mode"><div class="preview-mode-letter">S</div><div class="preview-mode-label">Spell</div><div class="preview-mode-sub">Type from memory</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-item">Science of Reading</div><div class="ticker-item">Elkonin Sound Boxes</div><div class="ticker-item">Heart Word Method</div><div class="ticker-item">Orthographic Mapping</div><div class="ticker-item">UFLI Foundations</div><div class="ticker-item">Fundations</div><div class="ticker-item">Structured Literacy</div><div class="ticker-item">Pre-K · Kindergarten · Grade 1</div>
+    <div class="ticker-item">Science of Reading</div><div class="ticker-item">Elkonin Sound Boxes</div><div class="ticker-item">Heart Word Method</div><div class="ticker-item">Orthographic Mapping</div><div class="ticker-item">UFLI Foundations</div><div class="ticker-item">Fundations</div><div class="ticker-item">Structured Literacy</div><div class="ticker-item">Pre-K · Kindergarten · Grade 1</div>
+  </div>
 </div>
 
-<div class="main">
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-header reveal">
+    <div><div class="section-eyebrow">How it works</div><h2 class="section-title">Not flashcards.<br>Real phonics.</h2></div>
+    <p class="section-body">The Science of Reading shows that children build permanent reading memory by connecting sounds to letters — not memorizing word shapes. Every session in this app follows that method exactly.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><div class="step-title">See the heart part</div><p class="step-body">Every word shows the irregular heart part underlined in red. Your child sees exactly which letters are tricky and which ones follow the rules.</p></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">Tap the sound boxes</div><p class="step-body">One box per sound. Your child taps each Elkonin box while saying the sound out loud. This multisensory connection is what builds memory.</p></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">Blend back to the word</div><p class="step-body">After tapping all sounds, blend them back into the whole word. The magic formula: Say it → Tap it → Blend it. Repeat three times.</p></div>
+  </div>
+</section>
 
-  <!-- Mode bar -->
-  <div class="mode-bar">
-    <button class="mode-btn active" id="btn-learn"  onclick="setMode('learn')">Learn</button>
-    <button class="mode-btn"        id="btn-try"    onclick="setMode('try')">Try It</button>
-    <button class="mode-btn"        id="btn-spell"  onclick="setMode('spell')">Spell</button>
+<!-- HEART WORD EXPLAINER -->
+<section class="explainer">
+  <div class="explainer-left">
+    <div class="section-eyebrow">The heart word method</div>
+    <h2 class="section-title" style="color:var(--white)">Why we call them<br><em>Heart Words</em></h2>
+    <p class="section-body">Most of a word can be sounded out. Only the small irregular part needs to be memorized — learned by heart. The red underline shows your child exactly which letters that is.</p>
+  </div>
+  <div class="explainer-cards">
+    <div class="explainer-card"><div class="ec-word">th<span class="h">e</span></div><div class="ec-body"><div class="ec-title">"the" — heart part: E</div><div class="ec-sub">The E makes an unexpected /u/ sound. Tap /th/ then /u/.</div></div></div>
+    <div class="explainer-card"><div class="ec-word">w<span class="h">a</span><span class="h">s</span></div><div class="ec-body"><div class="ec-title">"was" — two heart parts: A and S</div><div class="ec-sub">The A says /u/ and the S says /z/. Two sneaky letters.</div></div></div>
+    <div class="explainer-card"><div class="ec-word"><span class="h">o</span><span class="h">f</span></div><div class="ec-body"><div class="ec-title">"of" — both letters are heart parts</div><div class="ec-sub">O says /u/ and F says /v/. Every letter is irregular.</div></div></div>
+    <div class="explainer-card"><div class="ec-word">and</div><div class="ec-body"><div class="ec-title">"and" — no heart parts at all</div><div class="ec-sub">Fully regular. /a/ then /n/ then /d/. Just tap and blend.</div></div></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="for-parents" id="features">
+  <div class="section-header reveal">
+    <div><div class="section-eyebrow">Built for parents</div><h2 class="section-title">You do not need to be<br>a reading expert.</h2></div>
+    <p class="section-body">Every feature was designed for parents who want to support their child at home but were never taught how to teach reading. The app tells you exactly what to do at every step.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature"><div class="feature-num">01</div><div class="feature-title">Parent coaching tip on every word</div><p class="feature-body">Every single word has the exact phrases to say, what to point at, and how to make it memorable. Zero expertise required.</p></div>
+    <div class="feature"><div class="feature-num">02</div><div class="feature-title">Three modes that grow with your child</div><p class="feature-body">Learn (sounds visible), Try It (sounds hidden until tapped), and Spell (type from memory). Start easy, build up naturally.</p></div>
+    <div class="feature"><div class="feature-num">03</div><div class="feature-title">Know-It pile tracker</div><p class="feature-body">When your child masters a word it moves to a visible pile. Watching it grow is one of the most motivating experiences for a young reader.</p></div>
+    <div class="feature"><div class="feature-num">04</div><div class="feature-title">Works on any device, no download</div><p class="feature-body">Open this page on any phone, tablet, or computer. Sign up once and it stays unlocked on that device forever.</p></div>
+    <div class="feature"><div class="feature-num">05</div><div class="feature-title">5 words free, then sign up</div><p class="feature-body">Try the first 5 words with no commitment. Sign up to unlock all 30, get free printable card pages, and receive Level 2 when it is ready.</p></div>
+    <div class="feature"><div class="feature-num">06</div><div class="feature-title">Printable cards on Etsy</div><p class="feature-body">30 printable Heart Word cards with heart highlighting, sound boxes, parent tips, and a bonus worksheet. Available in our Etsy shop.</p></div>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="curriculum">
+  <div class="curriculum-inner">
+    <div class="curriculum-label">Curriculum Aligned</div>
+    <div class="curriculum-programs">
+      <div class="program"><div class="program-name">UFLI Foundations</div><div class="program-sub">University of Florida</div></div>
+      <div class="program"><div class="program-name">Fundations</div><div class="program-sub">Wilson Language</div></div>
+      <div class="program"><div class="program-name">Really Great Reading</div><div class="program-sub">Phonics intervention</div></div>
+      <div class="program"><div class="program-name">All About Reading</div><div class="program-sub">Orton-Gillingham</div></div>
+      <div class="program"><div class="program-name">Barton Reading</div><div class="program-sub">Structured literacy</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     TRANSITION INTO APP
+══════════════════════════════════════════════════════════ -->
+<div class="app-anchor" id="app-section">
+  <div class="app-anchor-eyebrow">Free practice — start now</div>
+  <h2 class="app-anchor-title">5 minutes a day.<br><em>Real</em> reading progress.</h2>
+  <p class="app-anchor-sub">First 5 words free. No sign up. No account. Nothing. Just tap below and start.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     THE APP
+══════════════════════════════════════════════════════════ -->
+<div id="app-section-inner">
+  <div class="top-bar">
+    <div class="logo">Heart Word Practice</div>
+    <div class="progress-pill" id="progPill">1 / 30</div>
+    <div class="mode-lbl" id="modeLbl">Learn</div>
   </div>
 
-  <!-- Progress bar -->
-  <div class="prog-wrap"><div class="prog-fill" id="progFill" style="width:3.3%"></div></div>
-
-  <!-- Word card -->
-  <div class="word-card">
-    <div class="word-card-top">
-      <span class="wc-lbl">Heart Word</span>
-      <span class="wc-num" id="wcNum">Card 1 of 30</span>
+  <div class="app-inner">
+    <div class="mode-bar">
+      <button class="mode-btn active" id="btn-learn" onclick="setMode('learn')">Learn</button>
+      <button class="mode-btn" id="btn-try" onclick="setMode('try')">Try It</button>
+      <button class="mode-btn" id="btn-spell" onclick="setMode('spell')">Spell</button>
     </div>
-    <div class="word-card-body">
-      <div class="word-display-wrap">
-        <div class="word-big" id="wordBig"></div>
-        <div class="heart-explain" id="heartExplain"></div>
+    <div class="prog-wrap"><div class="prog-fill" id="progFill" style="width:3.3%"></div></div>
+    <div class="word-card">
+      <div class="word-card-top"><span class="wc-lbl">Heart Word</span><span class="wc-num" id="wcNum">Card 1 of 30</span></div>
+      <div class="word-card-body">
+        <div class="word-display-wrap"><div class="word-big" id="wordBig"></div><div class="heart-explain" id="heartExplain"></div></div>
+        <div class="sentence-row" id="sentRow"></div>
       </div>
-      <div class="sentence-row" id="sentRow"></div>
     </div>
-  </div>
-
-  <!-- Sound boxes -->
-  <div class="boxes-card">
-    <div class="boxes-lbl">Sound Boxes &mdash; tap each one</div>
-    <div class="boxes-row" id="boxesRow"></div>
-    <div class="tap-hint" id="tapHint">Tap each box as you say the sound out loud!</div>
-    <div class="heart-legend" id="heartLegend">
-      <div class="heart-dot"></div>
-      <div class="heart-legend-txt" id="heartLegendTxt">The red box is the heart part &mdash; this is the sound that needs to be learned by heart!</div>
+    <div class="boxes-card">
+      <div class="boxes-lbl">Sound Boxes — tap each one</div>
+      <div class="boxes-row" id="boxesRow"></div>
+      <div class="tap-hint" id="tapHint">Tap each box as you say the sound out loud!</div>
+      <div class="heart-legend" id="heartLegend"><div class="heart-dot"></div><div class="heart-legend-txt" id="heartLegendTxt"></div></div>
     </div>
-  </div>
-
-  <!-- Write mode card (only in spell mode) -->
-  <div class="write-card" id="writeCard">
-    <div class="write-lbl">Write the word from memory</div>
-    <div class="write-input-row">
-      <input class="write-input" id="writeInput" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="type it here...">
-      <button class="write-check-btn" onclick="checkSpelling()">Check</button>
+    <div class="write-card" id="writeCard">
+      <div class="write-lbl">Write the word from memory</div>
+      <div class="write-input-row">
+        <input class="write-input" id="writeInput" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="type it here...">
+        <button class="write-check-btn" onclick="checkSpelling()">Check</button>
+      </div>
+      <div class="write-feedback" id="writeFeedback"></div>
     </div>
-    <div class="write-feedback" id="writeFeedback"></div>
-  </div>
-
-  <!-- Blend button -->
-  <button class="blend-btn" id="blendBtn" onclick="doBlend()">Blend it back &mdash; say the whole word!</button>
-
-  <!-- Actions -->
-  <div class="action-row">
-    <button class="act-btn" onclick="resetBoxes()">Try Again</button>
-    <button class="act-btn know-btn" onclick="markKnown()">I Know It!</button>
-    <button class="act-btn next-btn" onclick="nextWord()">Next Word</button>
-  </div>
-
-  <!-- Parent coaching -->
-  <div class="coach-card">
-    <div class="coach-icon">&#128161;</div>
-    <div>
-      <div class="coach-lbl">Parent Coaching Tip</div>
-      <div class="coach-txt" id="coachTxt"></div>
+    <button class="blend-btn" id="blendBtn" onclick="doBlend()">Blend it back — say the whole word!</button>
+    <div class="action-row">
+      <button class="act-btn" onclick="resetBoxes()">Try Again</button>
+      <button class="act-btn know-btn" onclick="markKnown()">I Know It!</button>
+      <button class="act-btn next-btn" onclick="nextWord()">Next Word</button>
     </div>
-  </div>
-
-  <!-- Know-it pile -->
-  <div class="pile-section">
-    <div class="pile-header">
-      <div class="pile-title">Know-It Pile</div>
-      <div class="pile-count" id="pileCount">0 of 30</div>
+    <div class="coach-card">
+      <div class="coach-icon">&#128161;</div>
+      <div><div class="coach-lbl">Parent Coaching Tip</div><div class="coach-txt" id="coachTxt"></div></div>
     </div>
-    <div class="pile-words" id="pileWords">
-      <div class="pile-empty" id="pileEmpty">Words your child masters will appear here!</div>
+    <div class="pile-section">
+      <div class="pile-header"><div class="pile-title">Know-It Pile</div><div class="pile-count" id="pileCount">0 of 30</div></div>
+      <div class="pile-words" id="pileWords"><div class="pile-empty" id="pileEmpty">Words your child masters will appear here!</div></div>
     </div>
+    <div class="nav-dots" id="navDots"></div>
   </div>
-
-  <!-- Nav dots -->
-  <div class="nav-dots" id="navDots"></div>
-
-</div><!-- end main -->
+</div>
 
 <!-- Celebration -->
 <div class="celebrate" id="celebrate">
@@ -531,432 +584,243 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-brand">Reading Routines</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="https://www.etsy.com">Etsy Shop</a>
+    <a href="mailto:hello@readingroutines.com">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 Reading Routines · Science of Reading for Families</div>
+</footer>
+
 <script>
-// ── Word data ──────────────────────────────────────────────────────────────
-// heartIdx: array of sound indices (0-based) that are the "heart" (irregular) part
-// heartNote: short explanation of what is irregular
+// ── Word data ──────────────────────────────────────────────────────────
 const WORDS = [
-  { word:"a",   heartLetters:[0],   sounds:["/a/"],               heartIdx:[0],    heartNote:"This letter can say /a/ or /u/ depending on context",
-    sentence:"I see a dog.",   tip:"Say: What sound does this letter make? It can say /a/ like in acorn or a quiet /u/ like in about. Both are correct!" },
-  { word:"I",   heartLetters:[],    sounds:["/i/"],               heartIdx:[],     heartNote:"",
-    sentence:"I can run fast.", tip:"Just one sound. Clap once as you say it. The word I sounds exactly like the letter name." },
-  { word:"the", heartLetters:[2],   sounds:["/th/","/u/"],         heartIdx:[1],    heartNote:"The letter E here makes an unexpected /u/ sound",
-    sentence:"The cat sat here.", tip:"The tricky heart part is that sneaky E at the end. It makes a quiet /u/ sound. Tap each sound: /th/ then /u/." },
-  { word:"in",  heartLetters:[],    sounds:["/i/","/n/"],          heartIdx:[],     heartNote:"",
-    sentence:"The ball is in the box.", tip:"Two regular sounds: /i/ then /n/. Tap two fingers on the table. Then ask: How many sounds does this word have?" },
-  { word:"it",  heartLetters:[],    sounds:["/i/","/t/"],          heartIdx:[],     heartNote:"",
-    sentence:"It is a big hat.", tip:"Two sounds: /i/ and /t/. Tap them then blend fast. Try asking: Can you use this word in your own sentence?" },
-  { word:"is",  heartLetters:[1],   sounds:["/i/","/z/"],          heartIdx:[1],    heartNote:"The letter S here makes a /z/ sound instead of its usual /s/",
-    sentence:"She is my friend.", tip:"The heart part is that sneaky S that buzzes like a /z/. Point it out: That letter usually says /s/ but here it says /z/!" },
-  { word:"and", heartLetters:[],    sounds:["/a/","/n/","/d/"],    heartIdx:[],     heartNote:"",
-    sentence:"Mom and Dad are here.", tip:"Three regular sounds: /a/ then /n/ then /d/. Tap each one slowly then blend faster and faster." },
-  { word:"on",  heartLetters:[],    sounds:["/o/","/n/"],          heartIdx:[],     heartNote:"",
-    sentence:"The cup is on the table.", tip:"Say octopus and hear that /o/ at the start. That same vowel is in the word ON. Tap: /o/ then /n/." },
-  { word:"up",  heartLetters:[],    sounds:["/u/","/p/"],          heartIdx:[],     heartNote:"",
-    sentence:"The bird flew up high.", tip:"Two sounds: /u/ and /p/. Point your finger UP when you say the whole word. Movement helps children remember." },
-  { word:"to",  heartLetters:[1],   sounds:["/t/","/oo/"],         heartIdx:[1],    heartNote:"The letter O makes an unexpected long /oo/ sound like in moon",
-    sentence:"We walk to school.", tip:"The heart part is the O making an /oo/ sound. Say: That O is being sneaky. It makes the sound from the word moon." },
-  { word:"if",  heartLetters:[],    sounds:["/i/","/f/"],          heartIdx:[],     heartNote:"",
-    sentence:"If it rains, we stay in.", tip:"Two regular sounds: /i/ and /f/. After practicing, make up silly IF sentences together." },
-  { word:"you", heartLetters:[1,2], sounds:["/y/","/oo/"],         heartIdx:[1],    heartNote:"The letters OU make an /oo/ sound and the final U is silent",
-    sentence:"Can you help me?", tip:"The heart part is those two letters making just one /oo/ sound. Say: Three letters, only two sounds. Can you find the sneaky silent one?" },
-  { word:"us",  heartLetters:[],    sounds:["/u/","/s/"],          heartIdx:[],     heartNote:"",
-    sentence:"Come with us to the park.", tip:"Short and quick: /u/ then /s/. After tapping, ask: How many sounds, not letters, do you hear?" },
-  { word:"at",  heartLetters:[],    sounds:["/a/","/t/"],          heartIdx:[],     heartNote:"",
-    sentence:"Look at that butterfly!", tip:"Two regular sounds: /a/ then /t/. Then play a rhyme game. What words rhyme with AT? Cat, hat, sat!" },
-  { word:"of",  heartLetters:[0,1], sounds:["/u/","/v/"],          heartIdx:[0,1],  heartNote:"The O says /u/ and the F says /v/ -- both letters are irregular here",
-    sentence:"A cup of milk is yummy.", tip:"This word has two heart parts! The O says /u/ and the F says /v/. Say: Both letters are being sneaky in this one." },
-  { word:"his", heartLetters:[2],   sounds:["/h/","/i/","/z/"],    heartIdx:[2],    heartNote:"The letter S makes a /z/ sound just like in the word IS",
-    sentence:"That is his backpack.", tip:"The heart part is that S buzzing like a /z/ again. Point out the pattern: IS and HIS both have that sneaky S." },
-  { word:"did", heartLetters:[],    sounds:["/d/","/i/","/d/"],    heartIdx:[],     heartNote:"",
-    sentence:"She did a great job!", tip:"Three regular sounds: /d/ then /i/ then /d/. The same sound at both ends. Tell your child: This word is like a sound sandwich!" },
-  { word:"an",  heartLetters:[],    sounds:["/a/","/n/"],          heartIdx:[],     heartNote:"",
-    sentence:"I ate an apple today.", tip:"Two regular sounds: /a/ then /n/. This word is used before vowel sounds like AN apple and AN egg." },
-  { word:"man", heartLetters:[],    sounds:["/m/","/a/","/n/"],    heartIdx:[],     heartNote:"",
-    sentence:"The man has a red hat.", tip:"Three regular sounds: /m/ then /a/ then /n/. Challenge: what rhymes with MAN? Can, ran, pan!" },
-  { word:"was", heartLetters:[1,2], sounds:["/w/","/u/","/z/"],    heartIdx:[1,2],  heartNote:"The A says /u/ and the S says /z/ -- both are irregular heart parts",
-    sentence:"It was a sunny day.", tip:"Two heart parts! The A says /u/ and the S says /z/. Say: Two sneaky letters in this one. This word does not play by the rules!" },
-  { word:"can", heartLetters:[],    sounds:["/k/","/a/","/n/"],    heartIdx:[],     heartNote:"",
-    sentence:"I can read this word!", tip:"Three regular sounds: /k/ then /a/ then /n/. Make it a celebration: After blending, say together: Yes, I CAN read this word!" },
-  { word:"not", heartLetters:[],    sounds:["/n/","/o/","/t/"],    heartIdx:[],     heartNote:"",
-    sentence:"I do not like spinach.", tip:"Three regular sounds: /n/ then /o/ then /t/. Make a funny face when you say it. Silliness helps children remember!" },
-  { word:"he",  heartLetters:[1],   sounds:["/h/","/ee/"],         heartIdx:[1],    heartNote:"The letter E makes its long sound /ee/ like in eel",
-    sentence:"He is very tall.", tip:"The heart part is the E making its long /ee/ sound. Say: That E is saying its own name. Stretch it: /h/ then /eeee/." },
-  { word:"be",  heartLetters:[1],   sounds:["/b/","/ee/"],         heartIdx:[1],    heartNote:"The letter E makes its long sound /ee/ like in bee",
-    sentence:"Be kind to others.", tip:"Long E again just like the word bee! Say: That E is saying its name again. Tap and buzz: /b/ then /eeee/." },
-  { word:"had", heartLetters:[],    sounds:["/h/","/a/","/d/"],    heartIdx:[],     heartNote:"",
-    sentence:"She had a new puppy.", tip:"Three regular sounds: /h/ then /a/ then /d/. Short A in the middle like in apple. Stretch it: /h/ then /aaa/ then /d/." },
-  { word:"him", heartLetters:[],    sounds:["/h/","/i/","/m/"],    heartIdx:[],     heartNote:"",
-    sentence:"Give it to him, please.", tip:"Three regular sounds: /h/ then /i/ then /m/. Short I like in itch. Point to someone and use the word HIM in a sentence." },
-  { word:"big", heartLetters:[],    sounds:["/b/","/i/","/g/"],    heartIdx:[],     heartNote:"",
-    sentence:"That is a big elephant!", tip:"Three regular sounds: /b/ then /i/ then /g/. Stretch your arms WIDE when you say the full word. Big movement for a big word!" },
-  { word:"so",  heartLetters:[1],   sounds:["/s/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound like in go and no",
-    sentence:"I am so happy today!", tip:"The heart part is that O making its long /o/ sound. Say: That O is saying its own name. SO, GO, and NO are a rhyme family." },
-  { word:"go",  heartLetters:[1],   sounds:["/g/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound",
-    sentence:"Go, team, go!", tip:"The heart part is the long O. Ask: What other words rhyme with GO? So, no! Say all three together and clap the pattern." },
-  { word:"no",  heartLetters:[1],   sounds:["/n/","/o/"],          heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound",
-    sentence:"No, thank you.", tip:"Long O again. Shake your head NO while you tap each box. The movement makes it memorable. NO, GO, SO all rhyme!" },
+  { word:"a",   heartLetters:[0],   sounds:["/a/"],               heartIdx:[0],    heartNote:"This letter can say /a/ or /u/ depending on context", sentence:"I see a dog.", tip:"Say: What sound does this letter make? It can say /a/ like in acorn or a quiet /u/ like in about. Both are correct!" },
+  { word:"I",   heartLetters:[],    sounds:["/i/"],               heartIdx:[],     heartNote:"", sentence:"I can run fast.", tip:"Just one sound. Clap once as you say it. The word I sounds exactly like the letter name." },
+  { word:"the", heartLetters:[2],   sounds:["/th/","/u/"],        heartIdx:[1],    heartNote:"The letter E here makes an unexpected /u/ sound", sentence:"The cat sat here.", tip:"The tricky heart part is that sneaky E at the end. It makes a quiet /u/ sound. Tap: /th/ then /u/." },
+  { word:"in",  heartLetters:[],    sounds:["/i/","/n/"],         heartIdx:[],     heartNote:"", sentence:"The ball is in the box.", tip:"Two regular sounds: /i/ then /n/. Tap two fingers on the table. Then ask: How many sounds does this word have?" },
+  { word:"it",  heartLetters:[],    sounds:["/i/","/t/"],         heartIdx:[],     heartNote:"", sentence:"It is a big hat.", tip:"Two sounds: /i/ and /t/. Tap them then blend fast. Try asking: Can you use this word in your own sentence?" },
+  { word:"is",  heartLetters:[1],   sounds:["/i/","/z/"],         heartIdx:[1],    heartNote:"The letter S here makes a /z/ sound instead of its usual /s/", sentence:"She is my friend.", tip:"The heart part is that sneaky S that buzzes like a /z/. Point it out: That letter usually says /s/ but here it says /z/!" },
+  { word:"and", heartLetters:[],    sounds:["/a/","/n/","/d/"],   heartIdx:[],     heartNote:"", sentence:"Mom and Dad are here.", tip:"Three regular sounds: /a/ then /n/ then /d/. Tap each one slowly then blend faster and faster." },
+  { word:"on",  heartLetters:[],    sounds:["/o/","/n/"],         heartIdx:[],     heartNote:"", sentence:"The cup is on the table.", tip:"Say octopus and hear that /o/ at the start. That same vowel is in the word ON. Tap: /o/ then /n/." },
+  { word:"up",  heartLetters:[],    sounds:["/u/","/p/"],         heartIdx:[],     heartNote:"", sentence:"The bird flew up high.", tip:"Two sounds: /u/ and /p/. Point your finger UP when you say the whole word. Movement helps children remember." },
+  { word:"to",  heartLetters:[1],   sounds:["/t/","/oo/"],        heartIdx:[1],    heartNote:"The letter O makes an unexpected long /oo/ sound like in moon", sentence:"We walk to school.", tip:"The heart part is the O making an /oo/ sound. Say: That O is being sneaky. It makes the sound from the word moon." },
+  { word:"if",  heartLetters:[],    sounds:["/i/","/f/"],         heartIdx:[],     heartNote:"", sentence:"If it rains, we stay in.", tip:"Two regular sounds: /i/ and /f/. After practicing, make up silly IF sentences together." },
+  { word:"you", heartLetters:[1,2], sounds:["/y/","/oo/"],        heartIdx:[1],    heartNote:"The letters OU make an /oo/ sound and the final U is silent", sentence:"Can you help me?", tip:"The heart part is those two letters making just one /oo/ sound. Three letters, only two sounds!" },
+  { word:"us",  heartLetters:[],    sounds:["/u/","/s/"],         heartIdx:[],     heartNote:"", sentence:"Come with us to the park.", tip:"Short and quick: /u/ then /s/. After tapping, ask: How many sounds, not letters, do you hear?" },
+  { word:"at",  heartLetters:[],    sounds:["/a/","/t/"],         heartIdx:[],     heartNote:"", sentence:"Look at that butterfly!", tip:"Two regular sounds: /a/ then /t/. Play a rhyme game: what words rhyme with AT? Cat, hat, sat!" },
+  { word:"of",  heartLetters:[0,1], sounds:["/u/","/v/"],         heartIdx:[0,1],  heartNote:"The O says /u/ and the F says /v/ — both letters are irregular", sentence:"A cup of milk is yummy.", tip:"This word has two heart parts! The O says /u/ and the F says /v/. Both letters are being sneaky." },
+  { word:"his", heartLetters:[2],   sounds:["/h/","/i/","/z/"],   heartIdx:[2],    heartNote:"The letter S makes a /z/ sound just like in the word IS", sentence:"That is his backpack.", tip:"The heart part is that S buzzing like a /z/ again. IS and HIS both have that sneaky S." },
+  { word:"did", heartLetters:[],    sounds:["/d/","/i/","/d/"],   heartIdx:[],     heartNote:"", sentence:"She did a great job!", tip:"Three regular sounds: /d/ then /i/ then /d/. The same sound at both ends — this word is a sound sandwich!" },
+  { word:"an",  heartLetters:[],    sounds:["/a/","/n/"],         heartIdx:[],     heartNote:"", sentence:"I ate an apple today.", tip:"Two regular sounds: /a/ then /n/. Used before vowel sounds like AN apple and AN egg." },
+  { word:"man", heartLetters:[],    sounds:["/m/","/a/","/n/"],   heartIdx:[],     heartNote:"", sentence:"The man has a red hat.", tip:"Three regular sounds: /m/ then /a/ then /n/. Challenge: what rhymes with MAN? Can, ran, pan!" },
+  { word:"was", heartLetters:[1,2], sounds:["/w/","/u/","/z/"],   heartIdx:[1,2],  heartNote:"The A says /u/ and the S says /z/ — both are irregular heart parts", sentence:"It was a sunny day.", tip:"Two heart parts! The red A says /u/ and the red S says /z/. Two sneaky letters in one word." },
+  { word:"can", heartLetters:[],    sounds:["/k/","/a/","/n/"],   heartIdx:[],     heartNote:"", sentence:"I can read this word!", tip:"Three regular sounds: /k/ then /a/ then /n/. After blending, say together: Yes, I CAN read this word!" },
+  { word:"not", heartLetters:[],    sounds:["/n/","/o/","/t/"],   heartIdx:[],     heartNote:"", sentence:"I do not like spinach.", tip:"Three regular sounds: /n/ then /o/ then /t/. Make a funny face when you say it. Silliness helps!" },
+  { word:"he",  heartLetters:[1],   sounds:["/h/","/ee/"],        heartIdx:[1],    heartNote:"The letter E makes its long /ee/ sound like in eel", sentence:"He is very tall.", tip:"The red E is the heart part — it says its own name /ee/ like in eel. Stretch it: /h/ then /eeee/." },
+  { word:"be",  heartLetters:[1],   sounds:["/b/","/ee/"],        heartIdx:[1],    heartNote:"The letter E makes its long /ee/ sound like in bee", sentence:"Be kind to others.", tip:"Long E again just like the word bee! That E is saying its name. Tap and buzz: /b/ then /eeee/." },
+  { word:"had", heartLetters:[],    sounds:["/h/","/a/","/d/"],   heartIdx:[],     heartNote:"", sentence:"She had a new puppy.", tip:"Three regular sounds: /h/ then /a/ then /d/. Short A in the middle like in apple." },
+  { word:"him", heartLetters:[],    sounds:["/h/","/i/","/m/"],   heartIdx:[],     heartNote:"", sentence:"Give it to him, please.", tip:"Three regular sounds: /h/ then /i/ then /m/. Point to someone and use the word HIM in a sentence." },
+  { word:"big", heartLetters:[],    sounds:["/b/","/i/","/g/"],   heartIdx:[],     heartNote:"", sentence:"That is a big elephant!", tip:"Three regular sounds: /b/ then /i/ then /g/. Stretch your arms WIDE when you say the full word!" },
+  { word:"so",  heartLetters:[1],   sounds:["/s/","/o/"],         heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound like in go and no", sentence:"I am so happy today!", tip:"The red O is the heart part — it says its own name /o/. SO, GO, and NO are a rhyme family." },
+  { word:"go",  heartLetters:[1],   sounds:["/g/","/o/"],         heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound", sentence:"Go, team, go!", tip:"The red O making its long name sound. Ask: What rhymes with GO? So, no! All three share that heart O." },
+  { word:"no",  heartLetters:[1],   sounds:["/n/","/o/"],         heartIdx:[1],    heartNote:"The letter O makes its long /o/ sound", sentence:"No, thank you.", tip:"Long O again. Shake your head NO while tapping. The movement makes it memorable. NO, GO, SO all rhyme!" },
 ];
 
-let currentIdx = 0;
-let mode = 'learn';
-let tapped = 0;
+const FREE_WORDS = 5;
+let currentIdx = 0, mode = 'learn', tapped = 0;
 let knownSet = new Set();
-let totalKnown = 0;
 
-// ── Mode ──────────────────────────────────────────────────────────────────
 function setMode(m) {
   mode = m;
-  ['learn','try','spell'].forEach(id => {
-    document.getElementById('btn-'+id).classList.toggle('active', id === m);
-  });
-  document.getElementById('modeLbl').textContent = m === 'learn' ? 'Learn' : m === 'try' ? 'Try It' : 'Spell';
-  document.getElementById('writeCard').classList.toggle('active', m === 'spell');
+  ['learn','try','spell'].forEach(id => document.getElementById('btn-'+id).classList.toggle('active', id===m));
+  document.getElementById('modeLbl').textContent = m==='learn'?'Learn':m==='try'?'Try It':'Spell';
+  document.getElementById('writeCard').classList.toggle('active', m==='spell');
   renderWord();
 }
 
-// ── Render ────────────────────────────────────────────────────────────────
 function renderWord() {
-  const d = WORDS[currentIdx];
-  tapped = 0;
-
-  // Progress
+  const d = WORDS[currentIdx]; tapped = 0;
   document.getElementById('progFill').style.width = ((currentIdx+1)/WORDS.length*100).toFixed(1)+'%';
   document.getElementById('progPill').textContent = `${currentIdx+1} / ${WORDS.length}`;
   document.getElementById('wcNum').textContent = `Card ${currentIdx+1} of 30`;
-
-  // Word display
-  renderWordDisplay(d, mode === 'spell');
-
-  // Sentence
+  renderWordDisplay(d, mode==='spell');
   const sr = document.getElementById('sentRow');
-  sr.textContent = `"${d.sentence}"`;
-  sr.classList.toggle('hidden', mode === 'spell');
-
-  // Sound boxes
+  sr.textContent = `"${d.sentence}"`; sr.classList.toggle('hidden', mode==='spell');
   renderBoxes(d);
-
-  // Heart legend
   const hasHeart = d.heartIdx.length > 0;
   const hl = document.getElementById('heartLegend');
-  hl.classList.toggle('hidden', !hasHeart || mode === 'spell');
-  if (hasHeart) {
-    document.getElementById('heartLegendTxt').textContent =
-      d.heartNote ? `Heart part: ${d.heartNote}.` : 'Red box = heart part to learn by heart!';
-  }
-
-  // Write card reset
-  if (mode === 'spell') {
-    document.getElementById('writeInput').value = '';
-    document.getElementById('writeFeedback').textContent = '';
-    document.getElementById('writeFeedback').className = 'write-feedback';
-    setTimeout(() => document.getElementById('writeInput').focus(), 100);
-  }
-
-  // Blend btn
+  hl.classList.toggle('hidden', !hasHeart||mode==='spell');
+  if (hasHeart) document.getElementById('heartLegendTxt').textContent = d.heartNote ? `Heart part: ${d.heartNote}.` : 'Red box = heart part!';
+  if (mode==='spell') { document.getElementById('writeInput').value=''; document.getElementById('writeFeedback').textContent=''; document.getElementById('writeFeedback').className='write-feedback'; setTimeout(()=>document.getElementById('writeInput').focus(),100); }
   document.getElementById('blendBtn').disabled = false;
-
-  // Coaching tip
   document.getElementById('coachTxt').textContent = d.tip;
-
-  // Tap hint
-  document.getElementById('tapHint').textContent = mode === 'spell'
-    ? 'Listen for each sound, then tap the matching box!'
-    : 'Tap each box as you say the sound out loud!';
-
+  document.getElementById('tapHint').textContent = mode==='spell'?'Listen for each sound, then tap the matching box!':'Tap each box as you say the sound out loud!';
   renderDots();
 }
 
 function renderWordDisplay(d, blur) {
   const wb = document.getElementById('wordBig');
-  if (blur) {
-    wb.innerHTML = d.word;
-    wb.classList.add('blurred');
-  } else {
-    // Show actual word letters, highlight heart letters in red
+  if (blur) { wb.innerHTML = d.word; wb.classList.add('blurred'); }
+  else {
     let html = '';
-    d.word.split('').forEach((ch, i) => {
-      if (d.heartLetters && d.heartLetters.includes(i)) {
-        html += `<span class="heart-highlight">${ch}</span>`;
-      } else {
-        html += `<span>${ch}</span>`;
-      }
+    d.word.split('').forEach((ch,i) => {
+      html += d.heartLetters&&d.heartLetters.includes(i) ? `<span class="heart-highlight">${ch}</span>` : `<span>${ch}</span>`;
     });
-    wb.innerHTML = html;
-    wb.classList.remove('blurred');
+    wb.innerHTML = html; wb.classList.remove('blurred');
   }
-
-  // Heart explain
   const he = document.getElementById('heartExplain');
-  if (!blur && d.heartIdx.length > 0 && mode === 'learn') {
-    he.textContent = 'Red = heart part (learn by heart)';
-    he.classList.add('show');
-  } else {
-    he.classList.remove('show');
-  }
+  if (!blur&&d.heartIdx.length>0&&mode==='learn') { he.textContent='Red = heart part (learn by heart)'; he.classList.add('show'); }
+  else { he.classList.remove('show'); }
 }
 
 function renderBoxes(d) {
-  const row = document.getElementById('boxesRow');
-  row.innerHTML = '';
-  d.sounds.forEach((s, i) => {
+  const row = document.getElementById('boxesRow'); row.innerHTML = '';
+  d.sounds.forEach((s,i) => {
     const div = document.createElement('div');
-    div.className = 's-box' + (d.heartIdx.includes(i) ? ' heart-part' : '');
-    div.dataset.i = i;
-    div.onclick = () => tapBox(div, i, d);
-
+    div.className = 's-box'+(d.heartIdx.includes(i)?' heart-part':'');
+    div.dataset.i = i; div.onclick = ()=>tapBox(div,i,d);
     const sp = document.createElement('div');
-    sp.className = 's-box-sound' + (mode !== 'learn' ? ' hidden-s' : '');
-    sp.textContent = s;
-
-    const num = document.createElement('div');
-    num.className = 's-box-num';
-    num.textContent = i+1;
-
-    div.appendChild(sp); div.appendChild(num);
-    row.appendChild(div);
+    sp.className = 's-box-sound'+(mode!=='learn'?' hidden-s':''); sp.textContent = s;
+    const num = document.createElement('div'); num.className='s-box-num'; num.textContent=i+1;
+    div.appendChild(sp); div.appendChild(num); row.appendChild(div);
   });
 }
 
-function tapBox(div, idx, d) {
-  if (div.classList.contains('tapped')) {
-    div.classList.remove('tapped'); tapped = Math.max(0, tapped-1);
-  } else {
-    div.classList.add('tapped'); tapped++;
-    // Reveal sound on tap in non-learn modes
-    const sp = div.querySelector('.s-box-sound');
-    if (sp) sp.classList.remove('hidden-s');
-  }
+function tapBox(div,idx,d) {
+  if (div.classList.contains('tapped')) { div.classList.remove('tapped'); tapped=Math.max(0,tapped-1); }
+  else { div.classList.add('tapped'); tapped++; div.querySelector('.s-box-sound').classList.remove('hidden-s'); }
   updateTapHint(d);
 }
 
 function updateTapHint(d) {
-  const total = d.sounds.length;
   const th = document.getElementById('tapHint');
-  if (tapped === 0) {
-    th.textContent = mode === 'spell' ? 'Listen for each sound, then tap the matching box!' : 'Tap each box as you say the sound out loud!';
-  } else if (tapped < total) {
-    th.textContent = `${tapped} of ${total} sounds tapped. Keep going!`;
-  } else {
-    th.textContent = `All ${total} sounds tapped! Now blend them back together.`;
-  }
+  if (tapped===0) th.textContent=mode==='spell'?'Listen for each sound, then tap the matching box!':'Tap each box as you say the sound out loud!';
+  else if (tapped<d.sounds.length) th.textContent=`${tapped} of ${d.sounds.length} sounds tapped. Keep going!`;
+  else th.textContent=`All ${d.sounds.length} sounds tapped! Now blend them back together.`;
 }
 
 function resetBoxes() {
-  tapped = 0;
-  renderBoxes(WORDS[currentIdx]);
-  document.getElementById('tapHint').textContent = 'Tap each box as you say the sound out loud!';
-  if (mode === 'spell') {
-    document.getElementById('writeInput').value = '';
-    document.getElementById('writeFeedback').textContent = '';
-    document.getElementById('writeFeedback').className = 'write-feedback';
-  }
+  tapped=0; renderBoxes(WORDS[currentIdx]);
+  document.getElementById('tapHint').textContent='Tap each box as you say the sound out loud!';
+  if (mode==='spell') { document.getElementById('writeInput').value=''; document.getElementById('writeFeedback').textContent=''; document.getElementById('writeFeedback').className='write-feedback'; }
 }
 
 function doBlend() {
-  const d = WORDS[currentIdx];
-  // Reveal everything
+  const d=WORDS[currentIdx];
   document.getElementById('wordBig').classList.remove('blurred');
-  renderWordDisplay(d, false);
+  renderWordDisplay(d,false);
   document.getElementById('sentRow').classList.remove('hidden');
   document.getElementById('heartLegend').classList.remove('hidden');
-  document.querySelectorAll('.s-box').forEach(b => {
-    b.classList.add('tapped');
-    b.querySelector('.s-box-sound').classList.remove('hidden-s');
-  });
-  tapped = d.sounds.length;
-  document.getElementById('tapHint').textContent = 'Great! Say the whole word one more time.';
-  document.getElementById('blendBtn').disabled = true;
+  document.querySelectorAll('.s-box').forEach(b=>{b.classList.add('tapped');b.querySelector('.s-box-sound').classList.remove('hidden-s');});
+  tapped=d.sounds.length;
+  document.getElementById('tapHint').textContent='Great! Say the whole word one more time.';
+  document.getElementById('blendBtn').disabled=true;
 }
 
-// ── Spell check ───────────────────────────────────────────────────────────
 function checkSpelling() {
-  const d = WORDS[currentIdx];
-  const val = document.getElementById('writeInput').value.trim().toLowerCase();
-  const fb = document.getElementById('writeFeedback');
-  if (val === d.word.toLowerCase()) {
-    fb.textContent = 'Correct! Great spelling!';
-    fb.className = 'write-feedback correct';
-    doBlend();
-  } else {
-    fb.textContent = `Not quite. The word is "${d.word}". Try sounding it out with the boxes first.`;
-    fb.className = 'write-feedback wrong';
-  }
+  const d=WORDS[currentIdx], val=document.getElementById('writeInput').value.trim().toLowerCase(), fb=document.getElementById('writeFeedback');
+  if (val===d.word.toLowerCase()) { fb.textContent='Correct! Great spelling!'; fb.className='write-feedback correct'; doBlend(); }
+  else { fb.textContent=`Not quite. The word is "${d.word}". Try sounding it out with the boxes first.`; fb.className='write-feedback wrong'; }
 }
+document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&mode==='spell') checkSpelling(); });
 
-// Enter key triggers check
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && mode === 'spell') checkSpelling();
-});
-
-// ── Know-it pile ──────────────────────────────────────────────────────────
 function markKnown() {
-  const d = WORDS[currentIdx];
-  if (!knownSet.has(currentIdx)) {
-    knownSet.add(currentIdx);
-    totalKnown++;
-    addToKnownPile(d.word);
-    renderDots();
-    updatePileCount();
-  }
+  const d=WORDS[currentIdx];
+  if (!knownSet.has(currentIdx)) { knownSet.add(currentIdx); addToKnownPile(d.word); renderDots(); updatePileCount(); }
   nextWord();
 }
 
 function addToKnownPile(word) {
-  const pile = document.getElementById('pileWords');
-  const empty = document.getElementById('pileEmpty');
+  const pile=document.getElementById('pileWords'), empty=document.getElementById('pileEmpty');
   if (empty) empty.remove();
-  const chip = document.createElement('div');
-  chip.className = 'pile-word';
-  chip.textContent = word;
-  chip.title = 'Click to revisit';
-  chip.onclick = () => {
-    const idx = WORDS.findIndex(w => w.word === word);
-    if (idx >= 0) { currentIdx = idx; renderWord(); window.scrollTo({top:0,behavior:'smooth'}); }
-  };
+  const chip=document.createElement('div'); chip.className='pile-word'; chip.textContent=word; chip.title='Click to revisit';
+  chip.onclick=()=>{ const idx=WORDS.findIndex(w=>w.word===word); if(idx>=0){currentIdx=idx;renderWord();window.scrollTo({top:document.getElementById('app-section').offsetTop,behavior:'smooth'});} };
   pile.appendChild(chip);
 }
 
-function updatePileCount() {
-  document.getElementById('pileCount').textContent = `${knownSet.size} of 30`;
-}
-
-// ── Navigation ────────────────────────────────────────────────────────────
-const FREE_WORDS = 5; // first N words are free
+function updatePileCount() { document.getElementById('pileCount').textContent=`${knownSet.size} of 30`; }
 
 function nextWord() {
-  const nextIdx = currentIdx + 1;
-
-  // If not unlocked and trying to go past the free preview — show gate
-  if (!localStorage.getItem('rr_unlocked') && nextIdx >= FREE_WORDS) {
-    showMidGate();
-    return;
+  const nextIdx = currentIdx+1;
+  if (!localStorage.getItem('rr_unlocked')&&nextIdx>=FREE_WORDS) { showMidGate(); return; }
+  if (nextIdx<WORDS.length) { currentIdx=nextIdx; renderWord(); }
+  else {
+    if (knownSet.size===WORDS.length) showCelebration('All 30 heart words mastered!','You have built a powerful reading foundation. Amazing work!');
+    else showCelebration(`${knownSet.size} of 30 words known!`,'Keep going to get all 30 in your know-it pile!');
   }
-
-  if (nextIdx < WORDS.length) {
-    currentIdx = nextIdx;
-    renderWord();
-  } else {
-    if (knownSet.size === WORDS.length) {
-      showCelebration('All 30 heart words mastered!', 'You have built a powerful reading foundation. Amazing work!');
-    } else {
-      showCelebration(`${knownSet.size} of 30 words known!`, 'Keep going to get all 30 in your know-it pile!');
-    }
-  }
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({top:document.getElementById('app-section').offsetTop,behavior:'smooth'});
 }
 
-function showMidGate() {
-  // Gate is already set up with preview messaging — just show it
-  document.getElementById('gate').classList.remove('hidden');
-  window.scrollTo({top:0, behavior:'smooth'});
-}
+function showMidGate() { document.getElementById('gate').classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'}); }
 
 function renderDots() {
-  const nd = document.getElementById('navDots');
-  const unlocked = !!localStorage.getItem('rr_unlocked');
-  nd.innerHTML = '';
-  WORDS.forEach((_, i) => {
-    const d = document.createElement('div');
-    const isLocked = !unlocked && i >= FREE_WORDS;
-    d.className = 'ndot'
-      + (knownSet.has(i) ? ' known' : '')
-      + (i === currentIdx ? ' current' : '')
-      + (isLocked ? ' locked' : '');
-    d.title = isLocked ? 'Sign up free to unlock' : '';
-    d.onclick = () => {
-      if (isLocked) { showMidGate(); return; }
-      currentIdx = i; renderWord();
-    };
+  const nd=document.getElementById('navDots'), unlocked=!!localStorage.getItem('rr_unlocked'); nd.innerHTML='';
+  WORDS.forEach((_,i)=>{
+    const d=document.createElement('div'), isLocked=!unlocked&&i>=FREE_WORDS;
+    d.className='ndot'+(knownSet.has(i)?' known':'')+(i===currentIdx?' current':'')+(isLocked?' locked':'');
+    d.title=isLocked?'Sign up free to unlock':'';
+    d.onclick=()=>{ if(isLocked){showMidGate();return;} currentIdx=i; renderWord(); };
     nd.appendChild(d);
   });
 }
 
-// ── Celebration ───────────────────────────────────────────────────────────
-function showCelebration(title, sub) {
-  document.getElementById('celTitle').textContent = title;
-  document.getElementById('celSub').textContent = sub;
-  document.getElementById('celebrate').classList.add('show');
-  launchConfetti();
-}
+function showCelebration(title,sub) { document.getElementById('celTitle').textContent=title; document.getElementById('celSub').textContent=sub; document.getElementById('celebrate').classList.add('show'); launchConfetti(); }
 
 function restartAll() {
-  currentIdx = 0;
-  knownSet.clear();
-  totalKnown = 0;
-  document.getElementById('pileWords').innerHTML = '<div class="pile-empty" id="pileEmpty">Words your child masters will appear here!</div>';
-  updatePileCount();
-  document.getElementById('celebrate').classList.remove('show');
-  renderWord();
-  window.scrollTo({top:0,behavior:'smooth'});
+  currentIdx=0; knownSet.clear();
+  document.getElementById('pileWords').innerHTML='<div class="pile-empty" id="pileEmpty">Words your child masters will appear here!</div>';
+  updatePileCount(); document.getElementById('celebrate').classList.remove('show'); renderWord();
+  window.scrollTo({top:document.getElementById('app-section').offsetTop,behavior:'smooth'});
 }
 
 function launchConfetti() {
-  const cols = ['#111','#555','#999','#ddd'];
-  for (let i = 0; i < 55; i++) {
-    const p = document.createElement('div');
-    p.className = 'confetti-piece';
-    const s = 6 + Math.random()*8;
-    p.style.cssText = `left:${Math.random()*100}vw;width:${s}px;height:${s}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.4}s;`;
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 3500);
+  const cols=['#111','#555','#999','#ddd'];
+  for(let i=0;i<55;i++){
+    const p=document.createElement('div'); p.className='confetti-piece';
+    const s=6+Math.random()*8;
+    p.style.cssText=`left:${Math.random()*100}vw;width:${s}px;height:${s}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.4}s;`;
+    document.body.appendChild(p); setTimeout(()=>p.remove(),3500);
   }
 }
 
-// ── Gate logic ────────────────────────────────────────────────
+// ── Gate ──────────────────────────────────────────────────────
 const MAILERLITE_FORM_URL = 'https://assets.mailerlite.com/jsonp/2142684/forms/183113950863296190/subscribe';
 const MAILERLITE_FORM_ID  = '183113950863296190';
 
-function validateEmail(e) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
-}
+function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
 async function submitGate() {
-  const name  = document.getElementById('gate-name').value.trim();
-  const email = document.getElementById('gate-email').value.trim();
-  const err   = document.getElementById('gate-error');
-  const btn   = document.getElementById('gate-submit');
-
-  err.textContent = '';
-  if (!name)               { err.textContent = 'Please enter your first name.'; return; }
-  if (!validateEmail(email)) { err.textContent = 'Please enter a valid email address.'; return; }
-
-  btn.disabled = true;
-  btn.textContent = 'Unlocking...';
-
-  if (MAILERLITE_FORM_URL && MAILERLITE_FORM_URL !== 'YOUR_MAILERLITE_FORM_URL') {
-    try {
-      const fd = new FormData();
-      fd.append('fields[name]',  name);
-      fd.append('fields[email]', email);
-      fd.append('ml-submit', '1');
-      fd.append('anticsrf', 'true');
-      await fetch(MAILERLITE_FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' });
-    } catch(e) { /* no-cors always throws — submission still goes through */ }
-  }
-
-  // Save unlock to localStorage — permanent on this device
-  localStorage.setItem('rr_unlocked', '1');
-
-  document.getElementById('gate-form-view').style.display = 'none';
+  const name=document.getElementById('gate-name').value.trim(), email=document.getElementById('gate-email').value.trim();
+  const err=document.getElementById('gate-error'), btn=document.getElementById('gate-submit');
+  err.textContent='';
+  if(!name){err.textContent='Please enter your first name.';return;}
+  if(!validateEmail(email)){err.textContent='Please enter a valid email address.';return;}
+  btn.disabled=true; btn.textContent='Unlocking...';
+  try { const fd=new FormData(); fd.append('fields[name]',name); fd.append('fields[email]',email); fd.append('ml-submit','1'); fd.append('anticsrf','true'); await fetch(MAILERLITE_FORM_URL,{method:'POST',body:fd,mode:'no-cors'}); } catch(e){}
+  localStorage.setItem('rr_unlocked','1');
+  document.getElementById('gate-form-view').style.display='none';
   document.getElementById('gate-success').classList.add('show');
 }
 
 function unlockApp() {
   document.getElementById('gate').classList.add('hidden');
-  // Move to word 6 (index 5) after unlocking if still on preview
-  if (currentIdx === FREE_WORDS - 1) {
-    currentIdx = FREE_WORDS;
-    renderWord();
-  }
-  window.scrollTo({top:0, behavior:'smooth'});
+  if(currentIdx===FREE_WORDS-1){currentIdx=FREE_WORDS;renderWord();}
+  window.scrollTo({top:document.getElementById('app-section').offsetTop,behavior:'smooth'});
 }
 
-// Gate starts HIDDEN — free preview plays immediately
-// Gate only appears when nextWord() is called past FREE_WORDS
-document.getElementById('gate').classList.add('hidden');
+// ── Scroll reveal ─────────────────────────────────────────────
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.15});
+document.querySelectorAll('.reveal,.step,.explainer-card,.feature').forEach(el=>observer.observe(el));
 
-// Init
+// ── Init ──────────────────────────────────────────────────────
 renderWord();
 </script>
 </body>
